@@ -3,10 +3,12 @@ import LocalStrategy from 'passport-local';
 
 import UserModel from '../models/User';
 import bcrypt from 'bcrypt';
+import passportJWT from 'passport-jwt';
+import config from '../../config.json';
 
-const Strategy = LocalStrategy.Strategy;
 
 export default function initPassport() {
+    const Strategy = LocalStrategy.Strategy;
     passport.use(new Strategy({
         usernameField: 'email',
         passwordField: 'password'
@@ -14,7 +16,7 @@ export default function initPassport() {
         async function (email, password, cb) {
             try {
                 const user = await UserModel.findOne({ email });
-                if(!user || !await bcrypt.compare(password, user.password)) {
+                if (!user || !await bcrypt.compare(password, user.password)) {
                     return cb(null, false, { message: 'Incorrect email or password.' });
                 }
                 return cb(null, user, { message: 'Logged in successfully!' });
@@ -22,6 +24,22 @@ export default function initPassport() {
             catch (err) {
                 cb(err);
             }
+        }
+    ));
+
+    const { Strategy: JWTStrategy, ExtractJwt } = passportJWT;
+    passport.use(new JWTStrategy({
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: config.secretKey
+    },
+        function (jwtPayload, cb) {
+            return UserModel.findOne({ _id: jwtPayload._id })
+                .then(user => {
+                    return cb(null, user);
+                })
+                .catch(err => {
+                    return cb(err);
+                })
         }
     ));
 }
