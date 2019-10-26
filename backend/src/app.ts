@@ -1,5 +1,3 @@
-//Initiallising node modules
-import express from "express";
 import bodyParser from "body-parser";
 import winston from 'winston';
 
@@ -7,20 +5,40 @@ import appConf from '../config.json';
 import initPassport from './startup/passport'
 import initDB from './startup/db';
 import initLogging from './startup/logging';
-import initRoutes from './startup/routes';
 
-const app = express();
+import { Server } from "@overnightjs/core";
+import { AuthController } from "./routes/auth";
 
-// Body Parser Middleware
-app.use(bodyParser.json()); 
+export class AppServer extends Server {
+    constructor() {
+        super(process.env.NODE_ENV === 'development');
+       
+        // Body Parser Middleware
+        this.app.use(bodyParser.json());
+        
+        initDB();
+        initLogging();
+        initPassport();
 
-initDB();
-initLogging();
-initPassport();
-initRoutes(app);
+        this.setupControllers();
+    }
+
+    /** Add new controllers here */
+    private setupControllers(): void {
+        const authController = new AuthController();
+        super.addControllers([authController]);
+    }
+
+    public start(port: number): void {
+        //Setting up server
+        this.app.listen(port || 8080, function () {
+            winston.log('info', `Server running on ${port}`);
+        });
+    }
+}
+
+const server = new AppServer();
+server.start(appConf.serverPort);
 
 
-//Setting up server
- const server = app.listen(appConf.serverPort || 8080, function () {
-    winston.log('info', `Server running on ${appConf.serverPort}`); 
-});
+
