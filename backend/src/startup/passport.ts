@@ -3,8 +3,6 @@ import LocalStrategy from 'passport-local';
 
 import UserModel from '../models/User';
 
-
-
 const Strategy = LocalStrategy.Strategy;
 
 export default function initPassport() {
@@ -13,17 +11,14 @@ export default function initPassport() {
         passwordField: 'password'
     },
         function (email, password, cb) {
-            console.log('email', email);
-            return UserModel.findOne({ email: email })
+            return UserModel.findOne({ email, password })
             .then(user => {
                     if (!user) {
-                        return cb(null, false, { message: 'Incorrect email or password.' })
+                        return cb(null, false, { message: 'Incorrect email or password.' });
                     }
-                    console.log('before cb');
-                    return cb(null, user, { message: 'Logged in successfully!' })
+                    return cb(null, user, { message: 'Logged in successfully!' });
                 })
                 .catch(err => {
-                    console.log('error thrown', err);
                     cb(err);
                 });
         }
