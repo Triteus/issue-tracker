@@ -1,3 +1,7 @@
+import express from 'express';
+
+const app = express();
+
 //CORS Middleware
 app.use(function (req, res, next) {
     //Enabling CORS 

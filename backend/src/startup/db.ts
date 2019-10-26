@@ -1,7 +1,7 @@
-let mongoose =  require("mongoose");
-let appConf = require("../../config");
+import mongoose from "mongoose";
+import appConf from "../../config.json";
 
-module.exports = function() {
+export default function() {
   mongoose.connect(
     appConf.mongoDbUrl,
     { useNewUrlParser: true }

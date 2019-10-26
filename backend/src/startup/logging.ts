@@ -1,13 +1,14 @@
-const winston = require("winston");
-require("winston-mongodb");
+import winston from "winston";
 
-module.exports = function() {
+import { MongoDBTransportInstance } from "winston-mongodb";
+
+const { MongoDB }: { MongoDB: MongoDBTransportInstance } = require("winston-mongodb");
+
+export default function() {
   //Exceptions outside of api-calls
   winston.exceptions.handle(
     new winston.transports.File({ filename: "uncaughtExceptions.log" }),
     new winston.transports.Console({
-      colorize: true,
-      prettyPrint: true
     })
   );
 
@@ -15,8 +16,6 @@ module.exports = function() {
   winston.add(
     new winston.transports.Console({
       format: winston.format.simple(),
-      colorize: true,
-      prettyPrint: true
     })
   );
 
@@ -26,7 +25,7 @@ module.exports = function() {
 
   winston.add(new winston.transports.File({ filename: "logfile.log" }));
   winston.add(
-    new winston.transports.MongoDB({
+    new MongoDB({
       db: "mongodb://localhost/legends",
       level: "error"
     })
