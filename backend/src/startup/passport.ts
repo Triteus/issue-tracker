@@ -2,6 +2,7 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 
 import UserModel from '../models/User';
+import bcrypt from 'bcrypt';
 
 const Strategy = LocalStrategy.Strategy;
 
@@ -10,17 +11,17 @@ export default function initPassport() {
         usernameField: 'email',
         passwordField: 'password'
     },
-        function (email, password, cb) {
-            return UserModel.findOne({ email, password })
-            .then(user => {
-                    if (!user) {
-                        return cb(null, false, { message: 'Incorrect email or password.' });
-                    }
-                    return cb(null, user, { message: 'Logged in successfully!' });
-                })
-                .catch(err => {
-                    cb(err);
-                });
+        async function (email, password, cb) {
+            try {
+                const user = await UserModel.findOne({ email });
+                if(!user || !await bcrypt.compare(password, user.password)) {
+                    return cb(null, false, { message: 'Incorrect email or password.' });
+                }
+                return cb(null, user, { message: 'Logged in successfully!' });
+            }
+            catch (err) {
+                cb(err);
+            }
         }
     ));
 }

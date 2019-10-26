@@ -6,6 +6,7 @@ require('mongoose-type-email');
 
 export interface IUser extends mongoose.Document {
     email: string,
+    password: string,
     roles: Array<IRole>
 }
 

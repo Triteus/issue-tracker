@@ -1,11 +1,12 @@
 import UserModel from '../models/User';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
-import { Controller, Middleware, Get, Post, Put, Delete } from '@overnightjs/core';
+import { Controller, Middleware, Post } from '@overnightjs/core';
 import config from '../../config.json';
-import { IUser } from '../models/User';
+import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
-import { check, body, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
 
 @Controller('api/auth')
 export class AuthController {
@@ -36,16 +37,31 @@ export class AuthController {
             return res.status(422).json({ errors: errors.array() });
         }
 
-        const user = new UserModel({ ...req.body });
+        const { email, password } = req.body;
+
+        // hash password
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPW = await bcrypt.hash(password, salt);
+
+        // create new user
+        let user: IUser;
         try {
-            await user.save();
+            user = await User.create({ email, password: hashedPW });
         } catch (err) {
             res.send(err);
         }
-        res.send({ user, message: 'User created successfully!' });
+        res.send({
+            user: { email: user.email, roles: user.roles },
+            message: 'User created successfully!'
+        });
     }
 
     @Post('login')
+    @Middleware([
+        body('email').trim().normalizeEmail(),
+        body('password').trim()
+    ])
     private async login(req: Request, res: Response) {
         passport.authenticate('local', { session: false },
             (err, user: IUser, info: string) => {

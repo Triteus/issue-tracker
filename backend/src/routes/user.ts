@@ -1,6 +1,10 @@
-import express from 'express';
+import { Controller } from '@overnightjs/core';
 
 
-const app = express();
+@Controller('api/user')
+export class UserController {
+
+
+}
 
 
