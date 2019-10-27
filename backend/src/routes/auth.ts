@@ -7,30 +7,14 @@ import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+import { validateEmail } from '../validators/email';
+import { validatePW } from '../validators/password';
 
 @Controller('api/auth')
 export class AuthController {
 
     @Post('register')
-    @Middleware([
-        body('email')
-            .trim()
-            .isEmail().withMessage('Invalid e-mail')
-            .bail()
-            .normalizeEmail()
-            .custom(val => {
-                return UserModel.findOne({ email: val })
-                    .then(user => {
-                        if (user) {
-                            return Promise.reject('E-mail already in use');
-                        }
-                    });
-            }),
-        body('password')
-            .trim()
-            .isLength({ min: 6 })
-            .withMessage('Password must at least be 6 characters long')
-    ])
+    @Middleware([validateEmail, validatePW])
     private async register(req: Request, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
