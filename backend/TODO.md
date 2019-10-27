@@ -1,0 +1,2 @@
+- add centralized error handling
+- add auth0

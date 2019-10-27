@@ -1,8 +1,9 @@
 import { Controller, Get, Middleware, Delete } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import passport = require('passport');
-import UserModel, { IUser } from '../models/User';
+import UserModel, { IUser, ERole } from '../models/User';
 
+import Authorize from '../middlewares/authorization';
 
 @Controller('api/user')
 export class UserController {
@@ -24,9 +25,11 @@ export class UserController {
         res.status(200).send(user);
     }
 
-    /** TODO: Add authorization: admin, owner*/
     @Delete(':id')
-    @Middleware(passport.authenticate('jwt', {session: false}))
+    @Middleware([
+        passport.authenticate('jwt', {session: false}),
+        Authorize.hasRoles(ERole.Admin)
+    ])
     private async deleteUser(req: Request & {user: IUser}, res: Response) {
         const user = await UserModel.findOneAndDelete({_id: req.params.id});
         if(!user) {

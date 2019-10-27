@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
-import Role, { IRole } from './Role';
-import {RoleSchema} from './Role';
+
 // no ts-definition
 require('mongoose-type-email');
 
+
+export enum ERole {
+    Admin = 'admin',
+    Support = 'support'
+}
+
 export interface IUser extends mongoose.Document {
+    _id: mongoose.Schema.Types.ObjectId,
     email: string,
     password: string,
-    roles: Array<IRole>
+    roles: Array<ERole>
 }
 
 const userSchema = new mongoose.Schema({
@@ -23,8 +29,9 @@ const userSchema = new mongoose.Schema({
         select: false
     },
     roles: {
-        type: [RoleSchema],
-        default: []
+        type: [String],
+        default: [],
+        enum: Object.keys(ERole).map(k => ERole[k])
     }
 })
 
