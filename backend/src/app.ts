@@ -8,6 +8,7 @@ import initLogging from './startup/logging';
 
 import { Server } from "@overnightjs/core";
 import { AuthController } from "./routes/auth";
+import { UserController } from "./routes/user";
 
 export class AppServer extends Server {
     constructor() {
@@ -26,7 +27,8 @@ export class AppServer extends Server {
     /** Add new controllers here */
     private setupControllers(): void {
         const authController = new AuthController();
-        super.addControllers([authController]);
+        const userController = new UserController();
+        super.addControllers([authController, userController]);
     }
 
     public start(port: number): void {
