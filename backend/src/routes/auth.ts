@@ -1,14 +1,14 @@
 import UserModel from '../models/User';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
-import { Controller, Middleware, Post } from '@overnightjs/core';
+import { Controller, Middleware, Post, Put } from '@overnightjs/core';
 import config from '../../config.json';
 import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import bcrypt from 'bcrypt';
+import { body, validationResult, param } from 'express-validator';
 import { validateEmail } from '../validators/email';
 import { validatePW } from '../validators/password';
+import Authorize from '../middlewares/authorization';
 
 @Controller('api/auth')
 export class AuthController {
@@ -66,5 +66,41 @@ export class AuthController {
                 return res.json({ user: userJSON, token });
             }
         )(req, res);
+    }
+
+    @Put('password/:id')
+    @Middleware([
+        passport.authenticate('jwt', {session: false}),
+        Authorize.isAccOwner(),
+        param('id').exists(),
+        body('oldPW').exists().trim(),
+        body('newPW').exists().trim(),
+        body('newPWConfirm').exists().trim().custom((pwConfirm, {req}) => {
+            if(req.body.newPW !== pwConfirm) {
+                throw new Error('Password confirmation does not match password');
+            }
+            return true;
+        })
+    ])
+    private async changePassword(req: Request & {user: IUser}, res: Response) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+        
+        const {oldPW, newPW} = req.body;
+        const user = await UserModel.findById(req.params.id).select('+password');
+      
+        if(!user) {
+            return res.status(404).send({message: 'User not found!'});
+        }
+        if(!user.comparePassword(oldPW)) {
+            return res.status(400).send({message: 'Invalid old password!'});
+        }
+
+        user.password = await UserModel.hashPassword(newPW);
+        await user.save();
+        
+        return res.status(200).send({message: 'Password successfully changed!'});
     }
 }
