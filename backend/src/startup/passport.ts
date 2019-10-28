@@ -16,7 +16,7 @@ export default function initPassport() {
         async function (email, password, cb) {
             try {
                 const user = await UserModel.findOne({ email }).select('+password');
-                if (!user || !await bcrypt.compare(password, user.password)) {
+                if (!user || !await user.comparePassword(password)) {
                     return cb(null, false, { message: 'Incorrect email or password.' });
                 }
                 return cb(null, user, { message: 'Logged in successfully!' });

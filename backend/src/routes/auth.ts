@@ -24,9 +24,7 @@ export class AuthController {
         const { email, password } = req.body;
 
         // hash password
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-        const hashedPW = await bcrypt.hash(password, salt);
+        const hashedPW = await UserModel.hashPassword(password);
 
         // create new user
         let user: IUser;
