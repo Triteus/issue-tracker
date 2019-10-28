@@ -14,27 +14,29 @@ import Authorize from '../middlewares/authorization';
 export class AuthController {
 
     @Post('register')
-    @Middleware([validateEmail, validatePW])
+    @Middleware([
+        validateEmail, 
+        validatePW,
+        body('firstName').trim().exists(),
+        body('lastName').trim().exists()
+    ])
     private async register(req: Request, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
-
-        const { email, password } = req.body;
-
+        const { email, password, firstName, lastName } = req.body;
         // hash password
         const hashedPW = await UserModel.hashPassword(password);
-
         // create new user
         let user: IUser;
         try {
-            user = await User.create({ email, password: hashedPW });
+            user = await User.create({ email, password: hashedPW, firstName, lastName });
         } catch (err) {
             res.send(err);
         }
         res.send({
-            user: { email: user.email, roles: user.roles },
+            user: { email: user.email, roles: user.roles, username: user.username },
             message: 'User created successfully!'
         });
     }
@@ -60,7 +62,7 @@ export class AuthController {
                     }
                 });
 
-                const userJSON = { _id: user.id, email: user.email, roles: user.roles };
+                const userJSON = { _id: user.id, email: user.email, roles: user.roles, username: user.username };
                 // generate web token
                 const token = jwt.sign(userJSON, config.secretKey);
                 return res.json({ user: userJSON, token });
@@ -101,6 +103,6 @@ export class AuthController {
         user.password = await UserModel.hashPassword(newPW);
         await user.save();
         
-        return res.status(200).send({message: 'Password successfully changed!'});
+        return res.status(200).send({message: 'Password successfully changed!', user});
     }
 }

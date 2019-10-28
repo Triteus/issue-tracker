@@ -10,10 +10,13 @@ export enum ERole {
 }
 
 export interface IUserDocument extends mongoose.Document {
-    _id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Types.ObjectId,
     email: string,
+    firstName: string,
+    lastName: string,
     password: string,
     roles: Array<ERole>,
+    username: string
 }
 
 export interface IUser extends IUserDocument {
@@ -30,7 +33,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-
+    firstName: {
+        required: true,
+        type: String
+    },
+    lastName: {
+        required: true,
+        type: String
+    },
     password: {
         type: String,
         required: true,
@@ -41,9 +51,12 @@ const userSchema = new mongoose.Schema({
         default: [],
         enum: Object.keys(ERole).map(k => ERole[k])
     }
+}, {
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
 })
 
-userSchema.methods.comparePassword = function(pw: string) {
+userSchema.methods.comparePassword = function (pw: string) {
     return bcrypt.compare(pw, this.password);
 }
 
@@ -53,5 +66,9 @@ userSchema.statics.hashPassword = async function (plainPW: string) {
     const salt = await bcrypt.genSalt(saltRounds);
     return bcrypt.hash(plainPW, salt);
 }
+
+userSchema.virtual("username").get(function (this: { firstName: string, lastName: string }) {
+    return this.firstName + " " + this.lastName;
+});
 
 export default mongoose.model<IUser, IUserModel>('User', userSchema);
