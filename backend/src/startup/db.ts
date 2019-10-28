@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 import appConf from "../../config.json";
 
-export default function() {
+export default function () {
   mongoose.connect(
     appConf.mongoDbUrl,
-    { useNewUrlParser: true }
+    {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    }
   );
   mongoose.Promise = global.Promise;
   const db = mongoose.connection;

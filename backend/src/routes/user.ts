@@ -1,9 +1,11 @@
-import { Controller, Get, Middleware, Delete } from '@overnightjs/core';
+import { Controller, Get, Middleware, Delete, Patch, Put } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import passport = require('passport');
 import UserModel, { IUser, ERole } from '../models/User';
 
 import Authorize from '../middlewares/authorization';
+import { validationResult, body } from 'express-validator';
+import { validateEmail } from '../validators/email';
 
 @Controller('api/user')
 export class UserController {
@@ -39,6 +41,32 @@ export class UserController {
             message: 'User successfully deleted!',
             deletedUser: user
     })
+    }
+
+    /** route to change email, username, ... */
+    @Patch(':id')
+    @Middleware([
+        passport.authenticate('jwt', {session: false}),
+        Authorize.isAccOwner(),
+        validateEmail,
+        body('firstName').trim(),
+        body('lastName').trim()
+    ])
+    private async changeUser(req: Request & {user: IUser}, res: Response) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        const userId = req.params.id;
+        // changing pw is not handled here
+        const {password, _id, ...userPayload} = req.body;
+        const updatedUser = await UserModel.findByIdAndUpdate(userId, userPayload, {new: true});
+
+        if(!updatedUser) {
+            return res.status(404).send({message: "Cannot alter user: User not found."});
+        }
+        return res.status(200).send({updatedUser, message: 'User successfully updated!'});
     }
 }
 
