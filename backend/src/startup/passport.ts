@@ -2,7 +2,6 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 
 import UserModel from '../models/User';
-import bcrypt from 'bcrypt';
 import passportJWT from 'passport-jwt';
 import config from '../../config.json';
 
@@ -17,7 +16,7 @@ export default function initPassport() {
             try {
                 const user = await UserModel.findOne({ email }).select('+password');
                 if (!user || !await user.comparePassword(password)) {
-                    return cb(null, false, { message: 'Incorrect email or password.' });
+                    return cb(null, false, { message: 'Incorrect email or password' });
                 }
                 return cb(null, user, { message: 'Logged in successfully!' });
             }

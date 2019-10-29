@@ -10,6 +10,7 @@ import { validateEmail } from '../validators/email';
 import { validatePW } from '../validators/password';
 import Authorize from '../middlewares/authorization';
 
+
 @Controller('api/auth')
 export class AuthController {
 
@@ -17,8 +18,8 @@ export class AuthController {
     @Middleware([
         validateEmail, 
         validatePW,
-        body('firstName').trim().exists(),
-        body('lastName').trim().exists()
+        body('firstName').exists().withMessage('First name is missing').trim(),
+        body('lastName').exists().withMessage('Last name is missing').trim()
     ])
     private async register(req: Request, res: Response) {
         const errors = validationResult(req);
@@ -35,23 +36,35 @@ export class AuthController {
         } catch (err) {
             res.send(err);
         }
-        res.send({
-            user: { email: user.email, roles: user.roles, username: user.username },
+
+        const {password: pw, ...payload} = user;
+
+        res.status(201).send({
+            user: payload,
             message: 'User created successfully!'
         });
     }
 
     @Post('login')
     @Middleware([
-        body('email').trim().normalizeEmail(),
-        body('password').trim()
+        body('email').isEmail()
+        .withMessage('Invalid e-mail')
+        .trim().normalizeEmail(),
+        body('password').exists()
+        .withMessage('Missing password')
+        .trim()
     ])
     private async login(req: Request, res: Response) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
         passport.authenticate('local', { session: false },
-            (err, user: IUser, info: string) => {
+            (err, user: IUser, info: any) => {
                 if (err || !user) {
-                    return res.status(400).json({
-                        message: info,
+                    return res.status(403).json({
+                        ...info,
                         user: user,
                         err
                     });
