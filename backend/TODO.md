@@ -1,3 +1,4 @@
 - add centralized error handling
 - add auth0
 - handle password reset
+- use in-memory db for testing

@@ -56,11 +56,8 @@ export class AuthController {
                         res.send(err);
                     }
                 });
-
                 const userJSON = { _id: user.id, email: user.email, roles: user.roles, username: user.username };
-                // generate web token
-                const token = jwt.sign(userJSON, config.secretKey);
-                return res.json({ user: userJSON, token });
+                return res.json({ user: userJSON, token: user.generateToken() });
             }
         )(req, res);
     }

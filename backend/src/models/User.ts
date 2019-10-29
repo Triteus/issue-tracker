@@ -1,5 +1,7 @@
 import mongoose, { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
+import config from '../../config.json';
+import jwt from 'jsonwebtoken';
 // no ts-definition
 require('mongoose-type-email');
 
@@ -20,7 +22,8 @@ export interface IUserDocument extends mongoose.Document {
 }
 
 export interface IUser extends IUserDocument {
-    comparePassword(pw: string): Promise<boolean>
+    comparePassword(pw: string): Promise<boolean>,
+    generateToken(): string
 }
 
 export interface IUserModel extends Model<IUser> {
@@ -58,6 +61,12 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.comparePassword = function (pw: string) {
     return bcrypt.compare(pw, this.password);
+}
+
+userSchema.methods.generateToken = function () {
+    const userJSON = { _id: this.id, email: this.email, roles: this.roles, username: this.username };
+    // generate web token
+    return jwt.sign(userJSON, config.secretKey);
 }
 
 userSchema.statics.hashPassword = async function (plainPW: string) {
