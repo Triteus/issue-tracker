@@ -5,10 +5,8 @@ import { Controller, Middleware, Post, Put } from '@overnightjs/core';
 import config from '../../config.json';
 import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
-import { body, validationResult, param } from 'express-validator';
-import { validateEmail } from '../validators/email';
-import { validatePW } from '../validators/password';
 import Authorize from '../middlewares/authorization';
+import { AuthValidation } from './auth.validate';
 
 
 @Controller('api/auth')
@@ -16,16 +14,10 @@ export class AuthController {
 
     @Post('register')
     @Middleware([
-        validateEmail, 
-        validatePW,
-        body('firstName').exists().withMessage('First name is missing').trim(),
-        body('lastName').exists().withMessage('Last name is missing').trim()
+        ...AuthValidation.register
     ])
     private async register(req: Request, res: Response) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
+       
         const { email, password, firstName, lastName } = req.body;
         // hash password
         const hashedPW = await UserModel.hashPassword(password);
@@ -47,19 +39,9 @@ export class AuthController {
 
     @Post('login')
     @Middleware([
-        body('email').isEmail()
-        .withMessage('Invalid e-mail')
-        .trim().normalizeEmail(),
-        body('password').exists()
-        .withMessage('Missing password')
-        .trim()
+        ...AuthValidation.login
     ])
     private async login(req: Request, res: Response) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
-
         passport.authenticate('local', { session: false },
             (err, user: IUser, info: any) => {
                 if (err || !user) {
@@ -87,21 +69,9 @@ export class AuthController {
     @Middleware([
         passport.authenticate('jwt', {session: false}),
         Authorize.isAccOwner(),
-        param('id').exists(),
-        body('oldPW').exists().trim(),
-        body('newPW').exists().trim(),
-        body('newPWConfirm').exists().trim().custom((pwConfirm, {req}) => {
-            if(req.body.newPW !== pwConfirm) {
-                throw new Error('Password confirmation does not match password');
-            }
-            return true;
-        })
+        ...AuthValidation.changePassword
     ])
     private async changePassword(req: Request & {user: IUser}, res: Response) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
         
         const {oldPW, newPW} = req.body;
         const user = await UserModel.findById(req.params.id).select('+password');
