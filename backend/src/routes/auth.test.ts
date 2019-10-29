@@ -125,20 +125,30 @@ describe('AuthController', () => {
         })
 
      
-        it('throws (user with id from param not found)', () => {
-
+        it('returns status 400 (invalid old password', async () => {
+            const {oldPW, ...pl} = payload;
+            const res = await request.put(url + user._id)
+            .set({Authorization: 'Bearer ' + token })
+            .send({...pl, oldPW: 'invalidPW'});
+            expect(res.status).toBe(400);
         })
 
-        it('throws (invalid old password', () => {
-
+        it('returns with status 200', async () => {
+            const res = await request.put(url + user._id)
+            .set({Authorization: 'Bearer ' + token })
+            .send(payload);
+            expect(res.status).toBe(200);
         })
 
-        it('returns with status 200', () => {
+        it('changed password of user in the database', async () => {
+            const res = await request.put(url + user._id)
+            .set({Authorization: 'Bearer ' + token })
+            .send(payload);
 
-        })
-
-        it('changed password of user in the database', () => {
-
+            const updatedUser = await UserModel.findById(user._id).select('+password');
+            expect(updatedUser).toBeTruthy();
+            const isSamePW = await updatedUser.comparePassword(payload.newPW);
+            expect(isSamePW).toBe(true);
         })
 
     })

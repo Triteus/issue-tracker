@@ -69,48 +69,56 @@ describe('AuthController validation', () => {
         })
     })
 
-      describe('POST /api/auth/login', () => {
-        
+    describe('POST /api/auth/login', () => {
+
         const validators = AuthValidation.login;
-          const { email, password } = userMock;
-          
-          it('throws (email missing)', async () => {
-            const errors = await validate({password}, validators);
-              checkResponse(errors, 'email', 'Invalid e-mail');
-          })
-  
-          it('throws (password missing)', async () => {
-            const errors = await validate({email}, validators);
-              checkResponse(errors, 'password', 'Missing password');
-          })
-      }),
-      describe('PUT /api/auth/password/:id', () => {
-          
-          const { email, password } = userMock;
-          let user: IUser;
-          
-          const payload = {
-              oldPW: userMock.password,
-              newPW: 'newPassword',
-              newPWConfirm: 'newPassword'
-          }
-  
-          it('throws (no oldPW in payload)', () => {
-              const {oldPW, ...rest} = payload;
-  
-          })
-  
-          it('throws (no newPW in payload)', () => {
-  
-          })
-  
-          it('throws (no newPWConfirm in payload)', () => {
-  
-          })
-  
-          it('throws (newPW !== newPWConfirm)', () => {
-  
-          })
-  
-      }) 
+        const { email, password } = userMock;
+
+        it('throws (email missing)', async () => {
+            const errors = await validate({ password }, validators);
+            checkResponse(errors, 'email', 'Invalid e-mail');
+        })
+
+        it('throws (password missing)', async () => {
+            const errors = await validate({ email }, validators);
+            checkResponse(errors, 'password', 'Missing password');
+        })
+    }),
+        describe('PUT /api/auth/password/:id', () => {
+
+            const { email, password } = userMock;
+            let user: IUser;
+
+            const validators = AuthValidation.changePassword;
+
+            const payload = {
+                oldPW: userMock.password,
+                newPW: 'newPassword',
+                newPWConfirm: 'newPassword'
+            }
+
+            it('throws (no oldPW in payload)', async () => {
+                const { oldPW, ...rest } = payload;
+                const errors = await validate(rest, validators);
+                checkResponse(errors, 'oldPW', 'Invalid value');
+            })
+
+            it('throws (no newPW in payload)', async () => {
+                const { newPW, ...rest } = payload;
+                const errors = await validate(rest, validators);
+                checkResponse(errors, 'newPW', 'Invalid value');
+            })
+
+            it('throws (no newPWConfirm in payload)', async () => {
+                const { newPWConfirm, ...rest } = payload;
+                const errors = await validate(rest, validators);
+                checkResponse(errors, 'newPW', 'Password confirmation does not match password');
+            })
+
+            it('throws (newPW !== newPWConfirm)', async () => {
+                const errors = await validate({...payload, newPWConfirm: 'wrongPW'}, validators);
+                checkResponse(errors, 'newPW', 'Password confirmation does not match password');
+            })
+
+        })
 })

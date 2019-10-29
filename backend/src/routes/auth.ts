@@ -1,8 +1,6 @@
 import UserModel from '../models/User';
 import passport from 'passport';
-import jwt from 'jsonwebtoken';
 import { Controller, Middleware, Post, Put } from '@overnightjs/core';
-import config from '../../config.json';
 import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
 import Authorize from '../middlewares/authorization';
@@ -80,7 +78,7 @@ export class AuthController {
         if(!user) {
             return res.status(404).send({message: 'User not found!'});
         }
-        if(!user.comparePassword(oldPW)) {
+        if(!await user.comparePassword(oldPW)) {
             return res.status(400).send({message: 'Invalid old password!'});
         }
 

@@ -15,11 +15,9 @@ export const AuthValidation = {
         body('password').exists().withMessage('Missing password').trim(),
     ],
     changePassword: [
-        param('id').exists(),
         body('oldPW').exists().trim(),
-        body('newPW').exists().trim(),
-        body('newPWConfirm').exists().trim().custom((pwConfirm, { req }) => {
-            if (req.body.newPW !== pwConfirm) {
+        body('newPW').exists().bail().trim().custom((newPW, { req }) => {
+            if (req.body.newPWConfirm !== newPW) {
                 throw new Error('Password confirmation does not match password');
             }
             return true;
