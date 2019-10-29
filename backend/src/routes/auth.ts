@@ -7,6 +7,7 @@ import User, { IUser } from '../models/User';
 import { Request, Response } from 'express';
 import Authorize from '../middlewares/authorization';
 import { AuthValidation } from './auth.validate';
+import { validate } from '../validators/validate';
 
 
 @Controller('api/auth')
@@ -14,7 +15,8 @@ export class AuthController {
 
     @Post('register')
     @Middleware([
-        ...AuthValidation.register
+        ...AuthValidation.register,
+        validate
     ])
     private async register(req: Request, res: Response) {
        
@@ -39,7 +41,8 @@ export class AuthController {
 
     @Post('login')
     @Middleware([
-        ...AuthValidation.login
+        ...AuthValidation.login,
+        validate
     ])
     private async login(req: Request, res: Response) {
         passport.authenticate('local', { session: false },
@@ -66,7 +69,8 @@ export class AuthController {
     @Middleware([
         passport.authenticate('jwt', {session: false}),
         Authorize.isAccOwner(),
-        ...AuthValidation.changePassword
+        ...AuthValidation.changePassword,
+        validate
     ])
     private async changePassword(req: Request & {user: IUser}, res: Response) {
         
