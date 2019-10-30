@@ -65,8 +65,7 @@ describe('AuthController', () => {
         const { email, password } = userMock;
         
         beforeEach(async () => {
-            const hashedPW = await UserModel.hashPassword(password);
-            await UserModel.insertMany({...userMock, password: hashedPW});
+            await UserModel.create(userMock);
         })
 
         it('throws (user does not exist, wrong email or pw)', async () => {
@@ -112,8 +111,7 @@ describe('AuthController', () => {
         }
 
         beforeEach(async () => {
-            const hashedPW = await UserModel.hashPassword(password);
-            user = await UserModel.create({...userMock, password: hashedPW});
+            user = await UserModel.create(userMock);
             token = user.generateToken();
         })
 

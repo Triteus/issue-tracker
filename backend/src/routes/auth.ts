@@ -19,17 +19,15 @@ export class AuthController {
     private async register(req: Request, res: Response) {
        
         const { email, password, firstName, lastName } = req.body;
-        // hash password
-        const hashedPW = await UserModel.hashPassword(password);
         // create new user
         let user: IUser;
         try {
-            user = await User.create({ email, password: hashedPW, firstName, lastName });
+            user = await User.create({ email, password, firstName, lastName });
         } catch (err) {
             res.send(err);
         }
 
-        const {password: pw, ...payload} = user;
+        const {password: pw, ...payload} = user.toJSON();
 
         res.status(201).send({
             user: payload,
@@ -82,9 +80,11 @@ export class AuthController {
             return res.status(400).send({message: 'Invalid old password!'});
         }
 
-        user.password = await UserModel.hashPassword(newPW);
+        user.password = newPW;
         await user.save();
         
         return res.status(200).send({message: 'Password successfully changed!', user});
     }
+
+    //TODO: Add route to change role
 }

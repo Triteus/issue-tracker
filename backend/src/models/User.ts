@@ -18,7 +18,9 @@ export interface IUserDocument extends mongoose.Document {
     lastName: string,
     password: string,
     roles: Array<ERole>,
-    username: string
+    username: string,
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export interface IUser extends IUserDocument {
@@ -55,8 +57,11 @@ const userSchema = new mongoose.Schema({
         enum: Object.keys(ERole).map(k => ERole[k])
     }
 }, {
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true}
+    toJSON: { virtuals: true, versionKey: false,  transform: function (doc, ret) {
+        delete ret._id;
+      } },
+    toObject: { virtuals: true },
+    timestamps: true
 })
 
 userSchema.methods.comparePassword = function (pw: string) {
@@ -75,6 +80,18 @@ userSchema.statics.hashPassword = async function (plainPW: string) {
     const salt = await bcrypt.genSalt(saltRounds);
     return bcrypt.hash(plainPW, salt);
 }
+
+userSchema.pre('save', async function (next) {
+    const user = this as any;
+    if (!user.isModified('password')) return next();
+    try {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+        next();
+    } catch (err) {
+        next(err);
+    }
+})
 
 userSchema.virtual("username").get(function (this: { firstName: string, lastName: string }) {
     return this.firstName + " " + this.lastName;
