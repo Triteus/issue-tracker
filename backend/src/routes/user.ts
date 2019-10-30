@@ -5,12 +5,14 @@ import UserModel, { IUser, ERole } from '../models/User';
 
 import Authorize from '../middlewares/authorization';
 import { validationResult, body } from 'express-validator';
-import { validateEmail } from '../validators/email';
+import { validateEmail, validateEmailOptional } from '../validators/email';
+import { UserValidation } from './user.validate';
+import { validate } from '../validators/validate';
 
 @Controller('api/user')
 export class UserController {
     @Get('')
-    @Middleware(passport.authenticate('jwt', {session: false}))
+
     private async getUsers(req: Request, res: Response) {
         const users = await UserModel.find();
         // do not send hashed pw!
@@ -43,14 +45,15 @@ export class UserController {
     })
     }
 
-    /** route to change email, username, ... */
+    /** route to change email, username, ... 
+     * changing pw and roles is not handled separately in auth-controller
+    */
     @Patch(':id')
     @Middleware([
         passport.authenticate('jwt', {session: false}),
         Authorize.isAccOwner(),
-        validateEmail,
-        body('firstName').trim(),
-        body('lastName').trim()
+        UserValidation.change,
+        validate
     ])
     private async changeUser(req: Request & {user: IUser}, res: Response) {
         const errors = validationResult(req);
@@ -59,8 +62,7 @@ export class UserController {
         }
 
         const userId = req.params.id;
-        // changing pw is not handled here
-        const {password, _id, ...userPayload} = req.body;
+        const userPayload = req.body;
         const updatedUser = await UserModel.findByIdAndUpdate(userId, userPayload, {new: true});
 
         if(!updatedUser) {

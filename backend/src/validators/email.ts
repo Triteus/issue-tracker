@@ -15,3 +15,13 @@ export const validateEmail = body('email')
                 }
             });
     });
+
+
+/**  */
+
+export const validateEmailOptional = body('email')
+    .if(body('email').exists())
+    .trim()
+    .isEmail().withMessage('Invalid e-mail')
+    .bail()
+    .normalizeEmail();
