@@ -4,10 +4,10 @@ import passport = require('passport');
 import UserModel, { IUser, ERole } from '../models/User';
 
 import Authorize from '../middlewares/authorization';
-import { validationResult, body } from 'express-validator';
-import { validateEmail, validateEmailOptional } from '../validators/email';
+import { validationResult } from 'express-validator';
 import { UserValidation } from './user.validate';
 import { validate } from '../validators/validate';
+import { ResponseError, ErrorTypes } from '../middlewares/error';
 
 @Controller('api/user')
 export class UserController {
@@ -15,16 +15,16 @@ export class UserController {
 
     private async getUsers(req: Request, res: Response) {
         const users = await UserModel.find();
-        // do not send hashed pw!
         res.status(200).send(users);
     }
 
     @Get(':id')
     @Middleware(passport.authenticate('jwt', {session: false}))
     private async getUser(req: Request, res: Response) {
+        
         const user = await UserModel.findOne({_id: req.params.id});
         if(!user) {
-            return res.status(404).send({message: 'User not found!'});
+            throw new ResponseError('User not found', ErrorTypes.NOT_FOUND);
         }
         res.status(200).send(user);
     }
@@ -37,7 +37,7 @@ export class UserController {
     private async deleteUser(req: Request & {user: IUser}, res: Response) {
         const user = await UserModel.findOneAndDelete({_id: req.params.id});
         if(!user) {
-            return res.status(404).send({message: 'User not found!'});
+            throw new ResponseError('User not found', ErrorTypes.NOT_FOUND);
         }
         res.status(200).send({
             message: 'User successfully deleted!',
@@ -66,7 +66,7 @@ export class UserController {
         const updatedUser = await UserModel.findByIdAndUpdate(userId, userPayload, {new: true});
 
         if(!updatedUser) {
-            return res.status(404).send({message: "Cannot alter user: User not found."});
+            throw new ResponseError('Cannot alter user: User not found', ErrorTypes.NOT_FOUND);
         }
         return res.status(200).send({updatedUser, message: 'User successfully updated!'});
     }

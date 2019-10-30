@@ -2,10 +2,11 @@ import UserModel from '../models/User';
 import passport from 'passport';
 import { Controller, Middleware, Post, Put } from '@overnightjs/core';
 import User, { IUser } from '../models/User';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Authorize from '../middlewares/authorization';
 import { AuthValidation } from './auth.validate';
 import { validate } from '../validators/validate';
+import { ErrorTypes, ResponseError } from '../middlewares/error';
 
 
 @Controller('api/auth')
@@ -16,18 +17,14 @@ export class AuthController {
         ...AuthValidation.register,
         validate
     ])
-    private async register(req: Request, res: Response) {
-       
+    private async register(req: Request, res: Response, next: NextFunction) {
+
         const { email, password, firstName, lastName } = req.body;
         // create new user
         let user: IUser;
-        try {
-            user = await User.create({ email, password, firstName, lastName });
-        } catch (err) {
-            res.send(err);
-        }
+        user = await User.create({ email, password, firstName, lastName });
 
-        const {password: pw, ...payload} = user.toJSON();
+        const { password: pw, ...payload } = user.toJSON();
 
         res.status(201).send({
             user: payload,
@@ -52,7 +49,7 @@ export class AuthController {
                 }
                 req.login(user, { session: false }, (err) => {
                     if (err) {
-                        res.send(err);
+                        throw err;
                     }
                 });
                 const userJSON = { _id: user.id, email: user.email, roles: user.roles, username: user.username };
@@ -63,27 +60,27 @@ export class AuthController {
 
     @Put('password/:id')
     @Middleware([
-        passport.authenticate('jwt', {session: false}),
+        passport.authenticate('jwt', { session: false }),
         Authorize.isAccOwner(),
         ...AuthValidation.changePassword,
         validate
     ])
-    private async changePassword(req: Request & {user: IUser}, res: Response) {
-        
-        const {oldPW, newPW} = req.body;
+    private async changePassword(req: Request & { user: IUser }, res: Response) {
+
+        const { oldPW, newPW } = req.body;
         const user = await UserModel.findById(req.params.id).select('+password');
-      
-        if(!user) {
-            return res.status(404).send({message: 'User not found!'});
+
+        if (!user) {
+            throw new ResponseError('User not found!', ErrorTypes.NOT_FOUND);
         }
-        if(!await user.comparePassword(oldPW)) {
-            return res.status(400).send({message: 'Invalid old password!'});
+        if (!await user.comparePassword(oldPW)) {
+            throw new ResponseError('Invalid old password!', ErrorTypes.BAD_REQUEST);
         }
 
         user.password = newPW;
         await user.save();
-        
-        return res.status(200).send({message: 'Password successfully changed!', user});
+
+        return res.status(200).send({ message: 'Password successfully changed!', user });
     }
 
     //TODO: Add route to change role
