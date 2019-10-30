@@ -8,6 +8,9 @@ import initLogging from './startup/logging';
 import { Server } from "@overnightjs/core";
 import { AuthController } from "./routes/auth";
 import { UserController } from "./routes/user";
+import error from "./middlewares/error";
+
+require('express-async-errors');
 
 export class AppServer extends Server {
     constructor() {
@@ -21,6 +24,8 @@ export class AppServer extends Server {
         initPassport();
 
         this.setupControllers();
+        //setup error middleware
+        this.app.use(error);
     }
 
     /** Add new controllers here */

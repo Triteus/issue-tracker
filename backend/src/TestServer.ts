@@ -3,7 +3,9 @@ import { Application } from "express";
 import bodyParser = require("body-parser");
 import initPassport from "./startup/passport";
 import initLogging from "./startup/logging";
+import error from "./middlewares/error";
 
+require('express-async-errors');
 
 export class TestServer extends Server {
     constructor() {
@@ -17,6 +19,8 @@ export class TestServer extends Server {
 
     public setControllers(controllers: any | any[]): void {
         super.addControllers(controllers);
+         //setup error middleware
+         this.app.use(error);
     }
 
     public getExpressInstance(): Application {
