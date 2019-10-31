@@ -4,18 +4,19 @@ import { Controller, Middleware, Post, Put } from '@overnightjs/core';
 import User, { IUser } from '../models/User';
 import { Request, Response, NextFunction } from 'express';
 import Authorize from '../middlewares/authorization';
-import { AuthValidation } from './auth.validate';
-import { validate } from '../validators/validate';
+import { AuthValidators } from './auth.validate';
 import { ErrorTypes, ResponseError } from '../middlewares/error';
+import { validation } from '../middlewares/validation';
 
+
+const validate = validation(AuthValidators);
 
 @Controller('api/auth')
 export class AuthController {
 
     @Post('register')
     @Middleware([
-        ...AuthValidation.register,
-        validate
+        ...validate('register')
     ])
     private async register(req: Request, res: Response, next: NextFunction) {
 
@@ -34,8 +35,7 @@ export class AuthController {
 
     @Post('login')
     @Middleware([
-        ...AuthValidation.login,
-        validate
+        ...validate('login')
     ])
     private async login(req: Request, res: Response) {
         passport.authenticate('local', { session: false },
@@ -62,8 +62,7 @@ export class AuthController {
     @Middleware([
         passport.authenticate('jwt', { session: false }),
         Authorize.isAccOwner(),
-        ...AuthValidation.changePassword,
-        validate
+        ...validate('changePassword')
     ])
     private async changePassword(req: Request & { user: IUser }, res: Response) {
 

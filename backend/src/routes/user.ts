@@ -5,9 +5,11 @@ import UserModel, { IUser, ERole } from '../models/User';
 
 import Authorize from '../middlewares/authorization';
 import { validationResult } from 'express-validator';
-import { UserValidation } from './user.validate';
-import { validate } from '../validators/validate';
+import { UserValidators } from './user.validate';
 import { ResponseError, ErrorTypes } from '../middlewares/error';
+import { validation } from '../middlewares/validation';
+
+const validate = validation(UserValidators);
 
 @Controller('api/user')
 export class UserController {
@@ -54,8 +56,7 @@ export class UserController {
     @Middleware([
         passport.authenticate('jwt', {session: false}),
         Authorize.isAccOwner(),
-        UserValidation.change,
-        validate
+        ...validate('change')
     ])
     private async changeUser(req: Request & {user: IUser}, res: Response) {
         const errors = validationResult(req);

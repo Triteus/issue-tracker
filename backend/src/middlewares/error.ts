@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import winston = require("winston");
 
 export enum ErrorTypes {
     NOT_FOUND = 'NOT_FOUND',
@@ -12,6 +13,13 @@ export class ResponseError extends Error {
     constructor(message: string, errorType: ErrorTypes) {
         super(message);
         this.name = errorType;
+    }
+}
+
+export class ValMethodError extends Error {
+    constructor(message: string, methodName: string) {
+        super(message);
+        this.name = methodName;
     }
 }
 
@@ -41,6 +49,5 @@ export default (err: Error, req: Request, res: Response, next: NextFunction) => 
     if (err.name === ErrorTypes.NOT_AUTHORIZED) {
         return sendError(res, 403, err.message);
     }
-
     next(err);
 };

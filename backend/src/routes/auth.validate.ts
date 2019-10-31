@@ -3,7 +3,7 @@ import { validateEmail } from "../validators/email";
 import { validatePW } from "../validators/password";
 
 
-export const AuthValidation = {
+export const AuthValidators = {
     register: [
         validateEmail,
         validatePW,

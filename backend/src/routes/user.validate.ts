@@ -2,7 +2,7 @@ import { validateEmailOptional } from "../validators/email";
 import { body } from "express-validator";
 
 
-export const UserValidation = {
+export const UserValidators = {
     change: [
         validateEmailOptional,
         body('firstName').trim(),

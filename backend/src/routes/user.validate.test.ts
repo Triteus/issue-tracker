@@ -1,5 +1,5 @@
 import { setupDB } from "../startup/testSetup"
-import { UserValidation } from "./user.validate";
+import { UserValidators } from "./user.validate";
 import { checkResponse, validate } from "../validators/test-util";
 
 describe('Usercontroller validation', () => {
@@ -8,7 +8,7 @@ describe('Usercontroller validation', () => {
 
     describe(' PATCH /api/user/:id', () => {
 
-        const validators = UserValidation.change;
+        const validators = UserValidators.change;
 
         it('throws if invalid email was given', async () => {
             const errors = await validate({email: 'invalidMail.com'}, validators);

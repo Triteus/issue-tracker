@@ -1,5 +1,5 @@
 import UserModel, { IUser } from '../models/User';
-import { AuthValidation } from './auth.validate';
+import { AuthValidators } from './auth.validate';
 import { setupDB } from '../startup/testSetup';
 import { checkResponse, validate } from '../validators/test-util';
 
@@ -17,7 +17,7 @@ describe('AuthController validation', () => {
 
     describe('POST /api/auth/register', () => {
 
-        const validators = AuthValidation.register;
+        const validators = AuthValidators.register;
 
         it('throws (email missing)', async () => {
             const { email, ...payload } = userMock;
@@ -71,7 +71,7 @@ describe('AuthController validation', () => {
 
     describe('POST /api/auth/login', () => {
 
-        const validators = AuthValidation.login;
+        const validators = AuthValidators.login;
         const { email, password } = userMock;
 
         it('throws (email missing)', async () => {
@@ -89,7 +89,7 @@ describe('AuthController validation', () => {
             const { email, password } = userMock;
             let user: IUser;
 
-            const validators = AuthValidation.changePassword;
+            const validators = AuthValidators.changePassword;
 
             const payload = {
                 oldPW: userMock.password,
