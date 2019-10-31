@@ -19,7 +19,9 @@ export class UserController {
     }
 
     @Get(':id')
-    @Middleware(passport.authenticate('jwt', {session: false}))
+    @Middleware([
+        passport.authenticate('jwt', {session: false}),
+    ])
     private async getUser(req: Request, res: Response) {
         
         const user = await UserModel.findOne({_id: req.params.id});

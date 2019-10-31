@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { IUser, ERole } from "../models/User";
 import { isArray } from "util";
+import { ResponseError, ErrorTypes } from "./error";
 
 
 const message = 'Missing permissions!';
@@ -17,14 +18,14 @@ export default {
 
             if (!isArray(roles)) {
                 if (!user.roles.includes(roles)) {
-                    return res.status(403).send({ message });
+                    throw new ResponseError(message, ErrorTypes.NOT_AUTHORIZED);
                 }
                 return next();
             }
 
             for (let role of roles) {
                 if (!user.roles.includes(role)) {
-                    return res.status(403).send({ message });
+                    throw new ResponseError(message, ErrorTypes.NOT_AUTHORIZED);
                 }
             }
             return next();
@@ -39,7 +40,7 @@ export default {
 
             if (!isArray(roles)) {
                 if (!user.roles.includes(roles)) {
-                    return res.status(403).send({ message });
+                    throw new ResponseError(message, ErrorTypes.NOT_AUTHORIZED);
                 }
                 return next();
             }
@@ -49,7 +50,7 @@ export default {
                     return next();
                 }
             }
-            return res.status(403).send({ message });
+            throw new ResponseError(message, ErrorTypes.NOT_AUTHORIZED);
         }
     },
     isAccOwner: function () {
@@ -61,7 +62,7 @@ export default {
             if (user._id.toString() === req.params.id) {
                 return next();
             } else {
-                return res.status(403).send({ message });
+                throw new ResponseError(message, ErrorTypes.NOT_AUTHORIZED);
             }
         }
     },

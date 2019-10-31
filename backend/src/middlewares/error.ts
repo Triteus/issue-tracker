@@ -19,6 +19,11 @@ function sendError(res: Response, status: number, message: string) {
     return res.status(status).send({ error: message });
 }
 
+/**
+ * middleware for centralized error-handling
+ * all thrown errors from any routes are passed to this middleware
+ */
+
 export default (err: Error, req: Request, res: Response, next: NextFunction) => {
 
     if (err.name === ErrorTypes.NOT_FOUND) {
