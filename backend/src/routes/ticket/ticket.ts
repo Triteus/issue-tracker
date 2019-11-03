@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Middleware } from "@overnightjs/core";
+import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware } from "@overnightjs/core";
 import { Request, Response, NextFunction } from "express";
 import TicketModel, { ticketSchema, TicketStatus, ITicket } from '../../models/Ticket';
 import { IUser, ERole, IUserDocument } from "../../models/User";
@@ -12,13 +12,15 @@ import { TicketValidators } from "./ticket.validate";
 const validate = validation(TicketValidators);
 
 @Controller('api/ticket')
+@ClassMiddleware([
+    passport.authenticate('jwt', { session: false }),
+])
 export class TicketController {
 
     ticketService = new TicketService();
 
     @Post('')
     @Middleware([
-        passport.authenticate('jwt', { session: false }),
         ...validate('createTicket')
     ])
     private async createIssue(req: Request & { user: IUser }, res: Response) {
@@ -32,11 +34,10 @@ export class TicketController {
     }
 
 
-// Tickets can only be edited by users that have support-role
+    // Tickets can only be edited by users that have support-role
 
     @Put(':id')
     @Middleware([
-        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
@@ -49,47 +50,48 @@ export class TicketController {
             ticket
         })
     }
-    
+
     // Owner can delete ticket as long as it was not assigned to anybody
-    
+
     @Delete(':id')
     @Middleware([
-        passport.authenticate('jwt', { session: false }),
         ...validate('deleteTicket')
     ])
     private async deleteTicket(req: Request & { user: IUser }, res: Response, next: NextFunction) {
-        
+
         const ticket = await TicketModel.findById(req.params.id);
-        if(!ticket) {
+        if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        if(req.user._id.equals(ticket.ownerId)) {
+        if (req.user._id.equals(ticket.ownerId)) {
             if (ticket.status !== TicketStatus.OPEN) {
                 throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
             }
             await this.ticketService.deleteTicket(req.params.id);
-            
+
         } else if (req.user.roles.includes(ERole.Support)) {
             await this.ticketService.deleteTicket(req.params.id);
         } else {
             throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
         }
-        
+
         res.status(200).send({
             message: 'Ticket successfully deleted!',
             ticket
         });
     }
-    
-    /*     @Patch(':id/status')
-        private async changeStatus() {
-    
-        } */
-    
-    @Get('')
+
+    @Patch(':id/status')
     @Middleware([
-        passport.authenticate('jwt', { session: false }),
+        Authorize.hasRoles(ERole.Support),
+        ...validate('changeStatus')
     ])
+    private async changeStatus(req: Request & {user: IUser}, res: Response) {
+        await this.ticketService.changeStatus(req.body.status, req.params.id, req.user._id);
+        res.status(200).send({ message: 'Status updated!' });
+    }
+
+    @Get('')
     private async getTickets(req: Request, res: Response) {
         // pagination, 
         // sorting, 
@@ -105,12 +107,11 @@ export class TicketController {
     private async getTicket(req: Request, res: Response) {
 
         const ticket = await TicketModel.findById(req.params.id)
-        .populate('ownerId')
-        .populate('lastEditorId');
+            .populate('ownerId')
+            .populate('lastEditorId');
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-
         res.status(200).send(ticket);
     }
 }

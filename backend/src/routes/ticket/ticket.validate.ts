@@ -1,5 +1,5 @@
 import { body, param } from "express-validator"
-import { TicketStatus } from "../../models/Ticket"
+import { TicketStatus, ticketStatusArr } from "../../models/Ticket"
 
 
 
@@ -19,10 +19,11 @@ export const TicketValidators = {
     ],
     putTicket: [
         ...basicValidators,
-        body('status').isIn(Object.values(TicketStatus))
+        body('status').isIn(ticketStatusArr)
     ],
     deleteTicket: [
     ],
     changeStatus: [
+        body('status').isIn(ticketStatusArr)
     ]
 }

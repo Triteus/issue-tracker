@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import TicketModel, { ITicketDocument, ITicket } from "../models/Ticket";
+import TicketModel, { ITicketDocument, ITicket, TicketStatus } from "../models/Ticket";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 
 
@@ -25,6 +25,15 @@ export class TicketService {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
         return ticket.remove();
+    }
+
+    async changeStatus(status: TicketStatus, ticketId: String | Types.ObjectId, editorId: String | Types.ObjectId) {
+        const ticket = await TicketModel.findById(ticketId);
+        if (!ticket) {
+            throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
+        }
+        ticket.status = status;
+        return ticket.addEditorAndSave(editorId);
     }
 
     async deleteExistingTicket(ticket: ITicket) {

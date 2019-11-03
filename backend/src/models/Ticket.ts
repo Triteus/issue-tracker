@@ -10,6 +10,8 @@ export enum TicketStatus {
   ACTIVE = 'active'
 }
 
+export const ticketStatusArr = Object.values(TicketStatus);
+
 export interface ITicketDocument extends mongoose.Document {
   ownerId: mongoose.Types.ObjectId,
   editorIds: mongoose.Types.ObjectId[],
@@ -65,7 +67,7 @@ export const ticketSchema = new mongoose.Schema({
   description: String,
   status: {
     type: String,
-    enum: Object.values(TicketStatus),
+    enum: ticketStatusArr,
     default: TicketStatus.OPEN
   },
   subTasks: {

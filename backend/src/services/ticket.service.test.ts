@@ -1,7 +1,7 @@
 import { TicketService } from "./ticket.service";
 import { setupDB } from "../startup/testSetup";
 import { ERole, IUser } from "../models/User";
-import TicketModel, { ITicket, ticketSchema } from "../models/Ticket";
+import TicketModel, { ITicket, ticketSchema, TicketStatus } from "../models/Ticket";
 import UserModel from "../models/User";
 import { ObjectID } from "bson";
 
@@ -96,6 +96,51 @@ describe('TicketService', () => {
             expect(updatedTicket).toMatchObject(updatedTicketMock);
             expect(updatedTicket.lastEditorId).toBe(editor._id);
             expect(updatedTicket.editorIds).toContain(editor._id);
+        })
+    }),
+
+    describe('change status', () => {
+        let owner: IUser;
+        let editor: IUser;
+        let authHeaders: Object;
+
+        let ticket: ITicket;
+
+        const updatedTicketMock = {
+            title: 'updated title',
+            description: 'updated description',
+            priority: 1,
+            criticality: 2,
+        }
+
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerMock);
+            editor = await UserModel.create(editorMock);
+
+            ticket = await TicketModel.create({...ticketMock, ownerId: owner._id});
+
+            authHeaders = {
+                Authorization: 'Bearer ' + owner.generateToken()
+            }
+        })
+
+        it('throws error (ticket not found)', async () => {
+            const id = new ObjectID();
+            await expect(ticketService.changeStatus(TicketStatus.ASSIGNED, id, new ObjectID()))
+            .rejects.toThrow('Ticket not found!');
+        })
+
+        it('changed status of ticket', async () => {
+            await ticketService.changeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            expect(updatedTicket.status).toBe(TicketStatus.ASSIGNED);
+        })
+
+        it('added editor to ticket', async () => {
+            await ticketService.changeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            expect(updatedTicket.lastEditorId).toStrictEqual(editor._id);
+            expect(updatedTicket.editorIds).toContainEqual(editor._id);
         })
     })
 })
