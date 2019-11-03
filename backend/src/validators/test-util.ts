@@ -8,9 +8,17 @@ export async function testValidators(req: MockRequest<Request>, res: MockRespons
     }));
 };
 
-export async function validate(payload: any, validators: any[]) {
+export async function validateBody(payload: Object, validators: any[]) {
     const request = httpMocks.createRequest({
         body: payload
+    })
+    const response = httpMocks.createResponse();
+    await testValidators(request, response, validators);
+    return validationResult(request).array();
+}
+export async function validateBodyAndParams(body: Object, params: Object, validators: any[]) {
+    const request = httpMocks.createRequest({
+        body, params
     })
     const response = httpMocks.createResponse();
     await testValidators(request, response, validators);

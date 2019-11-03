@@ -18,14 +18,13 @@ describe('AuthController', () => {
     const authController = new AuthController();
     let request: SuperTest<Test>;
 
-    setupDB('test-auth-controller');
+   setupDB('test-auth-controller');
 
-    beforeAll(async (done) => {
+     beforeAll(() => {
         const testServer = new TestServer();
         testServer.setControllers(authController);
         request = supertest(testServer.getExpressInstance());
-        done();
-    })
+    }) 
 
     const userMock = {
         firstName: 'Joe',

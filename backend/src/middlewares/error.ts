@@ -49,5 +49,7 @@ export default (err: Error, req: Request, res: Response, next: NextFunction) => 
     if (err.name === ErrorTypes.NOT_AUTHORIZED) {
         return sendError(res, 403, err.message);
     }
-    next(err);
+
+    winston.error(err);
+    return res.status(500).send({error: {message: err.message}});
 };
