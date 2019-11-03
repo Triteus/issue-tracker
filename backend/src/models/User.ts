@@ -32,7 +32,7 @@ export interface IUserModel extends Model<IUser> {
     hashPassword(pw: string): Promise<string>;
 }
 
-const userSchema = new mongoose.Schema({
+export const userSchema = new mongoose.Schema({
     email: {
         type: (mongoose.SchemaTypes as any).Email,
         required: true,

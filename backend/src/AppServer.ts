@@ -9,6 +9,7 @@ import { Server } from "@overnightjs/core";
 import { AuthController } from "./routes/auth";
 import { UserController } from "./routes/user";
 import error from "./middlewares/error";
+import { TicketController } from "./routes/ticket/ticket";
 
 require('express-async-errors');
 
@@ -32,7 +33,8 @@ export class AppServer extends Server {
     private setupControllers(): void {
         const authController = new AuthController();
         const userController = new UserController();
-        super.addControllers([authController, userController]);
+        const ticketController = new TicketController();
+        super.addControllers([authController, userController, ticketController]);
     }
 
     public start(port: number): void {

@@ -13,7 +13,7 @@ export class TestServer extends Server {
         // Body Parser Middleware
         this.app.use(bodyParser.json());
 
-        initLogging();
+        //initLogging();
         initPassport();
     }
 
