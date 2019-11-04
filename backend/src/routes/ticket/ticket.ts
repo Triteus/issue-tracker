@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware } from "@overnightjs/core";
 import { Request, Response, NextFunction } from "express";
 import TicketModel, { ticketSchema, TicketStatus, ITicket } from '../../models/Ticket';
-import { IUser, ERole, IUserDocument } from "../../models/User";
+import { IUser, ERole, IUserDocument, RequestWithUser } from "../../models/User";
 import passport = require("passport");
 import { ResponseError, ErrorTypes } from "../../middlewares/error";
 import Authorize from '../../middlewares/authorization';
@@ -23,7 +23,7 @@ export class TicketController {
     @Middleware([
         ...validate('createTicket')
     ])
-    private async createIssue(req: Request & { user: IUser }, res: Response) {
+    private async createIssue(req: RequestWithUser, res: Response) {
         const userId = req.user._id;
         const ticket = await this.ticketService.createTicket(userId, req.body);
 
@@ -41,7 +41,7 @@ export class TicketController {
         Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
-    private async editTicket(req: Request & { user: IUser }, res: Response) {
+    private async editTicket(req: RequestWithUser, res: Response) {
 
         const ticket = await this.ticketService.updateTicket(req.params.id, req.user._id, req.body);
 
@@ -57,7 +57,7 @@ export class TicketController {
     @Middleware([
         ...validate('deleteTicket')
     ])
-    private async deleteTicket(req: Request & { user: IUser }, res: Response, next: NextFunction) {
+    private async deleteTicket(req: RequestWithUser, res: Response, next: NextFunction) {
 
         const ticket = await TicketModel.findById(req.params.id);
         if (!ticket) {
@@ -86,7 +86,7 @@ export class TicketController {
         Authorize.hasRoles(ERole.Support),
         ...validate('changeStatus')
     ])
-    private async changeStatus(req: Request & {user: IUser}, res: Response) {
+    private async changeStatus(req: RequestWithUser, res: Response) {
         await this.ticketService.changeStatus(req.body.status, req.params.id, req.user._id);
         res.status(200).send({ message: 'Status updated!' });
     }

@@ -1,4 +1,4 @@
-import UserModel from '../models/User';
+import UserModel, { RequestWithUser } from '../models/User';
 import passport from 'passport';
 import { Controller, Middleware, Post, Put } from '@overnightjs/core';
 import User, { IUser } from '../models/User';
@@ -64,7 +64,7 @@ export class AuthController {
         Authorize.isAccOwner(),
         ...validate('changePassword')
     ])
-    private async changePassword(req: Request & { user: IUser }, res: Response) {
+    private async changePassword(req: RequestWithUser, res: Response) {
 
         const { oldPW, newPW } = req.body;
         const user = await UserModel.findById(req.params.id).select('+password');

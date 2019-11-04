@@ -6,6 +6,12 @@ import jwt from 'jsonwebtoken';
 require('mongoose-type-email');
 
 
+import { Request } from 'express';
+import { IUser } from './User';
+
+
+export type RequestWithUser = Request & {user: IUser};
+
 export enum ERole {
     Admin = 'admin',
     Support = 'support'

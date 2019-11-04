@@ -1,7 +1,7 @@
 import { Controller, Get, Middleware, Delete, Patch, Put } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import passport = require('passport');
-import UserModel, { IUser, ERole } from '../models/User';
+import UserModel, { IUser, ERole, RequestWithUser } from '../models/User';
 
 import Authorize from '../middlewares/authorization';
 import { validationResult } from 'express-validator';
@@ -38,7 +38,7 @@ export class UserController {
         passport.authenticate('jwt', {session: false}),
         Authorize.hasRoles(ERole.Admin)
     ])
-    private async deleteUser(req: Request & {user: IUser}, res: Response) {
+    private async deleteUser(req: RequestWithUser, res: Response) {
         const user = await UserModel.findOneAndDelete({_id: req.params.id});
         if(!user) {
             throw new ResponseError('User not found', ErrorTypes.NOT_FOUND);
@@ -58,7 +58,7 @@ export class UserController {
         Authorize.isAccOwner(),
         ...validate('change')
     ])
-    private async changeUser(req: Request & {user: IUser}, res: Response) {
+    private async changeUser(req: RequestWithUser, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });

@@ -42,7 +42,7 @@ describe('TicketController', () => {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: 0,
-        criticality: 0
+        criticality: 0,
     }
 
     describe('POST /api/ticket', () => {
