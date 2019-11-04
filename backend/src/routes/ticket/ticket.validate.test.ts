@@ -8,7 +8,7 @@ describe('Ticket validators', () => {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: Priority.HIGH,
-        criticality: 0
+        neededAt: new Date().toJSON()
     }
 
 

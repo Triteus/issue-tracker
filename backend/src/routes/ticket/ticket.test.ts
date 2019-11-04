@@ -5,7 +5,7 @@ import { TestServer } from "../../TestServer";
 import supertest from "supertest";
 import { IUser, ERole } from "../../models/User";
 import UserModel from "../../models/User";
-import TicketModel, { ITicket, TicketStatus, Priority } from "../../models/Ticket";
+import TicketModel, { ITicket, TicketStatus, Priority, ITicketDocument } from "../../models/Ticket";
 import { ObjectID } from "bson";
 
 
@@ -42,7 +42,7 @@ describe('TicketController', () => {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: Priority.HIGH,
-        criticality: 0,
+        neededAt: new Date().toJSON(),
         affectedSystems: ['Confluence', 'JIRA', 'Outlook']
     }
 
@@ -111,7 +111,7 @@ describe('TicketController', () => {
             title: 'updated title',
             description: 'updated description',
             priority: Priority.VERY_HIGH,
-            criticality: 2,
+            neededAt: new Date().toJSON(),
             status: TicketStatus.ACTIVE
         }
 

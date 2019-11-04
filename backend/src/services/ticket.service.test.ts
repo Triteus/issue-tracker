@@ -30,7 +30,7 @@ describe('TicketService', () => {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: Priority.HIGH,
-        criticality: 0
+        neededAt: new Date()
     }
 
     describe('create ticket', () => {
@@ -71,7 +71,7 @@ describe('TicketService', () => {
             title: 'updated title',
             description: 'updated description',
             priority: Priority.VERY_HIGH,
-            criticality: 2,
+            neededAt: new Date(),
         }
 
         beforeEach(async () => {

@@ -26,7 +26,7 @@ export interface ITicketDocument extends mongoose.Document {
   editorIds: mongoose.Types.ObjectId[],
   lastEditorId: mongoose.Types.ObjectId,
   priority: Priority,
-  criticality: number,
+  neededAt: Date,
   title: string,
   description: string,
   status: TicketStatus,
@@ -66,9 +66,8 @@ export const ticketSchema = new mongoose.Schema({
     enum: priorityArr,
     default: Priority.LOW
   },
-  criticality: {
-    type: Number,
-    default: 0
+  neededAt: {
+    type: Date,
   },
   title: {
     type: String,
