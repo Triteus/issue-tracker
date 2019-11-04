@@ -1,6 +1,5 @@
 import mongoose, { Model } from 'mongoose';
 import { subTaskSchema, ISubTask } from './SubTask';
-import { systemSchema } from './System';
 
 
 export enum TicketStatus {
@@ -9,6 +8,7 @@ export enum TicketStatus {
   ASSIGNED = 'assigned',
   ACTIVE = 'active'
 }
+
 
 export const ticketStatusArr = Object.values(TicketStatus);
 
@@ -75,7 +75,7 @@ export const ticketSchema = new mongoose.Schema({
     default: []
   },
   affectedSystems: {
-    type: [systemSchema],
+    type: [String],
     default: []
   }
 }, {

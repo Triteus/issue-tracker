@@ -43,6 +43,7 @@ describe('TicketController', () => {
         description: 'A sample ticket',
         priority: 0,
         criticality: 0,
+        affectedSystems: ['Confluence', 'JIRA', 'Outlook']
     }
 
     describe('POST /api/ticket', () => {
