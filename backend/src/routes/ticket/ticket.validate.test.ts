@@ -1,13 +1,13 @@
 import { TicketValidators, basicValidators } from "./ticket.validate";
 import { validateBody, checkResponse, validateBodyAndParams } from "../../validators/test-util";
-import { ticketSchema, TicketStatus } from "../../models/Ticket";
+import { ticketSchema, TicketStatus, Priority } from "../../models/Ticket";
 
 describe('Ticket validators', () => {
     
     const ticketMock = {
         title: 'Something does not work',
         description: 'A sample ticket',
-        priority: 0,
+        priority: Priority.HIGH,
         criticality: 0
     }
 
@@ -25,8 +25,8 @@ describe('Ticket validators', () => {
             checkResponse(errors, 'priority', 'Invalid value');
         })
         it('throws (invalid systems)', async () => {
-            const errors = await validateBody({...ticketMock, systems: 'noArr'}, validators);
-            checkResponse(errors, 'systems', 'Invalid value');
+            const errors = await validateBody({...ticketMock, affectedSystems: 'noArr'}, validators);
+            checkResponse(errors, 'affectedSystems', 'Invalid value');
         })
         
     })

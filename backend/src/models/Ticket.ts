@@ -8,15 +8,24 @@ export enum TicketStatus {
   ASSIGNED = 'assigned',
   ACTIVE = 'active'
 }
-
-
 export const ticketStatusArr = Object.values(TicketStatus);
+
+
+export enum Priority {
+  LOW = 'low',
+  MODERATE = 'moderate',
+  HIGH = 'high',
+  VERY_HIGH = 'very high'
+}
+
+export const priorityArr = Object.values(Priority);
+
 
 export interface ITicketDocument extends mongoose.Document {
   ownerId: mongoose.Types.ObjectId,
   editorIds: mongoose.Types.ObjectId[],
   lastEditorId: mongoose.Types.ObjectId,
-  priority: number,
+  priority: Priority,
   criticality: number,
   title: string,
   description: string,
@@ -53,8 +62,9 @@ export const ticketSchema = new mongoose.Schema({
     ref: 'User'
   },
   priority: {
-    type: Number,
-    default: 0
+    type: String,
+    enum: priorityArr,
+    default: Priority.LOW
   },
   criticality: {
     type: Number,

@@ -5,7 +5,7 @@ import { TestServer } from "../../TestServer";
 import supertest from "supertest";
 import { IUser, ERole } from "../../models/User";
 import UserModel from "../../models/User";
-import TicketModel, { ITicket, TicketStatus } from "../../models/Ticket";
+import TicketModel, { ITicket, TicketStatus, Priority } from "../../models/Ticket";
 import { ObjectID } from "bson";
 
 
@@ -41,7 +41,7 @@ describe('TicketController', () => {
     const ticketMock = {
         title: 'Something does not work',
         description: 'A sample ticket',
-        priority: 0,
+        priority: Priority.HIGH,
         criticality: 0,
         affectedSystems: ['Confluence', 'JIRA', 'Outlook']
     }
@@ -110,7 +110,7 @@ describe('TicketController', () => {
         const updatedTicketMock = {
             title: 'updated title',
             description: 'updated description',
-            priority: 1,
+            priority: Priority.VERY_HIGH,
             criticality: 2,
             status: TicketStatus.ACTIVE
         }

@@ -1,7 +1,7 @@
 import { TicketService } from "./ticket.service";
 import { setupDB } from "../startup/testSetup";
 import { ERole, IUser } from "../models/User";
-import TicketModel, { ITicket, ticketSchema, TicketStatus } from "../models/Ticket";
+import TicketModel, { ITicket, ticketSchema, TicketStatus, Priority } from "../models/Ticket";
 import UserModel from "../models/User";
 import { ObjectID } from "bson";
 
@@ -29,7 +29,7 @@ describe('TicketService', () => {
     const ticketMock = {
         title: 'Something does not work',
         description: 'A sample ticket',
-        priority: 0,
+        priority: Priority.HIGH,
         criticality: 0
     }
 
@@ -70,7 +70,7 @@ describe('TicketService', () => {
         const updatedTicketMock = {
             title: 'updated title',
             description: 'updated description',
-            priority: 1,
+            priority: Priority.VERY_HIGH,
             criticality: 2,
         }
 
@@ -106,13 +106,7 @@ describe('TicketService', () => {
 
         let ticket: ITicket;
 
-        const updatedTicketMock = {
-            title: 'updated title',
-            description: 'updated description',
-            priority: 1,
-            criticality: 2,
-        }
-
+      
         beforeEach(async () => {
             owner = await UserModel.create(ownerMock);
             editor = await UserModel.create(editorMock);
