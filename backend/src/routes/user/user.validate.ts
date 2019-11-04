@@ -1,5 +1,12 @@
-import { validateEmailOptional } from "../validators/email";
 import { body } from "express-validator";
+
+
+export const validateEmailOptional = body('email')
+    .if(body('email').exists())
+    .trim()
+    .isEmail().withMessage('Invalid e-mail')
+    .bail()
+    .normalizeEmail();
 
 
 export const UserValidators = {

@@ -1,6 +1,6 @@
-import { setupDB } from "../startup/testSetup"
+import { setupDB } from "../../startup/testSetup"
 import { UserValidators } from "./user.validate";
-import { checkResponse, validateBody } from "../validators/test-util";
+import { checkResponse, validateBody } from "../../validators/test-util";
 
 describe('Usercontroller validation', () => {
 

@@ -1,9 +1,9 @@
-import { setupDB } from "../startup/testSetup"
+import { setupDB } from "../../startup/testSetup"
 import { SuperTest, Test } from "supertest";
 import supertest = require("supertest");
-import { TestServer } from "../TestServer";
+import { TestServer } from "../../TestServer";
 import { UserController } from "./user";
-import UserModel, { IUser, ERole } from "../models/User";
+import UserModel, { IUser, ERole } from "../../models/User";
 import { ObjectID } from "bson";
 
 describe(('UserController'), () => {

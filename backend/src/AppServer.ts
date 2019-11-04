@@ -6,8 +6,8 @@ import initDB from './startup/db';
 import initLogging from './startup/logging';
 
 import { Server } from "@overnightjs/core";
-import { AuthController } from "./routes/auth";
-import { UserController } from "./routes/user";
+import { AuthController } from "./routes/auth/auth";
+import { UserController } from "./routes/user/user";
 import error from "./middlewares/error";
 import { TicketController } from "./routes/ticket/ticket";
 

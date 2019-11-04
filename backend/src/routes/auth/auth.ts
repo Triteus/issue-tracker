@@ -1,12 +1,12 @@
-import UserModel, { RequestWithUser } from '../models/User';
+import UserModel, { RequestWithUser } from '../../models/User';
 import passport from 'passport';
 import { Controller, Middleware, Post, Put } from '@overnightjs/core';
-import User, { IUser } from '../models/User';
+import User, { IUser } from '../../models/User';
 import { Request, Response, NextFunction } from 'express';
-import Authorize from '../middlewares/authorization';
+import Authorize from '../../middlewares/authorization';
 import { AuthValidators } from './auth.validate';
-import { ErrorTypes, ResponseError } from '../middlewares/error';
-import { validation } from '../middlewares/validation';
+import { ErrorTypes, ResponseError } from '../../middlewares/error';
+import { validation } from '../../middlewares/validation';
 
 
 const validate = validation(AuthValidators);

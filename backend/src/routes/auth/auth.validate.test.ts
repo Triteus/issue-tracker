@@ -1,7 +1,7 @@
-import UserModel, { IUser } from '../models/User';
+import UserModel, { IUser } from '../../models/User';
 import { AuthValidators } from './auth.validate';
-import { setupDB } from '../startup/testSetup';
-import { checkResponse, validateBody } from '../validators/test-util';
+import { setupDB } from '../../startup/testSetup';
+import { checkResponse, validateBody } from '../../validators/test-util';
 
 
 describe('AuthController validation', () => {

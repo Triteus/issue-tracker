@@ -1,13 +1,13 @@
 import { Controller, Get, Middleware, Delete, Patch, Put } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import passport = require('passport');
-import UserModel, { IUser, ERole, RequestWithUser } from '../models/User';
+import UserModel, { IUser, ERole, RequestWithUser } from '../../models/User';
 
-import Authorize from '../middlewares/authorization';
+import Authorize from '../../middlewares/authorization';
 import { validationResult } from 'express-validator';
 import { UserValidators } from './user.validate';
-import { ResponseError, ErrorTypes } from '../middlewares/error';
-import { validation } from '../middlewares/validation';
+import { ResponseError, ErrorTypes } from '../../middlewares/error';
+import { validation } from '../../middlewares/validation';
 
 const validate = validation(UserValidators);
 

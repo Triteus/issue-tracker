@@ -1,9 +1,9 @@
-import { TestServer } from '../TestServer'
+import { TestServer } from '../../TestServer'
 import { AuthController } from './auth';
 import supertest, { SuperTest, Test } from 'supertest';
-import { setupDB } from '../startup/testSetup';
+import { setupDB } from '../../startup/testSetup';
 import { Response } from 'superagent';
-import UserModel, { IUser } from '../models/User';
+import UserModel, { IUser } from '../../models/User';
 
 function checkResponse(res: Response, expectedParam: String, expectedMsg: String) {
     expect(res.status).toBe(422);

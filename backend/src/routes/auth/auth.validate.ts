@@ -1,6 +1,25 @@
 import { body, param } from "express-validator";
-import { validateEmail } from "../validators/email";
-import { validatePW } from "../validators/password";
+import UserModel from '../../models/User';
+
+export const validatePW = body('password')
+    .trim()
+    .isLength({ min: 6 })
+    .withMessage('Password must at least be 6 characters long');
+
+
+    export const validateEmail = body('email')
+        .trim()
+        .isEmail().withMessage('Invalid e-mail')
+        .bail()
+        .normalizeEmail()
+        .custom(val => {
+            return UserModel.findOne({ email: val })
+                .then(user => {
+                    if (user) {
+                        return Promise.reject('E-mail already in use');
+                    }
+                });
+        });
 
 
 export const AuthValidators = {
