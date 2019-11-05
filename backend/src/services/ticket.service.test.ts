@@ -88,11 +88,11 @@ describe('TicketService', () => {
 
         it('throws ResponseError (ticket not found)', async () => {
             const id = new ObjectID();
-            await expect(ticketService.updateTicket(id, editor._id, ticket.toJSON())).rejects.toThrow('Ticket not found!');
+            await expect(ticketService.findAndUpdateTicket(id, editor._id, ticket.toJSON())).rejects.toThrow('Ticket not found!');
         })
     
         it('returns updated ticket', async () => {
-            const updatedTicket = await ticketService.updateTicket(ticket._id, editor._id, updatedTicketMock);
+            const updatedTicket = await ticketService.findAndUpdateTicket(ticket._id, editor._id, updatedTicketMock);
             expect(updatedTicket).toMatchObject(updatedTicketMock);
             expect(updatedTicket.lastEditorId).toBe(editor._id);
             expect(updatedTicket.editorIds).toContain(editor._id);
@@ -120,18 +120,18 @@ describe('TicketService', () => {
 
         it('throws error (ticket not found)', async () => {
             const id = new ObjectID();
-            await expect(ticketService.changeStatus(TicketStatus.ASSIGNED, id, new ObjectID()))
+            await expect(ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, id, new ObjectID()))
             .rejects.toThrow('Ticket not found!');
         })
 
         it('changed status of ticket', async () => {
-            await ticketService.changeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            await ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
             const updatedTicket = await TicketModel.findById(ticket._id);
             expect(updatedTicket.status).toBe(TicketStatus.ASSIGNED);
         })
 
         it('added editor to ticket', async () => {
-            await ticketService.changeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            await ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
             const updatedTicket = await TicketModel.findById(ticket._id);
             expect(updatedTicket.lastEditorId).toStrictEqual(editor._id);
             expect(updatedTicket.editorIds).toContainEqual(editor._id);

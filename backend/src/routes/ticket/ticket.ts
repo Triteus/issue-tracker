@@ -43,7 +43,7 @@ export class TicketController {
     ])
     private async editTicket(req: RequestWithUser, res: Response) {
 
-        const ticket = await this.ticketService.updateTicket(req.params.id, req.user._id, req.body);
+        const ticket = await this.ticketService.findAndUpdateTicket(req.params.id, req.user._id, req.body);
 
         res.status(200).send({
             message: 'Ticket updated successfully!',
@@ -67,10 +67,10 @@ export class TicketController {
             if (ticket.status !== TicketStatus.OPEN) {
                 throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
             }
-            await this.ticketService.deleteTicket(req.params.id);
+            await this.ticketService.findAndDeleteTicket(req.params.id);
 
         } else if (req.user.roles.includes(ERole.Support)) {
-            await this.ticketService.deleteTicket(req.params.id);
+            await this.ticketService.findAndDeleteTicket(req.params.id);
         } else {
             throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
         }
@@ -87,7 +87,7 @@ export class TicketController {
         ...validate('changeStatus')
     ])
     private async changeStatus(req: RequestWithUser, res: Response) {
-        await this.ticketService.changeStatus(req.body.status, req.params.id, req.user._id);
+        await this.ticketService.findTicketAndChangeStatus(req.body.status, req.params.id, req.user._id);
         res.status(200).send({ message: 'Status updated!' });
     }
 
