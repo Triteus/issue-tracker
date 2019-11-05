@@ -210,7 +210,7 @@ describe('TicketController', () => {
         }),
 
             it('returns status 403 (owner wants to delete ticket with status other than open', async () => {
-                ticket.status = TicketStatus.ASSIGNED;
+                ticket.status = TicketStatus.ACTIVE;
                 await ticket.save();
                 const res = await request.delete(url + ticket._id)
                     .set({ Authorization: 'Bearer ' + owner.generateToken() });
@@ -314,21 +314,21 @@ describe('TicketController', () => {
 
             const url = '/api/ticket/'
             it('returns status 401 (no token)', async () => {
-                const res = await request.patch(url + ticket._id + '/status').send({status: TicketStatus.ASSIGNED});
+                const res = await request.patch(url + ticket._id + '/status').send({status: TicketStatus.ACTIVE});
                 expect(res.status).toBe(401);
             })
 
             it('returns 403 (user has no "support"-role', async () => {
                 const res = await request.patch(url + ticket._id + '/status')
                 .set({Authorization: 'Bearer ' + randomUser.generateToken()})
-                .send({status: TicketStatus.ASSIGNED});
+                .send({status: TicketStatus.ACTIVE});
                 expect(res.status).toBe(403);
             })
 
             it('returns status 200 (status changed)', async () => {
                 const res = await request.patch(url + ticket._id + '/status')
                 .set({Authorization: 'Bearer ' + editor.generateToken()})
-                .send({status: TicketStatus.ASSIGNED})
+                .send({status: TicketStatus.ACTIVE})
                 expect(res.status).toBe(200);
             })
         })

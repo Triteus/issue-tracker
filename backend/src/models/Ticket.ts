@@ -5,7 +5,6 @@ import { subTaskSchema, ISubTask } from './SubTask';
 export enum TicketStatus {
   OPEN = 'open',
   CLOSED = 'closed',
-  ASSIGNED = 'assigned',
   ACTIVE = 'active'
 }
 export const ticketStatusArr = Object.values(TicketStatus);
@@ -25,6 +24,7 @@ export interface ITicketDocument extends mongoose.Document {
   ownerId: mongoose.Types.ObjectId,
   editorIds: mongoose.Types.ObjectId[],
   lastEditorId: mongoose.Types.ObjectId,
+  assignedTo: mongoose.Types.ObjectId,
   priority: Priority,
   neededAt: Date,
   title: string,
@@ -58,6 +58,10 @@ export const ticketSchema = new mongoose.Schema({
   }],
   lastEditorId:
   {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },

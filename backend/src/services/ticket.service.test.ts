@@ -120,18 +120,36 @@ describe('TicketService', () => {
 
         it('throws error (ticket not found)', async () => {
             const id = new ObjectID();
-            await expect(ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, id, new ObjectID()))
+            await expect(ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, id, new ObjectID()))
             .rejects.toThrow('Ticket not found!');
         })
 
         it('changed status of ticket', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
             const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.status).toBe(TicketStatus.ASSIGNED);
+            expect(updatedTicket.status).toBe(TicketStatus.ACTIVE);
+        })
+
+        it('assigns editor to ticket', async () => {
+            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            expect(updatedTicket.assignedTo).toStrictEqual(editor._id);
+        })
+
+        it('removes assigned user from ticket (status switches to closed', async () => {
+            await ticketService.findTicketAndChangeStatus(TicketStatus.CLOSED, ticket._id, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            expect(updatedTicket.assignedTo).toBeFalsy();
+        })
+
+        it('removes assigned user from ticket (status switches to open', async () => {
+            await ticketService.findTicketAndChangeStatus(TicketStatus.OPEN, ticket._id, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            expect(updatedTicket.assignedTo).toBeFalsy();
         })
 
         it('added editor to ticket', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.ASSIGNED, ticket._id, editor._id);
+            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
             const updatedTicket = await TicketModel.findById(ticket._id);
             expect(updatedTicket.lastEditorId).toStrictEqual(editor._id);
             expect(updatedTicket.editorIds).toContainEqual(editor._id);
