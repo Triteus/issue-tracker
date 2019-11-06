@@ -25,13 +25,18 @@ describe('TicketService', () => {
         password: 'password',
         roles: [ERole.Support]
     }
+    const subTasksMock = [
+        {description: 'subtask 1', isDone: true},
+        {description: 'subtask 2', isDone: false}
+    ];
 
     const ticketMock = {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: Priority.HIGH,
-        neededAt: new Date()
+        neededAt: new Date(),
     }
+
 
     describe('create ticket', () => {
         let owner: IUser;
@@ -63,7 +68,6 @@ describe('TicketService', () => {
     describe('update ticket', () => {
         let owner: IUser;
         let editor: IUser;
-        let authHeaders: Object;
 
         let ticket: ITicket;
 
@@ -72,6 +76,7 @@ describe('TicketService', () => {
             description: 'updated description',
             priority: Priority.VERY_HIGH,
             neededAt: new Date(),
+            subTasks: subTasksMock
         }
 
         beforeEach(async () => {
@@ -79,12 +84,7 @@ describe('TicketService', () => {
             editor = await UserModel.create(editorMock);
 
             ticket = await TicketModel.create({...ticketMock, ownerId: owner._id});
-
-            authHeaders = {
-                Authorization: 'Bearer ' + owner.generateToken()
-            }
         })
-
 
         it('throws ResponseError (ticket not found)', async () => {
             const id = new ObjectID();
@@ -93,9 +93,16 @@ describe('TicketService', () => {
     
         it('returns updated ticket', async () => {
             const updatedTicket = await ticketService.findAndUpdateTicket(ticket._id, editor._id, updatedTicketMock);
-            expect(updatedTicket).toMatchObject(updatedTicketMock);
+            const {subTasks, ...expectedPayload } = updatedTicketMock;
+            expect(updatedTicket).toMatchObject(expectedPayload);
+            // check if editor was changed
             expect(updatedTicket.lastEditorId).toBe(editor._id);
             expect(updatedTicket.editorIds).toContain(editor._id);
+            // check if subtasks were changed
+            expect(updatedTicket.subTasks.length).toBe(subTasksMock.length);
+            updatedTicket.subTasks.forEach((subTask, index) => {
+                expect(subTask).toMatchObject(subTasksMock[index]);
+            })
         })
     }),
 
@@ -153,6 +160,32 @@ describe('TicketService', () => {
             const updatedTicket = await TicketModel.findById(ticket._id);
             expect(updatedTicket.lastEditorId).toStrictEqual(editor._id);
             expect(updatedTicket.editorIds).toContainEqual(editor._id);
+        })
+    }),
+
+    describe('change sub-tasks', () => {
+        let owner: IUser;
+        let editor: IUser;
+   
+        let ticket: ITicket;
+
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerMock);
+            editor = await UserModel.create(editorMock);
+
+            ticket = await TicketModel.create({...ticketMock, ownerId: owner._id});
+        })
+
+        it('throws error (ticket not found)', async () => {
+            await expect(ticketService.findTicketAndChangeSubTasks(new ObjectID(), subTasksMock, editor._id)).rejects.toThrow('Ticket not found!');
+        })
+
+        it('updated sub-tasks in db', async () => {
+            await ticketService.findTicketAndChangeSubTasks(ticket._id, subTasksMock, editor._id);
+            const updatedTicket = await TicketModel.findById(ticket._id);
+            updatedTicket.subTasks.forEach((subTask, index) => {
+                expect(subTask).toMatchObject(subTasksMock[index]);
+            })
         })
     })
 })

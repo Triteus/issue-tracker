@@ -314,21 +314,60 @@ describe('TicketController', () => {
 
             const url = '/api/ticket/'
             it('returns status 401 (no token)', async () => {
-                const res = await request.patch(url + ticket._id + '/status').send({status: TicketStatus.ACTIVE});
+                const res = await request.patch(url + ticket._id + '/status').send({ status: TicketStatus.ACTIVE });
                 expect(res.status).toBe(401);
             })
 
-            it('returns 403 (user has no "support"-role', async () => {
+            it('returns 403 (user has no "support"-role)', async () => {
                 const res = await request.patch(url + ticket._id + '/status')
-                .set({Authorization: 'Bearer ' + randomUser.generateToken()})
-                .send({status: TicketStatus.ACTIVE});
+                    .set({ Authorization: 'Bearer ' + randomUser.generateToken() })
+                    .send({ status: TicketStatus.ACTIVE });
                 expect(res.status).toBe(403);
             })
 
             it('returns status 200 (status changed)', async () => {
                 const res = await request.patch(url + ticket._id + '/status')
-                .set({Authorization: 'Bearer ' + editor.generateToken()})
-                .send({status: TicketStatus.ACTIVE})
+                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                    .send({ status: TicketStatus.ACTIVE })
+                expect(res.status).toBe(200);
+            })
+        }),
+
+        describe('PATCH /api/ticket/:id/sub-task', () => {
+
+            let owner: IUser;
+            let editor: IUser;
+
+            let ticket: ITicket;
+            const subTasksMock = [
+                { description: 'subtask 1', isDone: true },
+                { description: 'subtask 2', isDone: false }
+            ];
+
+            beforeEach(async () => {
+                owner = await UserModel.create(ownerMock);
+                editor = await UserModel.create(editorMock);
+                ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+            })
+
+            const url = '/api/ticket/'
+
+            it('return status 401 (no token)', async () => {
+                const res = await request.patch(url + ticket._id + '/sub-task').send({ status: TicketStatus.ACTIVE });
+                expect(res.status).toBe(401);
+            })
+
+            it('returns status 403 (no support role)', async () => {
+                const res = await request.patch(url + ticket._id + '/sub-task')
+                    .set({ Authorization: 'Bearer ' + owner.generateToken() })
+                    .send({ subTasks: subTasksMock });
+                expect(res.status).toBe(403);
+            })
+
+            it('returns status 200', async () => {
+                const res = await request.patch(url + ticket._id + '/sub-task')
+                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                    .send({ subTasks: subTasksMock });
                 expect(res.status).toBe(200);
             })
         })

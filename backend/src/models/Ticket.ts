@@ -1,4 +1,4 @@
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types, Mongoose } from 'mongoose';
 import { subTaskSchema, ISubTask } from './SubTask';
 
 
@@ -30,14 +30,16 @@ export interface ITicketDocument extends mongoose.Document {
   title: string,
   description: string,
   status: TicketStatus,
+  subTasks: ISubTask[],
   createdAt: Date,
   editedAt: Date
 }
 
 export interface ITicket extends ITicketDocument {
-  addSubTasks: (subTasks: ISubTask[]) => void,
+  setSubTasks: (subTasks: { description: string, isDone: boolean }[], editorId: Types.ObjectId) => void,
   addEditor: (editorId: mongoose.Types.ObjectId | String) => void
-  addEditorAndSave: (editorID: mongoose.Types.ObjectId | String) => Promise<ITicket>
+  addEditorAndSave: (editorID: mongoose.Types.ObjectId | String) => Promise<ITicket>,
+  changeStatus: (status: TicketStatus, editorId: Types.ObjectId) => void
 }
 
 export interface ITicketModel extends Model<ITicket> {
@@ -102,8 +104,9 @@ export const ticketSchema = new mongoose.Schema({
 });
 
 
-ticketSchema.methods.addSubTasks = function (descriptions: string[]) {
-  this.subTasks = descriptions.map(desc => ({ description: desc }));
+ticketSchema.methods.setSubTasks = function (subTasks: { description: string, isDone: boolean }[], editorId: mongoose.Types.ObjectId) {
+  if(!subTasks) return;
+  this.subTasks = subTasks.map(task => ({ ...task, editorId }));
 }
 
 ticketSchema.methods.addEditor = function (editorId: mongoose.Types.ObjectId) {
@@ -116,6 +119,16 @@ ticketSchema.methods.addEditorAndSave = async function (editorId: mongoose.Types
   return this.save();
 }
 
-
+ticketSchema.methods.changeStatus = function (status: TicketStatus, editorId: mongoose.Types.ObjectId): void {
+  if (status === this.status) {
+    return;
+  }
+  if (status === TicketStatus.CLOSED || status === TicketStatus.OPEN) {
+    this.assignedTo = null;
+  } else {
+    this.assignedTo = mongoose.Types.ObjectId(editorId.toString());
+  }
+  this.status = status;
+}
 
 export default mongoose.model<ITicket, ITicketModel>('Ticket', ticketSchema);

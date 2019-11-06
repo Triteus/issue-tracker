@@ -1,5 +1,5 @@
 import { TicketValidators, basicValidators } from "./ticket.validate";
-import { validateBody, checkResponse, validateBodyAndParams } from "../../validators/test-util";
+import { validateBody, checkResponse, validateBodyAndParams, checkResponses } from "../../validators/test-util";
 import { ticketSchema, TicketStatus, Priority } from "../../models/Ticket";
 import { ObjectID } from "bson";
 
@@ -92,6 +92,35 @@ describe('Ticket validators', () => {
 
         it('passes (all body props)', async () => {
 
+        })
+    })
+
+    describe('PATCH /api/ticket/:id/sub-task', () => {
+
+        const validators = TicketValidators.changeSubTasks;
+
+        it('throws (not an array)', async () => {
+            const errors = await validateBody({ subTasks: 'no array' }, validators);
+            checkResponse(errors, 'subTasks', 'Invalid value');
+        })
+        it('throws (invalid description)', async () => {
+            const errors = await validateBody({ subTasks: [{isDone: true}, {isDone: false}] }, validators);
+            checkResponses(errors, 'subTasks', 'Invalid value');
+        })
+
+        it('throws (description not a string)', async () => {
+            const errors = await validateBody({ subTasks: [{description: false, isDone: true}, {description: true, isDone: false}] }, validators);
+            checkResponses(errors, 'subTasks', 'Invalid value');
+        })
+
+        it('throws (invalid isDone)', async () => {
+            const errors = await validateBody({ subTasks: [{description: 'desc'}, {description: 'desc'}] }, validators);
+            checkResponses(errors, 'subTasks', 'Invalid value');
+        })
+
+        it('throws (isDone is not boolean', async () => {
+            const errors = await validateBody({ subTasks: [{description: 'desc', isDone: 'noBool'}, {description: 'desc', isDone: 'noBool'}] }, validators);
+            checkResponses(errors, 'subTasks', 'Invalid value');
         })
     })
 

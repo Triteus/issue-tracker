@@ -29,5 +29,10 @@ export const TicketValidators = {
     ],
     changeStatus: [
         body('status').isIn(ticketStatusArr)
+    ],
+    changeSubTasks: [
+        body('subTasks').isArray(),
+        body('subTasks.*.description').exists().isString(),
+        body('subTasks.*.isDone').exists().isBoolean()
     ]
 }

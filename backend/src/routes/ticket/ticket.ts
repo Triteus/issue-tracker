@@ -91,6 +91,16 @@ export class TicketController {
         res.status(200).send({ message: 'Status updated!' });
     }
 
+    @Patch(':id/sub-task')
+    @Middleware([
+        Authorize.hasRoles(ERole.Support),
+        ...validate('changeSubTasks')
+    ])
+    private async changeSubTasks(req: RequestWithUser, res: Response) {
+        await this.ticketService.findTicketAndChangeSubTasks(req.params.id, req.body.subTasks, req.user._id);
+        res.status(200).send({message: 'Subtasks updated!'});
+    }   
+
     @Get('')
     private async getTickets(req: Request, res: Response) {
         // pagination, 

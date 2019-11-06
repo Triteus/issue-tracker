@@ -25,9 +25,18 @@ export async function validateBodyAndParams(body: Object, params: Object, valida
     return validationResult(request).array();
 }
 
+/** use if you only expect one error response */
 export function checkResponse(errors: any[], expectedParam: String, expectedMsg: String) {
     expect(errors.length).toBe(1);
     const err = errors[0];
     expect(err.param).toBe(expectedParam);
     expect(err.msg).toBe(expectedMsg);
+}
+
+/** use if you expect several error responses for array of objects */
+export function checkResponses(errors: any[], expectedParam: String, expectedMsg: string) {
+    errors.forEach((err) => {
+        expect(err.param.includes(expectedParam)).toBeTruthy();
+        expect(err.msg).toBe(expectedMsg);
+    })
 }

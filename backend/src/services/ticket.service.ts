@@ -2,11 +2,12 @@ import { Types } from "mongoose";
 import TicketModel, { ITicketDocument, ITicket, TicketStatus } from "../models/Ticket";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
+import { ISubTask } from "../models/SubTask";
 
 
 export class TicketService {
 
-    async findAndUpdateTicket(ticketId: Types.ObjectId | String, editorId: Types.ObjectId | String, payload: Partial<ITicketDocument>) {
+    async findAndUpdateTicket(ticketId: Types.ObjectId | String, editorId: Types.ObjectId | String, payload: Object) {
         const ticket = await TicketModel.findById(ticketId);
         if(!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
@@ -15,11 +16,12 @@ export class TicketService {
     }
 
     async updateTicket(ticket: ITicket, editorId: Types.ObjectId | String, payload: Partial<ITicketDocument>) {
-        const {status, ...ticketPayload} = payload;
+        const {status, subTasks, ...ticketPayload} = payload;
         // update paths
         ticket.set(payload);
-        // update status
-        return this.changeStatus(ticket, status, editorId);
+        ticket.setSubTasks(payload.subTasks, Types.ObjectId(editorId.toString()));
+        ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
+        return ticket.addEditorAndSave(editorId);
     }
 
     async createTicket(ownerId: Types.ObjectId | String, payload: Partial<ITicketDocument>) {
@@ -47,15 +49,26 @@ export class TicketService {
     }
 
     async changeStatus(ticket: ITicket, status: TicketStatus, editorId: String | Types.ObjectId) {
-        if(status === ticket.status){
-            return ticket;
+        ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
+        ticket.addEditor(editorId);
+        await ticket.save();
+    }
+
+    async findTicketAndChangeSubTasks(ticketId: String | Types.ObjectId, subTasks: {description: string, isDone: boolean}[], editorId: String | Types.ObjectId) {
+        const ticket = await TicketModel.findById(ticketId);
+        if (!ticket) {
+            throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        if(status === TicketStatus.CLOSED || status === TicketStatus.OPEN) {
-            ticket.assignedTo = null;
-        } else {
-            ticket.assignedTo = mongoose.Types.ObjectId(editorId.toString());
-        }
-        ticket.status = status;
+        return this.changeSubTasks(ticket, subTasks, editorId);
+    }
+
+    async changeSubTasks(ticket: ITicket, subTasks: {description: string, isDone: boolean}[], editorId: String | Types.ObjectId) {
+        const id = mongoose.Types.ObjectId(editorId.toString());
+        ticket.setSubTasks(subTasks, id);
+        return ticket.addEditorAndSave(editorId);
+    }
+
+    async addEditorAndSave(ticket: ITicket, editorId: String | Types.ObjectId) {
         return ticket.addEditorAndSave(editorId);
     }
 }
