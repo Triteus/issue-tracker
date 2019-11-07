@@ -2,8 +2,6 @@ import { Types } from "mongoose";
 import TicketModel, { ITicketDocument, ITicket, TicketStatus } from "../models/Ticket";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
-import { ISubTask } from "../models/SubTask";
-
 
 export class TicketService {
 
@@ -24,7 +22,7 @@ export class TicketService {
         return ticket.addEditorAndSave(editorId);
     }
 
-    async createTicket(ownerId: Types.ObjectId | String, payload: Partial<ITicketDocument>) {
+    async createTicket(ownerId: Types.ObjectId | String, payload: Object) {
         return TicketModel.create({...payload, ownerId});
     }
 

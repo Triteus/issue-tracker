@@ -2,54 +2,47 @@ import { TicketValidators, basicValidators } from "./ticket.validate";
 import { validateBody, checkResponse, validateBodyAndParams, checkResponses } from "../../validators/test-util";
 import { ticketSchema, TicketStatus, Priority } from "../../models/Ticket";
 import { ObjectID } from "bson";
+import { ticketData } from "../../test-data/ticket";
 
 describe('Ticket validators', () => {
-
-    const ticketMock = {
-        title: 'Something does not work',
-        description: 'A sample ticket',
-        priority: Priority.HIGH,
-        neededAt: new Date().toJSON()
-    }
-
 
     describe('basic validators', () => {
 
         const validators = basicValidators;
 
         it('throws (invalid title)', async () => {
-            const errors = await validateBody({ ...ticketMock, title: 't' }, validators);
+            const errors = await validateBody({ ...ticketData(), title: 't' }, validators);
             checkResponse(errors, 'title', 'Invalid value');
         })
         it('throws (invalid priority)', async () => {
-            const errors = await validateBody({ ...ticketMock, priority: 100000 }, validators);
+            const errors = await validateBody({ ...ticketData(), priority: 100000 }, validators);
             checkResponse(errors, 'priority', 'Invalid value');
         })
         it('throws (invalid systems)', async () => {
-            const errors = await validateBody({ ...ticketMock, affectedSystems: 'noArr' }, validators);
+            const errors = await validateBody({ ...ticketData(), affectedSystems: 'noArr' }, validators);
             checkResponse(errors, 'affectedSystems', 'Invalid value');
         })
 
         it('throws (invalid neededAt)', async () => {
-            const errors = await validateBody({ ...ticketMock, neededAt: 'invalidDate' }, validators);
+            const errors = await validateBody({ ...ticketData(), neededAt: 'invalidDate' }, validators);
             checkResponse(errors, 'neededAt', 'Invalid value');
         })
 
         it('throws (tried to change ownerID)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketMock, ownerId: id }, validators);
+            const errors = await validateBody({ ...ticketData(), ownerId: id }, validators);
             checkResponse(errors, 'ownerId', 'Invalid value');
         })
 
         it('throws (tried to change lastEditorID)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketMock, lastEditorId: id }, validators);
+            const errors = await validateBody({ ...ticketData(), lastEditorId: id }, validators);
             checkResponse(errors, 'lastEditorId', 'Invalid value');
         })
 
         it('throws (tried to change editorIds)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketMock, editorIds: id }, validators);
+            const errors = await validateBody({ ...ticketData(), editorIds: id }, validators);
             checkResponse(errors, 'editorIds', 'Invalid value');
         })
     })
@@ -60,17 +53,17 @@ describe('Ticket validators', () => {
 
 
         it('throws (invalid status/only status "open" allowed)', async () => {
-            const errors = await validateBody({ ...ticketMock, status: 'invalidStatus' }, validators);
+            const errors = await validateBody({ ...ticketData(), status: 'invalidStatus' }, validators);
             checkResponse(errors, 'status', 'Invalid value');
         })
 
         it('passes (necessary body props)', async () => {
-            const errors = await validateBody({ ...ticketMock }, validators);
+            const errors = await validateBody({ ...ticketData() }, validators);
             expect(errors.length).toBe(0);
         })
 
         it('passes (all body props)', async () => {
-            const errors = await validateBody({ ...ticketMock }, validators);
+            const errors = await validateBody({ ...ticketData() }, validators);
             expect(errors.length).toBe(0);
         })
 
@@ -79,7 +72,7 @@ describe('Ticket validators', () => {
     describe('PUT /api/ticket/:id', () => {
 
         const validTicketMock = {
-            ...ticketMock,
+            ...ticketData(),
             status: TicketStatus.ACTIVE
         }
 

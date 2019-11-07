@@ -4,6 +4,7 @@ import supertest, { SuperTest, Test } from 'supertest';
 import { setupDB } from '../../startup/testSetup';
 import { Response } from 'superagent';
 import UserModel, { IUser } from '../../models/User';
+import {ownerData as userMock} from '../../test-data/user'
 
 function checkResponse(res: Response, expectedParam: String, expectedMsg: String) {
     expect(res.status).toBe(422);
@@ -20,18 +21,15 @@ describe('AuthController', () => {
 
    setupDB('test-auth-controller');
 
+    let user: IUser;
+    let token: string;
+
+
      beforeAll(() => {
         const testServer = new TestServer();
         testServer.setControllers(authController);
         request = supertest(testServer.getExpressInstance());
     }) 
-
-    const userMock = {
-        firstName: 'Joe',
-        lastName: 'Mama',
-        email: 'test@mail.com',
-        password: 'password'
-    }
 
     describe('POST /api/auth/register', () => {
 
@@ -39,21 +37,21 @@ describe('AuthController', () => {
 
 
         it('throws (email aready exists)', async () => {
-            const user = new UserModel(userMock);
+            const user = new UserModel(userMock());
             await user.save();
 
-            const res = await request.post(url).send(userMock);
+            const res = await request.post(url).send(userMock());
             checkResponse(res, 'email', 'E-mail already in use');
         })
 
         it('returns with status 201 (valid payload)', async () => {
-            const res = await request.post(url).send(userMock);
+            const res = await request.post(url).send(userMock());
             expect(res.status).toBe(201);
         })
 
         it('creatse new user in db (valid payload)', async () => {
-            const res = await request.post(url).send(userMock);
-            const user = await UserModel.findOne({ email: userMock.email });
+            const res = await request.post(url).send(userMock());
+            const user = await UserModel.findOne({ email: userMock().email });
             expect(user).toBeTruthy();
         })
     })
@@ -61,10 +59,10 @@ describe('AuthController', () => {
     describe('POST /api/auth/login', () => {
 
         const url = '/api/auth/login';
-        const { email, password } = userMock;
+        const { email, password } = userMock();
         
         beforeEach(async () => {
-            await UserModel.create(userMock);
+            await UserModel.create(userMock());
         })
 
         it('throws (user does not exist, wrong email or pw)', async () => {
@@ -99,18 +97,16 @@ describe('AuthController', () => {
     describe('PUT /api/auth/password/:id', () => {
         
         const url = '/api/auth/password/';
-        const { email, password } = userMock;
-        let user: IUser;
-        let token: string;
-        
+        const { email, password } = userMock();
+
         const payload = {
-            oldPW: userMock.password,
+            oldPW: password,
             newPW: 'newPassword',
             newPWConfirm: 'newPassword'
         }
 
         beforeEach(async () => {
-            user = await UserModel.create(userMock);
+            user = await UserModel.create(userMock());
             token = user.generateToken();
         })
 

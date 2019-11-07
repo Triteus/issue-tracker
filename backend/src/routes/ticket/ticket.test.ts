@@ -7,7 +7,13 @@ import { IUser, ERole } from "../../models/User";
 import UserModel from "../../models/User";
 import TicketModel, { ITicket, TicketStatus, Priority, ITicketDocument } from "../../models/Ticket";
 import { ObjectID } from "bson";
+import {ticketData, updatedTicketData, subTasksData} from "../../test-data/ticket"
+import {ownerData, editorData, randomUserData} from "../../test-data/user";
 
+
+function createBearerToken(token: string) {
+    return 'Bearer ' + token;
+}
 
 describe('TicketController', () => {
 
@@ -23,40 +29,23 @@ describe('TicketController', () => {
         done();
     })
 
-    const ownerMock = {
-        firstName: 'Joe',
-        lastName: 'Mama',
-        email: 'owner@mail.com',
-        password: 'password'
-    }
+    let owner: IUser;
+    let editor: IUser;
+    let randomUser: IUser;
+    let ticket: ITicket;
+    let updatedTicket: ITicket;
 
-    const editorMock = {
-        firstName: 'Editor',
-        lastName: 'Rian',
-        email: 'editor@mail.com',
-        password: 'password',
-        roles: [ERole.Support]
-    }
-
-    const ticketMock = {
-        title: 'Something does not work',
-        description: 'A sample ticket',
-        priority: Priority.HIGH,
-        neededAt: new Date().toJSON(),
-        affectedSystems: ['Confluence', 'JIRA', 'Outlook']
-    }
+    let token: string;
 
     describe('POST /api/ticket', () => {
 
         const url = '/api/ticket';
-        let owner: IUser;
-        let editor: IUser;
 
         let authHeaders: Object;
 
         beforeEach(async () => {
-            owner = await UserModel.create(ownerMock);
-            editor = await UserModel.create(editorMock);
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
 
             authHeaders = {
                 Authorization: 'Bearer ' + owner.generateToken()
@@ -66,7 +55,7 @@ describe('TicketController', () => {
         it('returns status 401 (no token)', async () => {
             const res = await request
                 .post(url)
-                .send(ticketMock);
+                .send(ticketData());
             expect(res.status).toBe(401);
         })
 
@@ -74,7 +63,7 @@ describe('TicketController', () => {
             const res = await request
                 .post(url)
                 .set(authHeaders)
-                .send(ticketMock);
+                .send(ticketData());
             expect(res.status).toBe(201);
         })
 
@@ -82,18 +71,18 @@ describe('TicketController', () => {
             const res = await request
                 .post(url)
                 .set(authHeaders)
-                .send(ticketMock);
+                .send(ticketData());
 
             expect(res.body.message).toBe('Ticket successfully created!');
             expect(res.body.ticket).toMatchObject({
-                ...ticketMock,
+                ...ticketData(),
                 ownerId: owner._id.toHexString()
             });
         })
 
         it('created new ticket in db', async () => {
-            const res = await request.post(url).send(ticketMock);
-            const ticket = await TicketModel.find({ title: ticketMock.title });
+            const res = await request.post(url).send(ticketData());
+            const ticket = await TicketModel.find({ title: ticketData().title });
             expect(ticket).toBeTruthy();
         })
 
@@ -101,25 +90,12 @@ describe('TicketController', () => {
 
     describe('PUT /api/ticket/:id', () => {
         const url = '/api/ticket/';
-        let owner: IUser;
-        let editor: IUser;
         let authHeaders: Object;
 
-        let ticket: ITicket;
-
-        const updatedTicketMock = {
-            title: 'updated title',
-            description: 'updated description',
-            priority: Priority.VERY_HIGH,
-            neededAt: new Date().toJSON(),
-            status: TicketStatus.ACTIVE
-        }
-
         beforeEach(async () => {
-            owner = await UserModel.create(ownerMock);
-            editor = await UserModel.create(editorMock);
-
-            ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
+            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
 
             authHeaders = {
                 Authorization: 'Bearer ' + owner.generateToken()
@@ -128,14 +104,14 @@ describe('TicketController', () => {
 
         it('returns status 401 (no token)', async () => {
             const res = await request.put(url + ticket._id)
-                .send(updatedTicketMock);
+                .send(updatedTicketData());
             expect(res.status).toBe(401);
         })
 
         it('returns status 403 (user does not have support-role)', async () => {
             const res = await request.put(url + ticket._id)
                 .set(authHeaders)
-                .send(updatedTicketMock);
+                .send(updatedTicketData());
             expect(res.status).toBe(403);
         })
 
@@ -143,24 +119,24 @@ describe('TicketController', () => {
             const invalidId = new ObjectID();
             const res = await request.put(url + invalidId)
                 .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                .send(updatedTicketMock);
+                .send(updatedTicketData());
             expect(res.status).toBe(404);
         })
 
         it('returns status 200', async () => {
             const res = await request.put(url + ticket._id)
                 .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                .send(updatedTicketMock);
+                .send(updatedTicketData());
             expect(res.status).toBe(200);
         })
 
         it('returns message and ticket', async () => {
             const res = await request.put(url + ticket._id)
                 .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                .send(updatedTicketMock);
+                .send(updatedTicketData());
             expect(res.body.message).toBe('Ticket updated successfully!');
             expect(res.body.ticket).toMatchObject({
-                ...updatedTicketMock,
+                ...updatedTicketData(),
                 id: ticket._id.toString()
             })
         })
@@ -168,27 +144,13 @@ describe('TicketController', () => {
 
     describe('DELETE /api/ticket/:id', () => {
 
-        const randomUserMock = {
-            firstName: 'Random',
-            lastName: 'User',
-            email: 'randomuser@mail.com',
-            password: 'password'
-        }
-
         const url = '/api/ticket/';
-        let owner: IUser;
-        let editor: IUser;
-        let randomUser: IUser;
-
-        let ticket: ITicket;
-
+ 
         beforeEach(async () => {
-            owner = await UserModel.create(ownerMock);
-            editor = await UserModel.create(editorMock);
-            randomUser = await UserModel.create(randomUserMock);
-
-            ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
-
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
+            randomUser = await UserModel.create(randomUserData());
+            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
         })
 
         it('returns status 401 (no token)', async () => {
@@ -236,12 +198,10 @@ describe('TicketController', () => {
         describe('GET /api/ticket/', () => {
 
             const url = '/api/ticket/';
-            let owner: IUser;
-            let ticket: ITicket;
 
             beforeEach(async () => {
-                owner = await UserModel.create(ownerMock);
-                ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+                owner = await UserModel.create(ownerData());
+                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
             })
 
             it('returns status 401 (no token)', async () => {
@@ -260,12 +220,10 @@ describe('TicketController', () => {
     describe('GET /api/ticket/:id', () => {
 
         const url = '/api/ticket/';
-        let owner: IUser;
-        let ticket: ITicket;
 
         beforeEach(async () => {
-            owner = await UserModel.create(ownerMock);
-            ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+            owner = await UserModel.create(ownerData());
+            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
         })
 
         it('returns status 404 (ticket not found)', async () => {
@@ -285,34 +243,21 @@ describe('TicketController', () => {
             const res = await request.get(url + ticket._id)
                 .set({ Authorization: 'Bearer ' + owner.generateToken() })
             expect(res.body).toMatchObject({
-                ...ticketMock, id: ticket._id.toString()
+                ...ticketData(), id: ticket._id.toString()
             });
         })
     }),
 
         describe('PATCH /api/ticket/:id/status', () => {
-
-            let owner: IUser;
-            let editor: IUser;
-            let randomUser: IUser;
-
-            let ticket: ITicket;
-
-            const randomUserMock = {
-                firstName: 'Random',
-                lastName: 'User',
-                email: 'randomuser@mail.com',
-                password: 'password'
-            }
+            const url = '/api/ticket/'
 
             beforeEach(async () => {
-                owner = await UserModel.create(ownerMock);
-                editor = await UserModel.create(editorMock);
-                randomUser = await UserModel.create(randomUserMock);
-                ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+                owner = await UserModel.create(ownerData());
+                editor = await UserModel.create(editorData());
+                randomUser = await UserModel.create(randomUserData());
+                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
             })
 
-            const url = '/api/ticket/'
             it('returns status 401 (no token)', async () => {
                 const res = await request.patch(url + ticket._id + '/status').send({ status: TicketStatus.ACTIVE });
                 expect(res.status).toBe(401);
@@ -334,23 +279,15 @@ describe('TicketController', () => {
         }),
 
         describe('PATCH /api/ticket/:id/sub-task', () => {
-
-            let owner: IUser;
-            let editor: IUser;
-
-            let ticket: ITicket;
-            const subTasksMock = [
-                { description: 'subtask 1', isDone: true },
-                { description: 'subtask 2', isDone: false }
-            ];
+            
+            const url = '/api/ticket/'
 
             beforeEach(async () => {
-                owner = await UserModel.create(ownerMock);
-                editor = await UserModel.create(editorMock);
-                ticket = await TicketModel.create({ ...ticketMock, ownerId: owner._id });
+                owner = await UserModel.create(ownerData());
+                editor = await UserModel.create(editorData());
+                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
             })
 
-            const url = '/api/ticket/'
 
             it('return status 401 (no token)', async () => {
                 const res = await request.patch(url + ticket._id + '/sub-task').send({ status: TicketStatus.ACTIVE });
@@ -360,14 +297,14 @@ describe('TicketController', () => {
             it('returns status 403 (no support role)', async () => {
                 const res = await request.patch(url + ticket._id + '/sub-task')
                     .set({ Authorization: 'Bearer ' + owner.generateToken() })
-                    .send({ subTasks: subTasksMock });
+                    .send({ subTasks: subTasksData() });
                 expect(res.status).toBe(403);
             })
 
             it('returns status 200', async () => {
                 const res = await request.patch(url + ticket._id + '/sub-task')
                     .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                    .send({ subTasks: subTasksMock });
+                    .send({ subTasks: subTasksData() });
                 expect(res.status).toBe(200);
             })
         })

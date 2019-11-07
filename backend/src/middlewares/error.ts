@@ -50,6 +50,6 @@ export default (err: Error, req: Request, res: Response, next: NextFunction) => 
         return sendError(res, 403, err.message);
     }
 
-    winston.error(err);
+    console.error(err);
     return res.status(500).send({error: {message: err.message}});
 };

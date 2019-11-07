@@ -5,6 +5,7 @@ import { TestServer } from "../../TestServer";
 import { UserController } from "./user";
 import UserModel, { IUser, ERole } from "../../models/User";
 import { ObjectID } from "bson";
+import { ownerData, randomUserData } from "../../test-data/user";
 
 describe(('UserController'), () => {
 
@@ -22,14 +23,9 @@ describe(('UserController'), () => {
 
     let user: IUser;
     let token: string;
-    const payload = {
-        email: 'test@mail.com',
-        password: 'password123',
-        firstName: 'Biggus',
-        lastName: 'Dickus'
-    }
+   
     beforeEach(async () => {
-        user = await UserModel.create(payload);
+        user = await UserModel.create(ownerData());
         token = user.generateToken();
     })
 
@@ -83,7 +79,7 @@ describe(('UserController'), () => {
             it('returns status 403 (user is not owner of account)', async () => {
                 // create second user 
                 const secondUser = await UserModel.create({
-                    ...payload,
+                    ...randomUserData(),
                     email: 'secondUser@mail.com'
                 });
 
