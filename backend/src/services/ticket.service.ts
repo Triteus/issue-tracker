@@ -19,7 +19,7 @@ export class TicketService {
         ticket.set(payload);
         ticket.setSubTasks(payload.subTasks, Types.ObjectId(editorId.toString()));
         ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
-        return ticket.addEditorAndSave(editorId);
+        return ticket.setEditorAndSave(editorId);
     }
 
     async createTicket(ownerId: Types.ObjectId | String, payload: Object) {
@@ -48,8 +48,7 @@ export class TicketService {
 
     async changeStatus(ticket: ITicket, status: TicketStatus, editorId: String | Types.ObjectId) {
         ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
-        ticket.addEditor(editorId);
-        await ticket.save();
+        await ticket.setEditorAndSave(editorId);
     }
 
     async findTicketAndChangeSubTasks(ticketId: String | Types.ObjectId, subTasks: {description: string, isDone: boolean}[], editorId: String | Types.ObjectId) {
@@ -63,10 +62,10 @@ export class TicketService {
     async changeSubTasks(ticket: ITicket, subTasks: {description: string, isDone: boolean}[], editorId: String | Types.ObjectId) {
         const id = mongoose.Types.ObjectId(editorId.toString());
         ticket.setSubTasks(subTasks, id);
-        return ticket.addEditorAndSave(editorId);
+        return ticket.setEditorAndSave(editorId);
     }
 
     async addEditorAndSave(ticket: ITicket, editorId: String | Types.ObjectId) {
-        return ticket.addEditorAndSave(editorId);
+        return ticket.setEditorAndSave(editorId);
     }
 }

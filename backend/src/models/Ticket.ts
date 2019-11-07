@@ -37,8 +37,8 @@ export interface ITicketDocument extends mongoose.Document {
 
 export interface ITicket extends ITicketDocument {
   setSubTasks: (subTasks: { description: string, isDone: boolean }[], editorId: Types.ObjectId) => void,
-  addEditor: (editorId: mongoose.Types.ObjectId | String) => void
-  addEditorAndSave: (editorID: mongoose.Types.ObjectId | String) => Promise<ITicket>,
+  setEditor: (editorId: mongoose.Types.ObjectId | String) => void
+  setEditorAndSave: (editorID: mongoose.Types.ObjectId | String) => Promise<ITicket>,
   changeStatus: (status: TicketStatus, editorId: Types.ObjectId) => void
 }
 
@@ -110,13 +110,13 @@ ticketSchema.methods.setSubTasks = function (subTasks: { description: string, is
   this.subTasks = subTasks.map(task => ({ ...task, editorId }));
 }
 
-ticketSchema.methods.addEditor = function (editorId: mongoose.Types.ObjectId) {
+ticketSchema.methods.setEditor = function (editorId: mongoose.Types.ObjectId) {
   this.lastEditorId = editorId;
   this.editorIds.push(editorId);
 }
 
-ticketSchema.methods.addEditorAndSave = async function (editorId: mongoose.Types.ObjectId) {
-  this.addEditor(editorId);
+ticketSchema.methods.setEditorAndSave = async function (editorId: mongoose.Types.ObjectId) {
+  this.setEditor(editorId);
   return this.save();
 }
 

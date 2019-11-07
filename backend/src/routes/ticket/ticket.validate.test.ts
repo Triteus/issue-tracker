@@ -71,7 +71,7 @@ describe('Ticket validators', () => {
 
     describe('PUT /api/ticket/:id', () => {
 
-        const validTicketMock = {
+        const validTicketData = {
             ...ticketData(),
             status: TicketStatus.ACTIVE
         }
@@ -79,12 +79,13 @@ describe('Ticket validators', () => {
         const validators = TicketValidators.putTicket;
 
         it('throws (invalid status)', async () => {
-            const errors = await validateBody({ ...validTicketMock, status: 'invalidStatus' }, validators);
+            const errors = await validateBody({ ...validTicketData, status: 'invalidStatus' }, validators);
             checkResponse(errors, 'status', 'Invalid value');
         })
 
-        it('passes (all body props)', async () => {
-
+        it('passes (valid body props)', async () => {
+            const errors = await validateBody(validTicketData, validators);
+            expect(errors.length).toBe(0);
         })
     })
 
