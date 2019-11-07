@@ -97,7 +97,9 @@ export const ticketSchema = new mongoose.Schema({
   toJSON: {
     virtuals: true, versionKey: false, transform: function (doc, ret) {
       delete ret._id;
-      ret.neededAt = ret.neededAt.toJSON();
+      if(ret.neededAt) {
+        ret.neededAt = ret.neededAt.toJSON();
+      }
     }
   },
   toObject: { virtuals: true },
