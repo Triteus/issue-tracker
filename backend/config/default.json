@@ -4,4 +4,4 @@
     "dbName": "issue_tracker",
     "minPwLength": 6,
     "secretKey": "test"
-  }
+}

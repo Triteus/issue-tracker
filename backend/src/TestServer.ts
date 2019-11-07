@@ -2,7 +2,6 @@ import { Server } from "@overnightjs/core";
 import { Application } from "express";
 import bodyParser = require("body-parser");
 import initPassport from "./startup/passport";
-import initLogging from "./startup/logging";
 import error from "./middlewares/error";
 
 require('express-async-errors');

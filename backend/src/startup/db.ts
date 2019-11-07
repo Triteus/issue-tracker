@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import appConf from "../../config.json";
+import config from "config";
+
 
 export default function () {
   mongoose.connect(
-    appConf.mongoDbUrl,
+    config.get('mongoDbUrl'),
     {
       useNewUrlParser: true,
       useFindAndModify: false,

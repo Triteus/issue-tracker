@@ -1,10 +1,9 @@
 import mongoose, { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import config from '../../config.json';
 import jwt from 'jsonwebtoken';
 // no ts-definition
 require('mongoose-type-email');
-
+import config from 'config';
 
 import { Request } from 'express';
 import { IUser } from './User';
@@ -77,7 +76,7 @@ userSchema.methods.comparePassword = function (pw: string) {
 userSchema.methods.generateToken = function () {
     const userJSON = { _id: this.id, email: this.email, roles: this.roles, username: this.username };
     // generate web token
-    return jwt.sign(userJSON, config.secretKey);
+    return jwt.sign(userJSON, config.get('secretKey'));
 }
 
 userSchema.statics.hashPassword = async function (plainPW: string) {
