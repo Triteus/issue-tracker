@@ -17,11 +17,6 @@ export const subTaskSchema = new Schema({
       type: Boolean,
       default: false
     },
-    editorId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }
   })
   
 

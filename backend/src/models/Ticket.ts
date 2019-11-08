@@ -109,7 +109,7 @@ export const ticketSchema = new mongoose.Schema({
 
 ticketSchema.methods.setSubTasks = function (subTasks: { description: string, isDone: boolean }[], editorId: mongoose.Types.ObjectId) {
   if(!subTasks) return;
-  this.subTasks = subTasks.map(task => ({ ...task, editorId }));
+  this.subTasks = subTasks;
 }
 
 ticketSchema.methods.setEditor = function (editorId: mongoose.Types.ObjectId) {
