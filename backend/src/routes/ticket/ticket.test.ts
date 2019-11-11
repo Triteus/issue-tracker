@@ -76,7 +76,7 @@ describe('TicketController', () => {
             expect(res.body.message).toBe('Ticket successfully created!');
             expect(res.body.ticket).toMatchObject({
                 ...ticketData(),
-                ownerId: owner._id.toHexString()
+                owner: owner._id.toHexString()
             });
         })
 
@@ -95,7 +95,7 @@ describe('TicketController', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
-            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+            ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
 
             authHeaders = {
                 Authorization: 'Bearer ' + owner.generateToken()
@@ -150,7 +150,7 @@ describe('TicketController', () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
             randomUser = await UserModel.create(randomUserData());
-            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+            ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
         })
 
         it('returns status 401 (no token)', async () => {
@@ -201,7 +201,7 @@ describe('TicketController', () => {
 
             beforeEach(async () => {
                 owner = await UserModel.create(ownerData());
-                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
             })
 
             it('returns status 401 (no token)', async () => {
@@ -223,7 +223,7 @@ describe('TicketController', () => {
 
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
-            ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+            ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
         })
 
         it('returns status 404 (ticket not found)', async () => {
@@ -255,7 +255,7 @@ describe('TicketController', () => {
                 owner = await UserModel.create(ownerData());
                 editor = await UserModel.create(editorData());
                 randomUser = await UserModel.create(randomUserData());
-                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
             })
 
             it('returns status 401 (no token)', async () => {
@@ -285,7 +285,7 @@ describe('TicketController', () => {
             beforeEach(async () => {
                 owner = await UserModel.create(ownerData());
                 editor = await UserModel.create(editorData());
-                ticket = await TicketModel.create({ ...ticketData(), ownerId: owner._id });
+                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
             })
 
 

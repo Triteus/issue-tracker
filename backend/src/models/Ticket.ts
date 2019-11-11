@@ -21,9 +21,9 @@ export const priorityArr = Object.values(Priority);
 
 
 export interface ITicketDocument extends mongoose.Document {
-  ownerId: mongoose.Types.ObjectId,
-  editorIds: mongoose.Types.ObjectId[],
-  lastEditorId: mongoose.Types.ObjectId,
+  owner: mongoose.Types.ObjectId,
+  editors: mongoose.Types.ObjectId[],
+  lastEditor: mongoose.Types.ObjectId,
   assignedTo: mongoose.Types.ObjectId,
   priority: Priority,
   neededAt: Date,
@@ -47,18 +47,18 @@ export interface ITicketModel extends Model<ITicket> {
 }
 
 export const ticketSchema = new mongoose.Schema({
-  ownerId: {
+  owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User',
     immutable: true
   },
-  editorIds: [{
+  editors: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     default: []
   }],
-  lastEditorId:
+  lastEditor:
   {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -113,8 +113,8 @@ ticketSchema.methods.setSubTasks = function (subTasks: { description: string, is
 }
 
 ticketSchema.methods.setEditor = function (editorId: mongoose.Types.ObjectId) {
-  this.lastEditorId = editorId;
-  this.editorIds.push(editorId);
+  this.lastEditor = editorId;
+  this.editors.push(editorId);
 }
 
 ticketSchema.methods.setEditorAndSave = async function (editorId: mongoose.Types.ObjectId) {

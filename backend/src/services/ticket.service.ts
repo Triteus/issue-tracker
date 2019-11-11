@@ -23,7 +23,7 @@ export class TicketService {
     }
 
     async createTicket(ownerId: Types.ObjectId | String, payload: Object) {
-        return TicketModel.create({...payload, ownerId});
+        return TicketModel.create({...payload, owner: ownerId});
     }
 
     async findAndDeleteTicket(ticketId: Types.ObjectId | String) {

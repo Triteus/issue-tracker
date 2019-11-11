@@ -9,9 +9,9 @@ export const basicValidators = [
     body('description').optional().isString(),
     body('affectedSystems').optional().isArray(),
     body('neededAt').optional().isISO8601(),
-    body('lastEditorId').not().exists(),
-    body('ownerId').not().exists(),
-    body('editorIds').not().exists()
+    body('lastEditor').not().exists(),
+    body('owner').not().exists(),
+    body('editors').not().exists()
 ]
 
 export const TicketValidators = {

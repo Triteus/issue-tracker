@@ -63,7 +63,7 @@ export class TicketController {
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        if (req.user._id.equals(ticket.ownerId)) {
+        if (req.user._id.equals(ticket.owner)) {
             if (ticket.status !== TicketStatus.OPEN) {
                 throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
             }
@@ -106,8 +106,8 @@ export class TicketController {
         // pagination, 
         // sorting, 
         // filter by category, system, status
-        const tickets = await TicketModel.find({});
-        res.status(404).send(tickets);
+        const tickets = await TicketModel.find({}).populate('owner assignedTo lastEditor');
+        res.status(200).send(tickets);
     }
 
     @Get(':id')
@@ -117,8 +117,8 @@ export class TicketController {
     private async getTicket(req: Request, res: Response) {
 
         const ticket = await TicketModel.findById(req.params.id)
-            .populate('ownerId')
-            .populate('lastEditorId');
+            .populate('owner')
+            .populate('lastEditor');
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }

@@ -29,7 +29,7 @@ describe('TicketService', () => {
 
         it('saves ticket in db', async () => {
             await ticketService.createTicket(owner._id, ticketData());
-            const ticket = await TicketModel.findOne({ownerId: owner._id});
+            const ticket = await TicketModel.findOne({owner: owner._id});
             expect(ticket).toBeTruthy();
             expect(ticket.toJSON()).toMatchObject(ticketData());
         })
@@ -40,7 +40,7 @@ describe('TicketService', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
-            ticket = await TicketModel.create({...ticketData(), ownerId: owner._id});
+            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
         })
 
         it('throws ResponseError (ticket not found)', async () => {
@@ -53,8 +53,8 @@ describe('TicketService', () => {
             const {subTasks, ...expectedPayload } = updatedTicketData();
             expect(updatedTicket.toJSON()).toMatchObject(expectedPayload);
             // check if editor was changed
-            expect(updatedTicket.lastEditorId).toBe(editor._id);
-            expect(updatedTicket.editorIds).toContain(editor._id);
+            expect(updatedTicket.lastEditor).toBe(editor._id);
+            expect(updatedTicket.editors).toContain(editor._id);
             // check if subtasks were changed
             expect(updatedTicket.subTasks.length).toBe(subTasksData().length);
             updatedTicket.subTasks.forEach((subTask, index) => {
@@ -68,7 +68,7 @@ describe('TicketService', () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
 
-            ticket = await TicketModel.create({...ticketData(), ownerId: owner._id});
+            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
         })
 
         it('throws error (ticket not found)', async () => {
@@ -104,8 +104,8 @@ describe('TicketService', () => {
         it('added editor to ticket', async () => {
             await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
             const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.lastEditorId).toStrictEqual(editor._id);
-            expect(updatedTicket.editorIds).toContainEqual(editor._id);
+            expect(updatedTicket.lastEditor).toStrictEqual(editor._id);
+            expect(updatedTicket.editors).toContainEqual(editor._id);
         })
     }),
 
@@ -113,7 +113,7 @@ describe('TicketService', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
-            ticket = await TicketModel.create({...ticketData(), ownerId: owner._id});
+            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
         })
 
         it('throws error (ticket not found)', async () => {
