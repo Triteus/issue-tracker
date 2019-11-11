@@ -1,4 +1,5 @@
 import { SubTask } from './subtask.model';
+import { User } from './user.model';
 
 export enum Priority {
   LOW = 'low',
@@ -18,18 +19,20 @@ export enum TicketStatus {
 export const ticketStatusArr = Object.values(TicketStatus);
 
 export class Ticket {
-  ownerId: string;
-  editorIds: string[];
-  lastEditorId: string;
-  assignedTo: string;
+  id: string;
+  owner: User;
+  editors: string[];
+  lastEditor: User;
+  assignedTo: User;
   priority: Priority;
   neededAt: Date;
   title: string;
   description: string;
   status: TicketStatus;
+  affectedSystems: string[];
   subTasks: SubTask[];
   createdAt: Date;
-  editedAt: Date;
+  updatedAt: Date;
 }
 
 

@@ -1,0 +1,71 @@
+<app-issue-table-filters (paramsChanged)="filterChanged($event)"></app-issue-table-filters>
+<div class="mat-elevation-z8">
+  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+  <table
+    mat-table
+    class="full-width-table"
+    matSort
+    aria-label="Elements"
+    [dataSource]="dataSource"
+  >
+    <ng-container matColumnDef="ownerName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Name des Erstellers
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.owner.username }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Titel</th>
+      <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Beschreibung</th>
+      <td mat-cell *matCellDef="let row">{{ row.description }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Priorität</th>
+      <td mat-cell *matCellDef="let row">{{ row.priority }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastEditorName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Name des letzten Bearbeiters
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.lastEditor?.username }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="affectedSystems">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Betroffene Systeme
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.affectedSystems }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Erstellt am</th>
+      <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Letzte Änderung</th>
+      <td mat-cell *matCellDef="let row">{{ row.updatedAt | date:'short' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    #paginator
+    [length]="$dataLength | async"
+    [pageIndex]="0"
+    [pageSize]="50"
+    [pageSizeOptions]="[25, 50, 100, 250]"
+  >
+  </mat-paginator>
+</div>

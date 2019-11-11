@@ -1,0 +1,65 @@
+<div
+  fxLayout="row"
+  fxLayoutAlign="center center"
+  fxLayoutGap="20px"
+  class="ticket-filters"
+>
+  <mat-form-field>
+    <input matInput placeholder="Suche" #input />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Priorität</mat-label>
+    <mat-select #prioSelect (valueChange)="filterChanged()">
+      <mat-option [value]="'open'">
+        Offen
+      </mat-option>
+      <mat-option [value]="'in progress'">
+        In Bearbeitung
+      </mat-option>
+      <mat-option [value]="'closed'">
+        Geschlossen
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Betroffenes System</mat-label>
+    <mat-select #systemsSelect (valueChange)="filterChanged()" multiple>
+      <mat-option *ngFor="let system of systems" [value]="system.toLowerCase()">
+        {{system}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="" fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        placeholder="Beginn Bearbeitungsdatum"
+        (dateChange)="filterChanged()"
+        #startDate
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        placeholder="Ende Bearbeitungsdatum"
+        (dateChange)="filterChanged()"
+        #endDate
+      />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="ticket-status">
+    <mat-checkbox (change)="filterChanged()" #openCB class="checkbox">Offen</mat-checkbox>
+    <mat-checkbox (change)="filterChanged()" #progressCB class="checkbox">In Bearbeitung</mat-checkbox>
+    <mat-checkbox (change)="filterChanged()" #closedCB class="checkbox">Geschlossen</mat-checkbox>
+  </div>
+</div>

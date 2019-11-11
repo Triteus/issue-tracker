@@ -1,0 +1,78 @@
+import { Component, AfterViewInit, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { MatSelect, MatCheckbox, MatDatepicker } from '@angular/material';
+import { fromEvent, merge, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Priority } from '../models/ticket.model';
+import { environment } from 'src/environments/environment';
+
+
+export interface FilterParams {
+  filter: string;
+  openSelected: boolean;
+  closedSelected: boolean;
+  progressSelected: boolean;
+  priority: Priority | null;
+  systems: string[];
+  editedDateStart: string | null;
+  editedDateEnd: string | null;
+}
+
+@Component({
+  selector: 'app-issue-table-filters',
+  templateUrl: './issue-table-filters.component.html',
+  styleUrls: ['./issue-table-filters.component.sass']
+})
+export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
+
+  @Output() paramsChanged = new EventEmitter<object>();
+
+  @ViewChild('input', { static: false }) input: ElementRef;
+  @ViewChild('prioSelect', { static: false }) prioSelect: MatSelect;
+  @ViewChild('systemsSelect', {static: false}) systemsSelect: MatSelect;
+
+  @ViewChild('openCB', { static: false }) openCb: MatCheckbox;
+  @ViewChild('progressCB', { static: false }) progressCb: MatCheckbox;
+  @ViewChild('closedCB', { static: false }) closedCb: MatCheckbox;
+  @ViewChild('startDate', { static: false }) startDate: ElementRef;
+  @ViewChild('endDate', { static: false }) endDate: ElementRef;
+
+  systems = environment.systems;
+
+  constructor() { }
+
+  ngOnInit() { }
+
+  ngAfterViewInit() {
+
+    // server-side search
+    const $keyUpEvent = fromEvent(this.input.nativeElement, 'keyup')
+      .pipe(
+        debounceTime(350),
+        distinctUntilChanged(),
+      );
+
+    const $events = merge($keyUpEvent);
+    $events.pipe(
+      switchMap(() => {
+        this.filterChanged();
+        return of();
+      })
+    ).subscribe(() => { });
+  }
+
+  filterChanged() {
+    const params: FilterParams = {
+      filter: this.input.nativeElement.value,
+      openSelected: this.openCb.checked,
+      progressSelected: this.progressCb.checked,
+      closedSelected: this.closedCb.checked,
+      priority: this.prioSelect.value,
+      systems: this.systemsSelect.value,
+      // Note: toJSON() does not preserve timezone!
+      editedDateStart: new Date(this.startDate.nativeElement.value).toJSON(),
+      editedDateEnd: new Date(this.endDate.nativeElement.value).toJSON()
+    };
+    this.paramsChanged.emit(params);
+  }
+
+}
