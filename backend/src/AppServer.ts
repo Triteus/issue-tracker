@@ -21,13 +21,15 @@ export class AppServer extends Server {
         // Body Parser Middleware
         this.app.use(bodyParser.json());
         //CORS Middleware
-        this.app.use(function (req, res, next) {
+
+         this.app.use(function (req, res, next) {
             //Enabling CORS 
             res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType,Content-Type, Accept, Authorization");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,PATCH");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType, Content-Type, Accept, Authorization");
+            
             next();
-        });
+        }); 
 
         initDB();
         initLogging();

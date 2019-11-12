@@ -12,15 +12,14 @@ import { TicketValidators } from "./ticket.validate";
 const validate = validation(TicketValidators);
 
 @Controller('api/ticket')
-@ClassMiddleware([
-    passport.authenticate('jwt', { session: false }),
-])
+
 export class TicketController {
 
     ticketService = new TicketService();
 
     @Post('')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('createTicket')
     ])
     private async createIssue(req: RequestWithUser, res: Response) {
@@ -38,6 +37,7 @@ export class TicketController {
 
     @Put(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
@@ -55,6 +55,7 @@ export class TicketController {
 
     @Delete(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('deleteTicket')
     ])
     private async deleteTicket(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -83,6 +84,7 @@ export class TicketController {
 
     @Patch(':id/status')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('changeStatus')
     ])
@@ -93,6 +95,7 @@ export class TicketController {
 
     @Patch(':id/sub-task')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('changeSubTasks')
     ])
@@ -102,6 +105,9 @@ export class TicketController {
     }   
 
     @Get('')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
+    ])
     private async getTickets(req: Request, res: Response) {
         // pagination, 
         // sorting, 
@@ -112,6 +118,7 @@ export class TicketController {
 
     @Get(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('getTicket')
     ])
     private async getTicket(req: Request, res: Response) {
