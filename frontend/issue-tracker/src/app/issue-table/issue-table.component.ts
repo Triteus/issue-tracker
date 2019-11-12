@@ -4,9 +4,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { IssueTableDataSource, IssueTableItem } from './issue-table-datasource';
 import { TicketService } from '../ticket.service';
-import { Observable, merge, } from 'rxjs';
+import { Observable, merge, Subscription, } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FilterParams } from '../issue-table-filters/issue-table-filters.component';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
 
 
 
@@ -30,8 +31,11 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
   @ViewChild(MatTable, { static: false }) table: MatTable<IssueTableItem>;
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
+
+  columnsSmallScreen = ['ownerName', 'title', 'priority', 'lastEditorName', 'affectedSystems', 'updatedAt']
+  columnsBigScreen = ['ownerName', 'title', 'description', 'priority', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['ownerName', 'title', 'description', 'priority', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
+  displayedColumns = this.columnsBigScreen;
 
   private filterParams: object;
 
@@ -50,12 +54,24 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
     editedDateEnd: null
   };
 
-  constructor(private ticketService: TicketService) {}
+  watcher: Subscription;
+
+  constructor(private ticketService: TicketService, private mediaObserver: MediaObserver) {}
 
   ngOnInit() {
     this.dataSource = new IssueTableDataSource(this.ticketService);
     this.dataSource.loadTickets(this.startParams);
     this.$dataLength = this.dataSource.$dataLength();
+
+    this.watcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
+      console.log('changed', change);
+      if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+        this.displayedColumns = this.columnsSmallScreen;
+      } else {
+        this.displayedColumns = this.columnsBigScreen;
+      }
+    });
+
   }
 
   ngAfterViewInit() {
