@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -20,7 +21,7 @@ export class NavComponent implements OnInit {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService) { }
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.$user = this.authService.$user().pipe(
@@ -31,6 +32,7 @@ export class NavComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 }

@@ -4,7 +4,10 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatSelectModule, MatDatepickerModule, MatSnackBarModule } from '@angular/material/';
+import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule,
+  MatButtonModule, MatIconModule, MatProgressSpinnerModule,
+  MatInputModule, MatFormFieldModule, MatCheckboxModule,
+  MatSelectModule, MatDatepickerModule, MatSnackBarModule } from '@angular/material/';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatListModule } from '@angular/material/list';

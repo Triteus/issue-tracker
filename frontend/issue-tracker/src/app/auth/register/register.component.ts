@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,7 @@ import { MatSnackBar } from '@angular/material';
 export class RegisterComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
-  constructor(private authService: AuthService, private snackBar: MatSnackBar) { }
+  constructor(private authService: AuthService, private snackBar: MatSnackBar, private router: Router) { }
   ngOnInit() {
   }
 
@@ -23,6 +24,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.snackBar.open('Nutzer wurde erfolgreich registriert!', 'OK', {
         duration: 3000
       });
+      this.router.navigateByUrl('/login');
     });
   }
 
