@@ -1,0 +1,56 @@
+<h1 class="heading">Einloggen</h1>
+<form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+  <div fxLayout fxLayoutAlign="center center">
+    <mat-card class="card" fxLayout="column" fxLayoutAlign="center center">
+      <mat-form-field>
+        <input
+          type="email"
+          #email="ngModel"
+          ngModel
+          required
+          email
+          name="email"
+          matInput
+          placeholder="E-Mail"
+        />
+        <mat-error
+          *ngIf="email.invalid && (email.dirty || email.touched)"
+        >
+          <mat-error *ngIf="email.hasError('required')">
+            E-Mail erforderlich.
+          </mat-error>
+          <mat-error *ngIf="email.hasError('email')">
+            E-Mail ungültig.
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="password"
+          #password="ngModel"
+          ngModel
+          required
+          name="password"
+          matInput
+          placeholder="Passwort"
+        />
+        <mat-error
+        *ngIf="password.invalid && (password.dirty || password.touched)"
+        class="alert alert-danger"
+      >
+        <mat-error *ngIf="password.hasError('required')">
+          Passwort erforderlich.
+        </mat-error>
+      </mat-error>
+      </mat-form-field>
+      <button class="submit-btn"
+        [disabled]="!loginForm.form.valid"
+        type="submit"
+        mat-raised-button
+        color="primary"
+      >
+        Einloggen
+      </button>
+    </mat-card>
+  </div>
+</form>

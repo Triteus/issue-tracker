@@ -1,0 +1,26 @@
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { MatSnackBar } from '@angular/material';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.sass']
+})
+export class LoginComponent implements OnInit {
+
+  constructor(private authService: AuthService, private snackBar: MatSnackBar) { }
+
+  ngOnInit() {
+  }
+
+  onSubmit(form: NgForm) {
+    const {email, password} = form.form.value;
+    console.log('form', form.form);
+    this.authService.login(email, password).subscribe(res => {
+      this.snackBar.open('Anmeldung erfolgreich!', 'OK');
+    });
+  }
+
+}

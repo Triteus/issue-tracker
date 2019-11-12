@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatSelectModule, MatDatepickerModule } from '@angular/material/';
+import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatSelectModule, MatDatepickerModule, MatSnackBarModule } from '@angular/material/';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatListModule } from '@angular/material/list';
@@ -16,10 +16,16 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { IssueOverviewComponent } from './issue-overview/issue-overview.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { IssueTableFiltersComponent } from './issue-table-filters/issue-table-filters.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarComponent } from './shared/components/mat-snack-bar/mat-snack-bar.component';
+import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,6 +33,9 @@ import { IssueTableFiltersComponent } from './issue-table-filters/issue-table-fi
     IssueTableComponent,
     IssueOverviewComponent,
     IssueTableFiltersComponent,
+    LoginComponent,
+    RegisterComponent,
+    MatSnackBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,9 +62,14 @@ import { IssueTableFiltersComponent } from './issue-table-filters/issue-table-fi
     MatSelectModule,
     FlexLayoutModule,
     MatDatepickerModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    FormsModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

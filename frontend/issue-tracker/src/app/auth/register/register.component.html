@@ -1,0 +1,125 @@
+<h1 class="heading">Registrieren</h1>
+<form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+  <div fxLayout fxLayoutAlign="center center">
+    <mat-card class="card" fxLayout="column" fxLayoutAlign="center center">
+      <mat-form-field>
+        <input
+          #firstName="ngModel"
+          type="text"
+          name="firstName"
+          ngModel
+          required
+          minlength="3"
+          matInput
+          placeholder="Vorname"
+        />
+        <mat-error
+          *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+          class="alert alert-danger"
+        >
+          <mat-error *ngIf="firstName.hasError('required')">
+            Vorname erforderlich.
+          </mat-error>
+          <mat-error *ngIf="firstName.hasError('minlength')">
+            Vorname muss mind. 3 Zeichen lang sein.
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          #lastName="ngModel"
+          type="text"
+          name="lastName"
+          ngModel
+          required
+          minlength="3"
+          matInput
+          placeholder="Nachname"
+        />
+        <mat-error
+          *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
+          class="alert alert-danger"
+        >
+          <mat-error *ngIf="lastName.hasError('required')">
+            Nachname erforderlich.
+          </mat-error>
+          <mat-error *ngIf="lastName.hasError('minlength')">
+            Nachname muss mind. 3 Zeichen lang sein.
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          #email="ngModel"
+          type="email"
+          name="email"
+          ngModel
+          required
+          email
+          matInput
+          placeholder="E-Mail"
+        />
+        <mat-error
+          *ngIf="email.invalid && (email.dirty || email.touched)"
+          class="alert alert-danger"
+        >
+          <mat-error *ngIf="email.hasError('required')">
+            E-Mail erforderlich.
+          </mat-error>
+          <mat-error *ngIf="email.hasError('email')">
+            E-Mail ungültig.
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          #password="ngModel"
+          type="password"
+          name="password"
+          ngModel
+          minlength="6"
+          required
+          matInput
+          placeholder="Passwort"
+        />
+        <mat-error
+          *ngIf="password.invalid && (password.dirty || password.touched)"
+          class="alert alert-danger"
+        >
+          <mat-error *ngIf="password.hasError('required')">
+            Passwort erforderlich.
+          </mat-error>
+          <mat-error *ngIf="password.hasError('minlength')">
+            Password muss mind. 6 Zeichen lang sein.
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          #passwordConfirm="ngModel"
+          type="password"
+          name="passwordConfirm"
+          ngModel
+          minlength="6"
+          required
+          matInput
+          placeholder="Passwort bestätigen"
+        />
+        <mat-error
+        *ngIf="passwordConfirm.invalid && (passwordConfirm.dirty || passwordConfirm.touched)"
+        class="alert alert-danger"
+      >
+        <mat-error *ngIf="passwordConfirm.hasError('required')">
+          Passwort erforderlich.
+        </mat-error>
+        <mat-error *ngIf="passwordConfirm.hasError('minlength')">
+          Password muss mind. 6 Zeichen lang sein.
+        </mat-error>
+      </mat-error>
+      </mat-form-field>
+      <button class="submit-btn" [disabled]="registerForm.invalid" type="submit" mat-raised-button color="primary">
+        Registrieren
+      </button>
+    </mat-card>
+  </div>
+</form>
