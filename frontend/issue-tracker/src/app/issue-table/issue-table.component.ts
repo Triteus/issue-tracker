@@ -64,7 +64,6 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
     this.$dataLength = this.dataSource.$dataLength();
 
     this.watcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
-      console.log('changed', change);
       if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
         this.displayedColumns = this.columnsSmallScreen;
       } else {

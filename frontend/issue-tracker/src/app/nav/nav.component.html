@@ -35,16 +35,15 @@
     class="sidenav"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isHandset$ | async) === false"
   >
     <mat-nav-list>
-      <a
+      <a *ngIf="!($user | async)"
         mat-list-item
         [routerLink]="['/register']"
         routerLinkActive="router-link-active"
         >Registrieren</a
       >
-      <a
+      <a *ngIf="!($user | async)"
         mat-list-item
         [routerLink]="['/login']"
         routerLinkActive="router-link-active"

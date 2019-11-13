@@ -24,10 +24,7 @@ export class NavComponent implements OnInit {
   constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-    this.$user = this.authService.$user().pipe(
-      tap(() => {
-        console.log('new value');
-      }));
+    this.$user = this.authService.$user();
   }
 
   logout() {
