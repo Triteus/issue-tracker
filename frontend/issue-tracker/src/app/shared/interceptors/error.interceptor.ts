@@ -19,7 +19,12 @@ export class ErrorInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
+        console.log('error', err);
         let errMsg = '';
+
+        if (err.message) {
+          errMsg = err.message;
+        }
 
         if (err.error.message) {
           errMsg = err.error.message;

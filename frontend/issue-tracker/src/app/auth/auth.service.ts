@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { take, map, tap } from 'rxjs/operators';
-
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface RegisterParams {
   password: string;
@@ -13,9 +13,7 @@ interface RegisterParams {
   lastName: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AuthService {
 
   url = 'http://localhost:3000/api/auth/';
@@ -25,7 +23,7 @@ export class AuthService {
 
   userSubject: BehaviorSubject<User | null>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {
     const user = localStorage.getItem('user');
     this.userSubject = new BehaviorSubject<User | null>(user ? JSON.parse(user) : null);
    }
@@ -63,6 +61,11 @@ export class AuthService {
 
   getToken() {
     return this.token;
+  }
+
+  isAuthenticated() {
+    const token = localStorage.getItem('token');
+    return !this.jwtHelper.isTokenExpired(token);
   }
 
 

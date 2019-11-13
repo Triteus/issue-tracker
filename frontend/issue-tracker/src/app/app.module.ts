@@ -29,6 +29,9 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBarComponent } from './shared/components/mat-snack-bar/mat-snack-bar.component';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { AuthService } from './auth/auth.service';
+import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+import { AuthGuardService } from './shared/services/auth-guard.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,11 +70,16 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     MatDatepickerModule,
     MatMomentDateModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    JwtModule
   ],
   providers: [
+    AuthService,
+    AuthGuardService,
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+      JwtHelperService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
