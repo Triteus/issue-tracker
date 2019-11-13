@@ -8,6 +8,9 @@ import { Observable, merge, Subscription, } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FilterParams } from '../issue-table-filters/issue-table-filters.component';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
+import { MatDialogRef } from '@angular/material';
+import { TicketFormDialogComponent } from '../ticket-form-dialog/ticket-form-dialog.component';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 
@@ -32,7 +35,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
-  columnsSmallScreen = ['ownerName', 'title', 'priority', 'lastEditorName', 'affectedSystems', 'updatedAt']
+  columnsSmallScreen = ['ownerName', 'title', 'priority', 'lastEditorName', 'affectedSystems', 'updatedAt'];
   columnsBigScreen = ['ownerName', 'title', 'description', 'priority', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
@@ -56,7 +59,12 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
 
   watcher: Subscription;
 
-  constructor(private ticketService: TicketService, private mediaObserver: MediaObserver) {}
+  constructor(
+    private ticketService: TicketService,
+    private mediaObserver: MediaObserver,
+    private router: Router,
+    private route: ActivatedRoute
+    ) { }
 
   ngOnInit() {
     this.dataSource = new IssueTableDataSource(this.ticketService);
@@ -64,7 +72,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
     this.$dataLength = this.dataSource.$dataLength();
 
     this.watcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
-      if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+      if (change.mqAlias === 'sm' || change.mqAlias === 'xs') {
         this.displayedColumns = this.columnsSmallScreen;
       } else {
         this.displayedColumns = this.columnsBigScreen;
@@ -95,12 +103,17 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
       ...this.filterParams
     };
     this.dataSource.loadTickets(params);
-}
+  }
 
   filterChanged(filterParams: FilterParams) {
     this.paginator.pageIndex = 0;
     this.filterParams = filterParams;
     this.loadTicketsPage();
+  }
+
+  openDialog(ticketId: string) {
+    console.log('open dialog', ticketId);
+    this.router.navigate([ticketId], {relativeTo: this.route});
   }
 
 }

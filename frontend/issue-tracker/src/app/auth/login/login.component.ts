@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     console.log('form', form.form);
     this.authService.login(email, password).subscribe(res => {
       this.snackBar.open('Anmeldung erfolgreich!', 'OK');
-      this.router.navigateByUrl('/overview');
+      this.router.navigateByUrl('/tickets');
     });
   }
 

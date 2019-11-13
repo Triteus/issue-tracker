@@ -10,3 +10,9 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+
+.table-row:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}

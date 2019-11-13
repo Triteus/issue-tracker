@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule,
   MatButtonModule, MatIconModule, MatProgressSpinnerModule,
   MatInputModule, MatFormFieldModule, MatCheckboxModule,
-  MatSelectModule, MatDatepickerModule, MatSnackBarModule } from '@angular/material/';
+  MatSelectModule, MatDatepickerModule, MatSnackBarModule, MatDialogModule } from '@angular/material/';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatListModule } from '@angular/material/list';
@@ -32,6 +32,8 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { AuthService } from './auth/auth.service';
 import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { AuthGuardService } from './shared/services/auth-guard.service';
+import { TicketFormDialogComponent } from './ticket-form-dialog/ticket-form-dialog.component';
+import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +44,8 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
     LoginComponent,
     RegisterComponent,
     MatSnackBarComponent,
+    TicketFormDialogComponent,
+    TicketFormDialogEntryComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +75,7 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
     MatMomentDateModule,
     FormsModule,
     MatSnackBarModule,
+    MatDialogModule,
     JwtModule
   ],
   providers: [
@@ -80,6 +85,9 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
       JwtHelperService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+  ],
+  entryComponents: [
+    TicketFormDialogComponent
   ],
   bootstrap: [AppComponent]
 })
