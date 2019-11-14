@@ -20,6 +20,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   onSubmit(form: NgForm) {
     const payload = form.form.value;
     console.log('form', payload);
+    if (payload.password !== payload.passwordConfirm) {
+      this.snackBar.open('Passwörter stimmen nicht überein!', 'OK', {duration: 3000});
+      form.
+      form.reset({...form.form.value, password: '', passwordConfirm: ''});
+      return;
+    }
+
     this.sub = this.authService.register(payload).subscribe(res => {
       this.snackBar.open('Nutzer wurde erfolgreich registriert!', 'OK', {
         duration: 3000
