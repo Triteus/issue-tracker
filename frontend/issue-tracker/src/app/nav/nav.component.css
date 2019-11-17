@@ -12,6 +12,16 @@
 
 
 .toolbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin-bottom: 64px;
+}
+
+
+mat-sidenav-container, mat-sidenav, mat-sidenav-content {
+  height: 100vh;
+  overflow: visible;
 }
