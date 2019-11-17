@@ -22,17 +22,18 @@ export const priorityArr = Object.values(Priority);
 
 export interface ITicketDocument extends mongoose.Document {
   owner: mongoose.Types.ObjectId,
-  editors: mongoose.Types.ObjectId[],
-  lastEditor: mongoose.Types.ObjectId,
-  assignedTo: mongoose.Types.ObjectId,
+  editors?: mongoose.Types.ObjectId[],
+  lastEditor?: mongoose.Types.ObjectId,
+  assignedTo?: mongoose.Types.ObjectId,
   priority: Priority,
-  neededAt: Date,
+  neededAt?: Date,
   title: string,
   description: string,
-  status: TicketStatus,
-  subTasks: ISubTask[],
-  createdAt: Date,
-  editedAt: Date
+  status?: TicketStatus,
+  subTasks?: ISubTask[],
+  affectedSystems?: string[],
+  createdAt?: Date,
+  updatedAt?: Date
 }
 
 export interface ITicket extends ITicketDocument {
