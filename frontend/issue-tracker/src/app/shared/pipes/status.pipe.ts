@@ -11,7 +11,7 @@ export class StatusPipe implements PipeTransform {
     if (value === TicketStatus.OPEN) {
       return 'Offen';
     } else if (value === TicketStatus.CLOSED) {
-      return 'In Bearbeitung';
+      return 'In Arbeit';
     } else if (value === TicketStatus.ACTIVE) {
       return 'Erledigt';
     } else {

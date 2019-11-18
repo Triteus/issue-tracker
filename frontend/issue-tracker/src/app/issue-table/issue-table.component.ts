@@ -26,15 +26,15 @@ export type TicketParams = FilterParams & PaginationSortParams;
   templateUrl: './issue-table.component.html',
   styleUrls: ['./issue-table.component.css']
 })
-export class IssueTableComponent implements AfterViewInit, OnInit {
+export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<IssueTableItem>;
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
-  columnsSmallScreen = ['ownerName', 'title', 'priority', 'status', 'lastEditorName', 'affectedSystems', 'updatedAt'];
-  columnsBigScreen = ['ownerName', 'title', 'description', 'priority', 'status', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
+  columnsSmallScreen = ['priority', 'status', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'updatedAt'];
+  columnsBigScreen = ['priority', 'status', 'title', 'description', 'affectedSystems', 'ownerName', 'lastEditorName', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
 

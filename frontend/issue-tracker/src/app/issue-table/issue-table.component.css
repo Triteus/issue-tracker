@@ -17,9 +17,9 @@
   cursor: pointer;
 }
 
-mat-chip {
+/* mat-chip {
   padding: 2px 4px 2px 4px;
-}
+} */
 
 td.mat-cell {
   padding-left: 20px;
