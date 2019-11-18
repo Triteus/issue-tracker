@@ -22,7 +22,7 @@ export class TicketFormDialogEntryComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(TicketFormDialogComponent, {
-      width: '250px',
+      width: '550px',
       data: {ticketId: this.route.snapshot.paramMap.get('ticketId')}
     });
     dialogRef.afterClosed().subscribe(result => {

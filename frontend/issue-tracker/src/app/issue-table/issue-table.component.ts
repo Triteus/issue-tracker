@@ -8,8 +8,6 @@ import { Observable, merge, Subscription, } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FilterParams } from '../issue-table-filters/issue-table-filters.component';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { MatDialogRef } from '@angular/material';
-import { TicketFormDialogComponent } from '../ticket-form-dialog/ticket-form-dialog.component';
 import { Router, ActivatedRoute } from '@angular/router';
 
 
@@ -35,8 +33,8 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
-  columnsSmallScreen = ['ownerName', 'title', 'priority', 'lastEditorName', 'affectedSystems', 'updatedAt'];
-  columnsBigScreen = ['ownerName', 'title', 'description', 'priority', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
+  columnsSmallScreen = ['ownerName', 'title', 'priority', 'status', 'lastEditorName', 'affectedSystems', 'updatedAt'];
+  columnsBigScreen = ['ownerName', 'title', 'description', 'priority', 'status', 'lastEditorName', 'affectedSystems', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
 
@@ -56,6 +54,8 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
     editedDateStart: null,
     editedDateEnd: null
   };
+
+  sliceTextAtPos = 100;
 
   watcher: Subscription;
 
@@ -114,6 +114,10 @@ export class IssueTableComponent implements AfterViewInit, OnInit {
   openDialog(ticketId: string) {
     console.log('open dialog', ticketId);
     this.router.navigate([ticketId], {relativeTo: this.route});
+  }
+
+  shouldSlice(str: string) {
+    return Array.from(str).length > this.sliceTextAtPos;
   }
 
 }
