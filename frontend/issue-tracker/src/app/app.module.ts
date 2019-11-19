@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule,
   MatButtonModule, MatIconModule, MatProgressSpinnerModule,
   MatInputModule, MatFormFieldModule, MatCheckboxModule,
-  MatSelectModule, MatDatepickerModule, MatSnackBarModule, MatDialogModule, MatChipsModule } from '@angular/material/';
+  MatSelectModule, MatDatepickerModule, MatSnackBarModule, MatDialogModule, MatChipsModule, MatTooltipModule } from '@angular/material/';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatListModule } from '@angular/material/list';
@@ -38,6 +38,7 @@ import { TaskListComponent } from './ticket-form-dialog/task-list/task-list.comp
 import { PriorityIconNamePipe } from './shared/pipes/priority-icon.pipe';
 import { StatusPipe } from './shared/pipes/status.pipe';
 import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
+import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,6 +55,7 @@ import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
     PriorityIconNamePipe,
     StatusPipe,
     PriorityNamePipe,
+    TicketBoardComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,6 +83,7 @@ import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
     FlexLayoutModule,
     MatDatepickerModule,
     MatMomentDateModule,
+    MatTooltipModule,
     FormsModule,
     MatSnackBarModule,
     MatDialogModule,

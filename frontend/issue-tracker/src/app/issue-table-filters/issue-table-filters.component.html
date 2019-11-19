@@ -5,7 +5,9 @@
   fxLayoutGap="20px"
   class="ticket-filters"
 >
-  <button (click)="openTicketDialog()" mat-mini-fab color="primary"><mat-icon>add</mat-icon></button>
+  <button (click)="openTicketDialog()" mat-mini-fab color="primary" matTooltip="Neues Ticket erstellen">
+    <mat-icon>add</mat-icon>
+  </button>
   <mat-form-field>
     <input matInput placeholder="Suche" #input />
   </mat-form-field>

@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
+import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
       {path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full'}
     ]
   },
+  { path: 'ticket-board', component: TicketBoardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];
