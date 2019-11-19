@@ -84,12 +84,18 @@ export class TicketService {
       );
   }
 
-  editTicket(): Observable<void> {
-    return of();
+  editTicket(payload: any, ticketId: string): Observable<any> {
+    return this.http.put<void>(this.url + ticketId, payload)
+      .pipe(
+        catchError(this.handleError<void>('editTicket'))
+      );
   }
 
-  deleteTicket(): Observable<Ticket> {
-    return of();
+  deleteTicket(ticketId: string): Observable<Ticket> {
+    return this.http.delete<Ticket>(this.url + ticketId)
+      .pipe(
+        catchError(this.handleError<Ticket>('deleteTicket'))
+      );
   }
 
   changeStatus(): Observable<void> {
