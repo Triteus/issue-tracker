@@ -1,110 +1,111 @@
-<ng-container *ngIf="ticket$ | async as ticket; else loading">
-  <form [formGroup]="ticketForm" (ngSubmit)="updateTicket()">
-    <div fxLayout="column" fxLayoutGap="10px">
-      <span class="mat-h2" fxLayout>
-        <mat-form-field appearance="outline" fxFlexFill>
-          <input
-            formControlName="title"
-            aria-label="Titel"
-            matInput
-            placeholder="Titel"
-            required
-            minlength="4"
-            maxlength="50"
-          />
-          <mat-hint>{{title.value.length}}/50 Zeichen</mat-hint>
-          <mat-error
-            *ngIf="title.invalid && (title.dirty || title.touched)"
-            class="alert alert-danger"
-          >
-            <mat-error *ngIf="!!title.errors.required">
-              Titel benötigt.
+  <ng-container *ngIf="ticket$ | async as ticket; else loading">
+    <form [formGroup]="ticketForm" (ngSubmit)="updateTicket()">
+      <div>
+        <mat-dialog-content style="max-height: 80vh" fxLayout="column" fxLayoutGap="10px">
+          <span class="mat-h2" fxLayout>
+            <mat-form-field appearance="outline" fxFlexFill>
+              <input
+              formControlName="title"
+              aria-label="Titel"
+              matInput
+              placeholder="Titel"
+              required
+              minlength="4"
+              maxlength="50"
+              />
+              <mat-hint>{{title.value.length}}/50 Zeichen</mat-hint>
+              <mat-error
+              *ngIf="title.invalid && (title.dirty || title.touched)"
+              class="alert alert-danger"
+              >
+              <mat-error *ngIf="!!title.errors.required">
+                Titel benötigt.
+              </mat-error>
+              <mat-error *ngIf="!!title.errors.minlength">
+                Titel muss mind. 4 Zeichen lang sein.
+              </mat-error>
+              <mat-error *ngIf="!!title.errors.maxlength">
+                Titel darf max. 50 Zeichen lang sein.
+              </mat-error>
             </mat-error>
-            <mat-error *ngIf="!!title.errors.minlength">
-              Titel muss mind. 4 Zeichen lang sein.
-            </mat-error>
-            <mat-error *ngIf="!!title.errors.maxlength">
-              Titel darf max. 50 Zeichen lang sein.
-            </mat-error>
-          </mat-error>
-        </mat-form-field>
-      </span>
-      <mat-card
+          </mat-form-field>
+        </span>
+        <mat-card
         fxLayout="column"
         fxLayoutAlign="center center"
         fxLayoutGap="20px"
-      >
-        <table *ngIf="editMode">
-          <tr>
-            <th>Ersteller</th>
-            <th>Letzter Bearbeiter</th>
-          </tr>
-          <tr>
-            <td>{{ ticket.owner.username }}</td>
-            <td>{{ ticket.lastEditor?.username || "-" }}</td>
-          </tr>
-          <tr>
-            <th>Erstellt am</th>
-            <th>Bearbeitet am</th>
-          </tr>
-          <tr>
-            <td>{{ ticket.createdAt | date }}</td>
-            <td>{{ ticket.updatedAt | date }}</td>
-          </tr>
-        </table>
+        >
+      <table *ngIf="editMode">
+        <tr>
+          <th>Ersteller</th>
+          <th>Letzter Bearbeiter</th>
+        </tr>
+        <tr>
+          <td>{{ ticket.owner.username }}</td>
+          <td>{{ ticket.lastEditor?.username || "-" }}</td>
+        </tr>
+        <tr>
+          <th>Erstellt am</th>
+          <th>Bearbeitet am</th>
+        </tr>
+        <tr>
+          <td>{{ ticket.createdAt | date }}</td>
+          <td>{{ ticket.updatedAt | date }}</td>
+        </tr>
+      </table>
 
-        <mat-form-field>
-          <mat-label>Status</mat-label>
-          <mat-select [disabled]="!editMode" formControlName="status" required>
-            <mat-option
-              *ngFor="let status of ticketStatusArr"
-              [value]="status"
-              >{{ status | status }}</mat-option
-            >
-          </mat-select>
-          <mat-error
-          *ngIf="status.invalid && (status.dirty || status.touched)"
-          class="alert alert-danger"
-        >
-          <mat-error *ngIf="!!status.errors.required">
-            Status benötigt.
-          </mat-error>
-        </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Priorität</mat-label>
-          <mat-select formControlName="priority" required>
-            <mat-option
-              *ngFor="let prio of priorityArr"
-              [value]="prio"
-              >{{ prio | priorityName }}</mat-option
-            >
-          </mat-select>
-          <mat-error
-          *ngIf="priority.invalid && (priority.dirty || priority.touched)"
-          class="alert alert-danger"
-        >
-          <mat-error *ngIf="!!priority.errors.required">
-            Priorität benötigt.
-          </mat-error>
-        </mat-error>
-        </mat-form-field>
-      </mat-card>
       <mat-form-field>
-        <textarea
-          cdkTextareaAutosize
-          matInput
-          placeholder="Beschreibung"
-          formControlName="description"
-          required
-          minlength="4"
-          maxlength="1000"
+        <mat-label>Status</mat-label>
+        <mat-select [disabled]="!editMode" formControlName="status" required>
+          <mat-option
+          *ngFor="let status of ticketStatusArr"
+          [value]="status"
+          >{{ status | status }}</mat-option
+          >
+        </mat-select>
+        <mat-error
+        *ngIf="status.invalid && (status.dirty || status.touched)"
+        class="alert alert-danger"
+        >
+        <mat-error *ngIf="!!status.errors.required">
+          Status benötigt.
+        </mat-error>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Priorität</mat-label>
+      <mat-select formControlName="priority" required>
+        <mat-option
+        *ngFor="let prio of priorityArr"
+        [value]="prio"
+        >{{ prio | priorityName }}</mat-option
+        >
+      </mat-select>
+      <mat-error
+      *ngIf="priority.invalid && (priority.dirty || priority.touched)"
+      class="alert alert-danger"
+      >
+      <mat-error *ngIf="!!priority.errors.required">
+        Priorität benötigt.
+      </mat-error>
+    </mat-error>
+  </mat-form-field>
+</mat-card>
+<mat-form-field>
+  <textarea
+  cdkTextareaAutosize
+  matInput
+  placeholder="Beschreibung"
+  formControlName="description"
+        required
+        minlength="4"
+        maxlength="1000"
         ></textarea>
         <mat-hint>{{description.value.length}}/1000 Zeichen</mat-hint>
         <mat-error
         *ngIf="description.invalid && (description.dirty || description.touched)"
         class="alert alert-danger"
-      >
+        >
         <mat-error *ngIf="!!description.errors.required">
           Beschreibung benötigt
         </mat-error>
@@ -115,37 +116,39 @@
           Beschreibung darf max 50 Zeichen lang sein.
         </mat-error>
       </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Systeme</mat-label>
-        <mat-select formControlName="affectedSystems" multiple>
-          <mat-option *ngFor="let system of systemsArr" [value]="system">{{
-            system
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div class="mat-h2">Aufgaben</div>
-      <app-task-list [ticketForm]="ticketForm"></app-task-list>
-      <div class="dialog-btns" fxLayoutGap="5px" fxLayoutAlign="center center">
-        <button
-          [disabled]="ticketForm.invalid"
-          type="submit"
-          mat-raised-button
-          color="primary"
-        >
-          Speichern
-        </button>
-        <button *ngIf="editMode" type="button" (click)="deleteTicket()" mat-raised-button color="warn">
-          Löschen
-        </button>
-        <button type="button" (click)="resetTicket()" mat-raised-button color="second">
-          Zurücksetzen
-        </button>
-      </div>
-    </div>
-  </form>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Systeme</mat-label>
+      <mat-select formControlName="affectedSystems" multiple>
+        <mat-option *ngFor="let system of systemsArr" [value]="system">{{
+          system
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="mat-h2">Aufgaben</div>
+    <app-task-list [ticketForm]="ticketForm"></app-task-list>
+  </mat-dialog-content>
+    <mat-dialog-actions class="dialog-btns" fxLayoutGap="5px" fxLayoutAlign="center center">
+      <button
+      [disabled]="ticketForm.invalid"
+      type="submit"
+      mat-raised-button
+      color="primary"
+      >
+      Speichern
+    </button>
+    <button *ngIf="editMode" type="button" (click)="deleteTicket()" mat-raised-button color="warn">
+      Löschen
+    </button>
+    <button type="button" (click)="resetTicket()" mat-raised-button color="second">
+      Zurücksetzen
+    </button>
+    </mat-dialog-actions>
+</div>
+</form>
 </ng-container>
 
 <ng-template #loading>
   <mat-spinner></mat-spinner>
 </ng-template>
+

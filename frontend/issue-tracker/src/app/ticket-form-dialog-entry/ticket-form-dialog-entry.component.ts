@@ -30,6 +30,7 @@ export class TicketFormDialogEntryComponent implements OnInit, OnDestroy {
   openDialog(): void {
     const dialogRef = this.dialog.open(TicketFormDialogComponent, {
       width: '550px',
+      maxHeight: '90vh',
       data: { ticketId: this.route.snapshot.paramMap.get('ticketId') }
     });
     this.dialogSub = dialogRef.afterClosed().subscribe(result => {
