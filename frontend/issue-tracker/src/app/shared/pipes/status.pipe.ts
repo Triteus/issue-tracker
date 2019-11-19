@@ -7,15 +7,12 @@ import { TicketService } from 'src/app/ticket.service';
 })
 export class StatusPipe implements PipeTransform {
 
-  transform(value: any, ...args: any[]): any {
-    if (value === TicketStatus.OPEN) {
-      return 'Offen';
-    } else if (value === TicketStatus.CLOSED) {
-      return 'In Arbeit';
-    } else if (value === TicketStatus.ACTIVE) {
-      return 'Erledigt';
-    } else {
-      return value;
+  transform(status: TicketStatus, ...args: any[]): any {
+    switch (status) {
+      case TicketStatus.OPEN: return 'Offen';
+      case TicketStatus.CLOSED: return 'Erledigt';
+      case TicketStatus.ACTIVE: return 'In Arbeit';
+      default: return status;
     }
   }
 }

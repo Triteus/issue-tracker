@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
@@ -58,13 +58,14 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   sliceTextAtPos = 100;
 
   watcher: Subscription;
+  querySub: Subscription;
 
   constructor(
     private ticketService: TicketService,
     private mediaObserver: MediaObserver,
     private router: Router,
     private route: ActivatedRoute
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.dataSource = new IssueTableDataSource(this.ticketService);
@@ -79,6 +80,13 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     });
 
+    this.querySub = this.route.queryParamMap.subscribe((queryParamMap) => {
+      // user deleted or updated ticket in dialog-component
+      if (queryParamMap.get('reset')) {
+        this.router.navigateByUrl('tickets')
+        .then(() => this.loadTicketsPage());
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -91,6 +99,11 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadTicketsPage()))
       .subscribe();
+  }
+
+  ngOnDestroy() {
+    this.watcher.unsubscribe();
+    this.querySub.unsubscribe();
   }
 
   loadTicketsPage() {
@@ -113,7 +126,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
 
   openDialog(ticketId: string) {
     console.log('open dialog', ticketId);
-    this.router.navigate([ticketId], {relativeTo: this.route});
+    this.router.navigate([ticketId], { relativeTo: this.route });
   }
 
   shouldSlice(str: string) {

@@ -25,7 +25,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { IssueTableFiltersComponent } from './issue-table-filters/issue-table-filters.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarComponent } from './shared/components/mat-snack-bar/mat-snack-bar.component';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
@@ -35,9 +35,9 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
 import { TicketFormDialogComponent } from './ticket-form-dialog/ticket-form-dialog.component';
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { TaskListComponent } from './ticket-form-dialog/task-list/task-list.component';
-import { TaskListItemComponent } from './ticket-form-dialog/task-list/task-list-item/task-list-item.component';
-import { PriorityIconNamePipe } from './shared/pipes/priority.pipe';
+import { PriorityIconNamePipe } from './shared/pipes/priority-icon.pipe';
 import { StatusPipe } from './shared/pipes/status.pipe';
+import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,9 +51,9 @@ import { StatusPipe } from './shared/pipes/status.pipe';
     TicketFormDialogComponent,
     TicketFormDialogEntryComponent,
     TaskListComponent,
-    TaskListItemComponent,
     PriorityIconNamePipe,
     StatusPipe,
+    PriorityNamePipe,
   ],
   imports: [
     BrowserModule,
@@ -85,6 +85,7 @@ import { StatusPipe } from './shared/pipes/status.pipe';
     MatSnackBarModule,
     MatDialogModule,
     MatChipsModule,
+    ReactiveFormsModule,
     JwtModule
   ],
   providers: [

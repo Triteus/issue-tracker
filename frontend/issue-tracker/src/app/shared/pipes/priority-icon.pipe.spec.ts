@@ -1,4 +1,4 @@
-import { PriorityIconNamePipe } from './priority.pipe';
+import { PriorityIconNamePipe } from './priority-icon.pipe';
 
 describe('PriorityPipe', () => {
   it('create an instance', () => {

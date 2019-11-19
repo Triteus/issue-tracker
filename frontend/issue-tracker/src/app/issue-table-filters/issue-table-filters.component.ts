@@ -4,6 +4,7 @@ import { fromEvent, merge, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Priority } from '../models/ticket.model';
 import { environment } from 'src/environments/environment';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 export interface FilterParams {
@@ -38,7 +39,10 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
 
   systems = environment.systems;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+    ) { }
 
   ngOnInit() { }
 
@@ -73,6 +77,10 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
       editedDateEnd: new Date(this.endDate.nativeElement.value).toJSON()
     };
     this.paramsChanged.emit(params);
+  }
+
+  openTicketDialog() {
+    this.router.navigate(['new'], {relativeTo: this.route});
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SubTask } from 'src/app/models/subtask.model';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',
@@ -8,11 +8,27 @@ import { SubTask } from 'src/app/models/subtask.model';
 })
 export class TaskListComponent implements OnInit {
 
-  @Input() tasks: SubTask;
+  @Input() ticketForm: FormGroup;
 
   constructor() { }
 
   ngOnInit() {
   }
+
+  get subTasks() {
+    return this.ticketForm.get('subTasks') as FormArray;
+  }
+
+  addSubTask() {
+    this.subTasks.push(new FormGroup({
+      description: new FormControl('', Validators.required),
+      isDone: new FormControl(false, Validators.required)
+    }));
+  }
+
+  deleteSubTask(index: number) {
+    this.subTasks.removeAt(index);
+  }
+
 
 }
