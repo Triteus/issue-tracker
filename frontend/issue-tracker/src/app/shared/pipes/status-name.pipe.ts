@@ -3,7 +3,7 @@ import { TicketStatus } from 'src/app/models/ticket.model';
 import { TicketService } from 'src/app/ticket.service';
 
 @Pipe({
-  name: 'status'
+  name: 'statusName'
 })
 export class StatusPipe implements PipeTransform {
 

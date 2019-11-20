@@ -60,7 +60,7 @@
           <mat-option
           *ngFor="let status of ticketStatusArr"
           [value]="status"
-          >{{ status | status }}</mat-option
+          >{{ status | statusName }}</mat-option
           >
         </mat-select>
         <mat-error
