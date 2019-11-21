@@ -118,6 +118,20 @@ describe('Ticket validators', () => {
         })
     })
 
+    describe('PATCH /api/ticket/:id/title', async () => {
+        const validators = TicketValidators.changeTitle;
+
+        it('throws (title length < 5)', async () => {
+            const errors = await validateBody({ title: 'lul'}, validators);
+            checkResponse(errors, 'title', 'Invalid value');
+        })
+        
+        it('passes', async () => {
+            const errors = await validateBody({ title: 'valid-title'}, validators);
+            expect(errors.length).toBe(0);  
+        })
+    });
+
     describe('DELETE /api/ticket/:id', () => {
 
     })

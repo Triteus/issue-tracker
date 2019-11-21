@@ -93,6 +93,20 @@ export class TicketController {
         res.status(200).send({ message: 'Status updated!' });
     }
 
+    @Patch(':id/title')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
+        Authorize.hasRoles(ERole.Support),
+        ...validate('changeTitle')
+    ])
+    private async changeTitle(req: RequestWithUser, res: Response) {
+        const ticket = await TicketModel.findById(req.params.id);
+        ticket.title = req.body.title;
+        await ticket.save();
+        
+        res.status(200).send({message: 'Title updated!'});
+    }
+
     @Patch(':id/sub-task')
     @Middleware([
         passport.authenticate('jwt', { session: false }),

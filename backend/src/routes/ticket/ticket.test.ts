@@ -309,4 +309,41 @@ describe('TicketController', () => {
             })
         })
 
+        describe('PATCH /api/ticket/:id/title', async () => {
+            const url = '/api/ticket/';
+            const subUrl = '/title';
+
+            beforeEach(async () => {
+                owner = await UserModel.create(ownerData());
+                editor = await UserModel.create(editorData());
+                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
+            })
+
+            it('return status 401 (no token)', async () => {
+                const res = await request.patch(url + ticket._id + subUrl).send({ status: TicketStatus.ACTIVE });
+                expect(res.status).toBe(401);
+            })
+
+            it('returns status 403 (no support role)', async () => {
+                const res = await request.patch(url + ticket._id + subUrl)
+                    .set({ Authorization: 'Bearer ' + owner.generateToken() })
+                    .send({ title: 'validTitle' });
+                expect(res.status).toBe(403);
+            })
+
+            it('returns status 200', async () => {
+                const res = await request.patch(url + ticket._id + subUrl)
+                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                    .send({ title: 'validTitle' });
+                expect(res.status).toBe(200);
+            })
+            
+            it('changed title', async () => {
+                const res = await request.patch(url + ticket._id + subUrl)
+                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                    .send({ title: 'validTitle' });
+                const updatedTicket = await TicketModel.findById(ticket._id); 
+                expect(updatedTicket.title).toBe('validTitle');
+            })
+        })
 })
