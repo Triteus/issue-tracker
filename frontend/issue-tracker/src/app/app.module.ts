@@ -36,9 +36,12 @@ import { TicketFormDialogComponent } from './ticket-form-dialog/ticket-form-dial
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { TaskListComponent } from './ticket-form-dialog/task-list/task-list.component';
 import { PriorityIconNamePipe } from './shared/pipes/priority-icon.pipe';
-import { StatusPipe } from './shared/pipes/status.pipe';
+import { StatusPipe } from './shared/pipes/status-name.pipe';
 import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
 import { TicketBoardComponent } from './ticket-board/ticket-board.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { TicketBoardItemComponent } from './ticket-board/ticket-board-item/ticket-board-item.component';
+import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,6 +59,8 @@ import { TicketBoardComponent } from './ticket-board/ticket-board.component';
     StatusPipe,
     PriorityNamePipe,
     TicketBoardComponent,
+    TicketBoardItemComponent,
+    StatusIconPipe,
   ],
   imports: [
     BrowserModule,
@@ -88,6 +93,7 @@ import { TicketBoardComponent } from './ticket-board/ticket-board.component';
     MatSnackBarModule,
     MatDialogModule,
     MatChipsModule,
+    DragDropModule,
     ReactiveFormsModule,
     JwtModule
   ],

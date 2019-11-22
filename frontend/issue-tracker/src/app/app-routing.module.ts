@@ -15,10 +15,16 @@ const routes: Routes = [
     component: IssueOverviewComponent,
     canActivate: [AuthGuardService],
     children: [
-      {path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full'}
+      { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
     ]
   },
-  { path: 'ticket-board', component: TicketBoardComponent },
+  {
+    path: 'ticket-board',
+    component: TicketBoardComponent,
+    children: [
+      {path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full'}
+    ]
+   },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];

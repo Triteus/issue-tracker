@@ -98,10 +98,6 @@ export class TicketService {
       );
   }
 
-  changeStatus(): Observable<void> {
-    return of();
-  }
-
   editSubTasks(): Observable<void> {
     return of();
   }
