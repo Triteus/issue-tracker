@@ -1,10 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar, MatDialog } from '@angular/material';
 import { Observable, of } from 'rxjs';
 import { Ticket, TicketStatus, Priority } from '../models/ticket.model';
 import { TicketService } from '../ticket.service';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { tap, take } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
@@ -35,7 +36,8 @@ export class TicketFormDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: { ticketId: string },
     private ticketService: TicketService,
-    public dialogRef: MatDialogRef<TicketFormDialogComponent>,
+    public ticketDialogRef: MatDialogRef<TicketFormDialogComponent>,
+    private delConfirmDialog: MatDialog,
     private snackbar: MatSnackBar,
   ) { }
 
@@ -99,18 +101,29 @@ export class TicketFormDialogComponent implements OnInit {
 
     request.pipe(take(1))
       .subscribe(() => {
-        this.dialogRef.close('updated');
+        this.ticketDialogRef.close('updated');
         this.snackbar.open(`Ticket "${this.ticketForm.value.title}" erfolgreich aktualisiert!`, 'OK');
       });
   }
 
   deleteTicket() {
-    this.ticketService.deleteTicket(this.data.ticketId)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.dialogRef.close('deleted');
-        this.snackbar.open(`Ticket "${this.ticketForm.value.title}" erfolgreich gelöscht!`, 'OK');
-      });
+
+    const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
+      width: '500px',
+      id: 'confirm-dialog',
+      data: {message: 'Ticket wirklich löschen?'}
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'confirm') {
+        this.ticketService.deleteTicket(this.data.ticketId)
+          .pipe(take(1))
+          .subscribe(() => {
+            this.ticketDialogRef.close('deleted');
+            this.snackbar.open(`Ticket "${this.ticketForm.value.title}" erfolgreich gelöscht!`, 'OK');
+          });
+      }
+    });
   }
 
   resetTicket() {

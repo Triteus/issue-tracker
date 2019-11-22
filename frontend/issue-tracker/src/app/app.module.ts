@@ -42,6 +42,8 @@ import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { TicketBoardItemComponent } from './ticket-board/ticket-board-item/ticket-board-item.component';
 import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
+import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,6 +63,8 @@ import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
     TicketBoardComponent,
     TicketBoardItemComponent,
     StatusIconPipe,
+    ConfirmationDialogComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -106,7 +110,8 @@ import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
   entryComponents: [
-    TicketFormDialogComponent
+    TicketFormDialogComponent,
+    ConfirmationDialogComponent
   ],
   bootstrap: [AppComponent]
 })
