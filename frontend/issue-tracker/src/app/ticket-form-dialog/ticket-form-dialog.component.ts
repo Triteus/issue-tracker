@@ -111,7 +111,7 @@ export class TicketFormDialogComponent implements OnInit {
     const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
       width: '500px',
       id: 'confirm-dialog',
-      data: {message: 'Ticket wirklich löschen?'}
+      data: { message: 'Ticket wirklich löschen?' }
     });
 
     dialogRef.afterClosed().subscribe((result) => {

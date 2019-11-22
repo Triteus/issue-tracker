@@ -2,7 +2,7 @@
     <form [formGroup]="ticketForm" (ngSubmit)="updateTicket()">
       <div>
         <mat-dialog-content style="max-height: 80vh" fxLayout="column" fxLayoutGap="10px">
-          <span class="mat-h2" fxLayout>
+          <span fxLayout>
             <mat-form-field appearance="outline" fxFlexFill>
               <input
               formControlName="title"
@@ -125,7 +125,6 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <div class="mat-h2">Aufgaben</div>
     <app-task-list [ticketForm]="ticketForm"></app-task-list>
   </mat-dialog-content>
     <mat-dialog-actions class="dialog-btns" fxLayoutGap="5px" fxLayoutAlign="center center">
