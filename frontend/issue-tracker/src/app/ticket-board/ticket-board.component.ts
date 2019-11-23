@@ -48,21 +48,11 @@ export class TicketBoardComponent implements OnInit {
     this.inProgressTickets = [];
     this.closedTickets = [];
 
-    this.ticketService.getTickets({})
-    .subscribe(tickets => {
-      tickets.forEach((ticket) => {
-        switch (ticket.status) {
-          case TicketStatus.OPEN:
-            this.openTickets.push(ticket);
-            break;
-          case TicketStatus.ACTIVE:
-            this.inProgressTickets.push(ticket);
-            break;
-          case TicketStatus.CLOSED:
-            this.closedTickets.push(ticket);
-            break;
-        }
-      });
+    this.ticketService.getTicketsGroupByStatus()
+    .subscribe(ticketsByStatus => {
+      this.openTickets = ticketsByStatus.openTickets;
+      this.inProgressTickets = ticketsByStatus.activeTickets;
+      this.closedTickets = ticketsByStatus.closedTickets;
     });
   }
 

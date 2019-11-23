@@ -103,8 +103,8 @@ export class TicketController {
         const ticket = await TicketModel.findById(req.params.id);
         ticket.title = req.body.title;
         await ticket.save();
-        
-        res.status(200).send({message: 'Title updated!'});
+
+        res.status(200).send({ message: 'Title updated!' });
     }
 
     @Patch(':id/sub-task')
@@ -115,8 +115,8 @@ export class TicketController {
     ])
     private async changeSubTasks(req: RequestWithUser, res: Response) {
         await this.ticketService.findTicketAndChangeSubTasks(req.params.id, req.body.subTasks, req.user._id);
-        res.status(200).send({message: 'Subtasks updated!'});
-    }   
+        res.status(200).send({ message: 'Subtasks updated!' });
+    }
 
     @Get('')
     @Middleware([
@@ -126,8 +126,13 @@ export class TicketController {
         // pagination, 
         // sorting, 
         // filter by category, system, status
-        const tickets = await TicketModel.find({}).populate('owner assignedTo lastEditor');
-        res.status(200).send(tickets);
+        if (req.query.groupByStatus) {
+            const ticketsByStatus = await this.ticketService.findAndGroupTicketsByStatus();
+            return res.status(200).send(ticketsByStatus);
+        } else {
+            const tickets = await TicketModel.find({}).populate('owner assignedTo lastEditor');
+            res.status(200).send(tickets);
+        }
     }
 
     @Get(':id')

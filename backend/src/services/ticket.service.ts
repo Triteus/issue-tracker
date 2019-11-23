@@ -68,4 +68,19 @@ export class TicketService {
     async addEditorAndSave(ticket: ITicket, editorId: String | Types.ObjectId) {
         return ticket.setEditorAndSave(editorId);
     }
+
+    async findAndGroupTicketsByStatus() {
+        const tickets = await TicketModel.find({});
+        const openTickets = [], activeTickets = [], closedTickets = [];
+        for(let ticket of tickets) {
+            if (ticket.status === TicketStatus.OPEN) {
+                openTickets.push(ticket);
+            } else if (ticket.status === TicketStatus.ACTIVE) {
+                activeTickets.push(ticket);
+            } else if (ticket.status === TicketStatus.CLOSED) {
+                closedTickets.push(ticket);
+            }
+        }
+        return {openTickets, activeTickets, closedTickets};
+    }
 }

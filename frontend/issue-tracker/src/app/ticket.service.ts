@@ -6,6 +6,12 @@ import { catchError, delay } from 'rxjs/operators';
 import { User } from './models/user.model';
 
 
+interface TicketsGroupByStatusRes {
+  openTickets: Ticket[];
+  activeTickets: Ticket[];
+  closedTickets: Ticket[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -62,11 +68,19 @@ export class TicketService {
 
   url = 'http://localhost:3000/api/ticket/';
 
-  getTickets(params: object): Observable<Ticket[]> {
+  getTickets(params?: object): Observable<Ticket[]> {
     console.log('params', params);
     return this.http.get<Ticket[]>(this.url, { params: params as any })
       .pipe(
         catchError(this.handleError<Ticket[]>('getTickets', []))
+      );
+  }
+
+  getTicketsGroupByStatus(params?: object): Observable<TicketsGroupByStatusRes> {
+    console.log('params', params);
+    return this.http.get<TicketsGroupByStatusRes>(this.url, { params: {...params as any, groupByStatus: true} })
+      .pipe(
+        catchError(this.handleError<TicketsGroupByStatusRes>('getTicketsGroupByStatus'))
       );
   }
 

@@ -16,6 +16,25 @@ describe('TicketService', () => {
     let owner: IUser;
     let editor: IUser;
     let ticket: ITicket;
+    
+    describe('get tickets', () => {
+        
+        let openTicket: ITicket, activeTicket: ITicket, closedTicket: ITicket;
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerData());
+            openTicket = await TicketModel.create({...ticketData(), status: TicketStatus.OPEN, owner: owner._id});
+            activeTicket = await TicketModel.create({...ticketData(), status: TicketStatus.ACTIVE, owner: owner._id});
+            closedTicket = await TicketModel.create({...ticketData(), status: TicketStatus.CLOSED, owner: owner._id});
+        })
+
+        it('should get tickets grouped by status', async () => {
+            const ticketsByStatus = await ticketService.findAndGroupTicketsByStatus();
+            expect(ticketsByStatus.openTickets[0]._id).toEqual(openTicket._id);
+            expect(ticketsByStatus.activeTickets[0]._id).toEqual(activeTicket._id);
+            expect(ticketsByStatus.closedTickets[0]._id).toEqual(closedTicket._id);
+        })
+
+    })
 
     describe('create ticket', () => {
         beforeEach(async () => {
