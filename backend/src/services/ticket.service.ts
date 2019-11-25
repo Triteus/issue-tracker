@@ -18,7 +18,7 @@ export interface FilterParams {
 
 export interface PaginationParams {
     pageIndex?: string | number;
-    pageSize?: string| number;
+    pageSize?: string | number;
 }
 
 export interface SortParams {
@@ -96,7 +96,10 @@ export class TicketService {
     }
 
     async findAndGroupTicketsByStatus(options: Partial<PaginationParams>) {
-        const tickets = await TicketModel.find({}, null, options);
+        const tickets = await TicketModel
+            .find({}, null, options)
+            .populate('owner assignedTo lastEditor');
+            
         const openTickets = [], activeTickets = [], closedTickets = [];
         for (let ticket of tickets) {
             if (ticket.status === TicketStatus.OPEN) {
@@ -161,14 +164,14 @@ export function filter(query: FilterParams) {
         updatedAt: { $gte: query.editedDateStart || 0, $lte: query.editedDateEnd || new Date().toJSON() }
     };
 
-    if(query.filter){
-      match['title'] =  { $regex: `.*${query.filter}.*`, $options: 'i' }; 
-    } 
+    if (query.filter) {
+        match['title'] = { $regex: `.*${query.filter}.*`, $options: 'i' };
+    }
 
     if (query.systems) {
         // make sure value is an array for query
         let systems = query.systems;
-        if(Array.isArray(systems)) {
+        if (Array.isArray(systems)) {
             systems = systems.map((s: string) => s.toLowerCase());
         } else {
             systems = [systems.toLowerCase()];
