@@ -13,7 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 
 export interface PaginationSortParams {
-  sortDir: 'asc' | 'desc' | '' ;
+  sortDir: 'asc' | 'desc' | '';
   sortBy: string;
   pageIndex: number | '';
   pageSize: number | '';
@@ -33,7 +33,8 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
-  columnsSmallScreen = ['priority', 'status', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'updatedAt'];
+  columnsSmallScreen = ['priority', 'status', 'title', 'lastEditorName', 'updatedAt'];
+  columnsMiddleScreen = ['priority', 'status', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'updatedAt'];
   columnsBigScreen = ['priority', 'status', 'title', 'description', 'affectedSystems', 'ownerName', 'lastEditorName', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
@@ -72,11 +73,13 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
 
     this.dataSource = new IssueTableDataSource(this.ticketService);
-    this.dataSource.loadTickets({...this.filterParams, ...this.startParams});
+    this.dataSource.loadTickets({ ...this.filterParams, ...this.startParams });
     this.$dataLength = this.dataSource.$dataLength();
 
     this.watcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
-      if (change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+      if (change.mqAlias === 'sm') {
+        this.displayedColumns = this.columnsMiddleScreen;
+      } else if (change.mqAlias === 'xs') {
         this.displayedColumns = this.columnsSmallScreen;
       } else {
         this.displayedColumns = this.columnsBigScreen;
@@ -87,7 +90,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
       // user deleted or updated ticket in dialog-component
       if (queryParamMap.get('reset')) {
         this.router.navigateByUrl('tickets')
-        .then(() => this.loadTicketsPage());
+          .then(() => this.loadTicketsPage());
       }
     });
   }
