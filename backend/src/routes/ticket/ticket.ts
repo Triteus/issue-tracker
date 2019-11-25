@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware } from "@overnightjs/core";
-import { Request, Response, NextFunction } from "express";
-import TicketModel, { ticketSchema, TicketStatus, ITicket } from '../../models/Ticket';
+import { Request, Response, NextFunction, request } from "express";
+import TicketModel, { ticketSchema, TicketStatus, ITicket, Priority } from '../../models/Ticket';
 import { IUser, ERole, IUserDocument, RequestWithUser } from "../../models/User";
 import passport = require("passport");
 import { ResponseError, ErrorTypes } from "../../middlewares/error";
@@ -123,15 +123,17 @@ export class TicketController {
         passport.authenticate('jwt', { session: false }),
     ])
     private async getTickets(req: Request, res: Response) {
-        // pagination, 
-        // sorting, 
-        // filter by category, system, status
+        const { sort, options: pagination, match } = this.ticketService.generateQueryObjects(req.query);
         if (req.query.groupByStatus) {
-            const ticketsByStatus = await this.ticketService.findAndGroupTicketsByStatus();
+            const ticketsByStatus = await this.ticketService.findAndGroupTicketsByStatus(pagination);
             return res.status(200).send(ticketsByStatus);
         } else {
-            const tickets = await TicketModel.find({}).populate('owner assignedTo lastEditor');
-            res.status(200).send(tickets);
+            const tickets = await TicketModel
+                .find(match, null, pagination)
+                .sort(sort)
+                .populate('owner assignedTo lastEditor');
+
+            res.status(200).send({ tickets, numAllTickets: await TicketModel.count({}) });
         }
     }
 

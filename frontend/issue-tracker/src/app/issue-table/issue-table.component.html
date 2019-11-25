@@ -35,7 +35,7 @@
     </ng-container>
 
     <ng-container matColumnDef="priority">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Priorität</th>
+      <th mat-header-cell *matHeaderCellDef>Priorität</th>
       <td mat-cell *matCellDef="let row">
         <mat-icon
         [matTooltip]="'Priorität: ' + (row.priority | priorityName)">
@@ -61,7 +61,7 @@
     </ng-container>
 
     <ng-container matColumnDef="affectedSystems">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      <th mat-header-cell *matHeaderCellDef>
         Betroffene Systeme
       </th>
       <td id="system-chip-list" mat-cell *matCellDef="let row">

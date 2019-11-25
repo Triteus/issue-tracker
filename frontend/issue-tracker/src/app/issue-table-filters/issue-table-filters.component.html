@@ -15,14 +15,20 @@
     <mat-form-field>
       <mat-label>Priorität</mat-label>
       <mat-select #prioSelect (valueChange)="filterChanged()">
-        <mat-option [value]="'open'">
-          Offen
+        <mat-option [value]="''">
+          -
         </mat-option>
-        <mat-option [value]="'in progress'">
-          In Bearbeitung
+        <mat-option [value]="'low'">
+          Niedrig
         </mat-option>
-        <mat-option [value]="'closed'">
-          Geschlossen
+        <mat-option [value]="'moderate'">
+          Mittel
+        </mat-option>
+        <mat-option [value]="'high'">
+          Hoch
+        </mat-option>
+        <mat-option [value]="'very high'">
+          Sehr hoch
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -70,13 +76,13 @@
     </mat-form-field>
   </div>
   <div class="ticket-status">
-    <mat-checkbox (change)="filterChanged()" #openCB class="checkbox"
+    <mat-checkbox (change)="filterChanged()" checked="true" #openCB class="checkbox"
       >Offen</mat-checkbox
     >
-    <mat-checkbox (change)="filterChanged()" #progressCB class="checkbox"
+    <mat-checkbox (change)="filterChanged()" checked="true" #progressCB class="checkbox"
       >In Bearbeitung</mat-checkbox
     >
-    <mat-checkbox (change)="filterChanged()" #closedCB class="checkbox"
+    <mat-checkbox (change)="filterChanged()" checked="true" #closedCB class="checkbox"
       >Geschlossen</mat-checkbox
     >
   </div>

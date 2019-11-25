@@ -68,11 +68,11 @@ export class TicketService {
 
   url = 'http://localhost:3000/api/ticket/';
 
-  getTickets(params?: object): Observable<Ticket[]> {
+  getTickets(params?: object): Observable<{tickets: Ticket[], numAllTickets: number}> {
     console.log('params', params);
-    return this.http.get<Ticket[]>(this.url, { params: params as any })
+    return this.http.get<{tickets: Ticket[], numAllTickets: number}>(this.url, { params: params as any })
       .pipe(
-        catchError(this.handleError<Ticket[]>('getTickets', []))
+        catchError(this.handleError<{tickets: Ticket[], numAllTickets: number}>('getTickets', {tickets: [], numAllTickets: 0}))
       );
   }
 

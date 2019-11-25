@@ -91,8 +91,8 @@ export const ticketSchema = new mongoose.Schema({
     default: []
   },
   affectedSystems: {
-    type: [String],
-    default: []
+    type: [{type: String, lowercase: true}],
+    default: [],
   }
 }, {
   toJSON: {
@@ -107,6 +107,7 @@ export const ticketSchema = new mongoose.Schema({
   timestamps: true
 });
 
+ticketSchema.index({title: 'text'});
 
 ticketSchema.methods.setSubTasks = function (subTasks: { description: string, isDone: boolean }[], editorId: mongoose.Types.ObjectId) {
   if(!subTasks) return;

@@ -60,17 +60,15 @@ export class IssueTableDataSource implements DataSource<Ticket> {
   loadTickets(params: object) {
     this.loadingSubject.next(true);
     this.ticketService.getTickets(params).pipe(
-      catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
-      .subscribe(tickets => this.ticketsSubject.next(tickets));
+      .subscribe(res => {
+        this.ticketsSubject.next(res.tickets);
+        this.ticketsLengthSubject.next(res.numAllTickets);
+      });
   }
 
   $dataLength() {
-    return this.ticketsSubject.asObservable().pipe(map(tickets => {
-      return tickets.length;
-    }),
-    catchError(err => of(0))
-    );
+    return this.ticketsLengthSubject.asObservable();
   }
 
   /**

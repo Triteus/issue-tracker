@@ -75,4 +75,12 @@ describe('Ticket model', () => {
         expect(ticketJSON.__v).toBeFalsy();
 
     })
+
+    it('performs tolowercase on all strings in affectedSystems', async () => {
+        const data = {...ticketData(), affectedSystems: ['JIRA', 'Confluence', 'OUTLOOK', 'dfdFkldsjfF']}
+        const ticket = new TicketModel(data);
+        data.affectedSystems.forEach(system => {
+            expect(ticket.affectedSystems).toContain(system.toLowerCase());
+        })
+    })
 })

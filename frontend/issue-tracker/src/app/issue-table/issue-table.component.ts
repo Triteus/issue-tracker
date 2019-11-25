@@ -13,10 +13,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 
 export interface PaginationSortParams {
-  sortDir: 'asc' | 'desc' | '' | null;
+  sortDir: 'asc' | 'desc' | '' ;
   sortBy: string;
-  pageIndex: number;
-  pageSize: number;
+  pageIndex: number | '';
+  pageSize: number | '';
 }
 
 export type TicketParams = FilterParams & PaginationSortParams;
@@ -38,22 +38,24 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
 
-  private filterParams: object;
-
-  private startParams: TicketParams = {
-    sortDir: null,
-    sortBy: '',
-    pageIndex: 0,
-    pageSize: 50,
+  private filterParams: FilterParams = {
     filter: '',
     systems: [],
     openSelected: true,
     closedSelected: true,
     progressSelected: true,
-    priority: null,
-    editedDateStart: null,
-    editedDateEnd: null
+    priority: '',
+    editedDateStart: '',
+    editedDateEnd: ''
   };
+
+  private startParams: PaginationSortParams = {
+    sortDir: '',
+    sortBy: '',
+    pageIndex: 0,
+    pageSize: 50,
+  };
+
 
   sliceTextAtPos = 100;
 
@@ -68,8 +70,9 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+
     this.dataSource = new IssueTableDataSource(this.ticketService);
-    this.dataSource.loadTickets(this.startParams);
+    this.dataSource.loadTickets({...this.filterParams, ...this.startParams});
     this.$dataLength = this.dataSource.$dataLength();
 
     this.watcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
@@ -108,12 +111,12 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
 
   loadTicketsPage() {
 
-    const params = {
-      sortDir: this.sort.direction,
-      sortby: this.sort.active,
+    const params: TicketParams = {
+      ...this.filterParams,
+      sortDir: this.sort.direction || '',
+      sortBy: this.sort.active || '',
       pageIndex: this.paginator.pageIndex,
-      pageSize: this.paginator.pageSize,
-      ...this.filterParams
+      pageSize: this.paginator.pageSize || '',
     };
     this.dataSource.loadTickets(params);
   }

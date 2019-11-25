@@ -209,11 +209,18 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
-        it('returns array of tickets', async () => {
+        it('returns status 200', async () => {
             const res = await request.get(url)
                 .set({ Authorization: 'Bearer ' + owner.generateToken() });
-            expect(res.body.length).toBe(1);
-            expect(res.body[0].id).toBe(ticket._id.toHexString())
+            expect(res.status).toBe(200);
+        })
+
+        it('returns array of tickets and num of all tickets', async () => {
+            const res = await request.get(url)
+                .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            expect(res.body.tickets.length).toBe(1);
+            expect(res.body.numAllTickets).toBe(1);
+            expect(res.body.tickets[0].id).toBe(ticket._id.toHexString())
         })
 
         it('returns object with tickets per status', async () => {

@@ -12,10 +12,10 @@ export interface FilterParams {
   openSelected: boolean;
   closedSelected: boolean;
   progressSelected: boolean;
-  priority: Priority | null;
+  priority: Priority | '';
   systems: string[];
-  editedDateStart: string | null;
-  editedDateEnd: string | null;
+  editedDateStart: string | '';
+  editedDateEnd: string | '';
 }
 
 @Component({
@@ -70,11 +70,11 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
       openSelected: this.openCb.checked,
       progressSelected: this.progressCb.checked,
       closedSelected: this.closedCb.checked,
-      priority: this.prioSelect.value,
-      systems: this.systemsSelect.value,
+      priority: this.prioSelect.value || '',
+      systems: this.systemsSelect.value || '',
       // Note: toJSON() does not preserve timezone!
-      editedDateStart: new Date(this.startDate.nativeElement.value).toJSON(),
-      editedDateEnd: new Date(this.endDate.nativeElement.value).toJSON()
+      editedDateStart: new Date(this.startDate.nativeElement.value).toJSON() || '',
+      editedDateEnd: new Date(this.endDate.nativeElement.value).toJSON() || ''
     };
     this.paramsChanged.emit(params);
   }
