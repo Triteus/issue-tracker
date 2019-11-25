@@ -6,6 +6,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { TicketBoardComponent } from './ticket-board/ticket-board.component';
+import { RoleGuardService } from './shared/services/role-guard.service';
 
 
 const routes: Routes = [
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'ticket-board',
     component: TicketBoardComponent,
+    canActivate: [RoleGuardService],
+    data: {
+      expectedRole: 'support'
+    },
     children: [
       {path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full'}
     ]

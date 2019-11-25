@@ -35,6 +35,11 @@
   font-size: 14px;
 }
 
+.cdk-drag:hover {
+  transform: scale(1.05);
+  box-shadow: 5px 5px 5px 0px rgba(97,97,97,1);;
+}
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
