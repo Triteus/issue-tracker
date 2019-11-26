@@ -1,98 +1,103 @@
-<div
-  class="ticket-board"
-  [cdkDropListGroupDisabled]="dragDisabled"
-  cdkDropListGroup
-  fxLayout
-  fxLayoutAlign="center start"
-  fxLayoutGap="20px"
->
-  <div fxLayout="column" fxLayoutGap="10px">
-    <mat-card
-      class="list-heading"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-    >
-      <h2 class="mat-h2">Offen</h2>
-      <mat-spinner
+<div gdColumns="1fr 1fr 1fr">
+  <div></div>
+  <div
+    class="ticket-board"
+    [cdkDropListGroupDisabled]="dragDisabled"
+    cdkDropListGroup
+    gdGridAlign="stretch"
+    fxLayout
+    fxLayoutAlign="center start"
+    fxLayoutGap="20px"
+  >
+    <div fxLayout="column" fxLayoutGap="10px">
+      <mat-card
+        class="list-heading"
         fxLayout="row"
-        diameter="30"
-        *ngIf="dragDisabled"
-      ></mat-spinner>
-    </mat-card>
-    <mat-card
-      fxLayout="column"
-      fxLayoutGap="16px"
-      cdkDropList
-      [attr.data-status]="'open'"
-      [cdkDropListData]="openTickets"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <app-ticket-board-item
-        [pendingStatus]="dragDisabled"
-        cdkDragBoundary=".ticket-board"
-        [ticket]="ticket"
-        *ngFor="let ticket of openTickets"
-        cdkDrag
-      ></app-ticket-board-item>
-    </mat-card>
-  </div>
+        fxLayoutAlign="space-between center"
+      >
+        <h2 class="mat-h2">Offen <span *ngIf="openTickets.length !== 0">({{openTickets.length}})</span></h2>
+        <mat-spinner
+          fxLayout="row"
+          diameter="30"
+          *ngIf="dragDisabled"
+        ></mat-spinner>
+      </mat-card>
+      <mat-card
+        fxLayout="column"
+        fxLayoutGap="16px"
+        cdkDropList
+        [attr.data-status]="'open'"
+        [cdkDropListData]="openTickets"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <app-ticket-board-item
+          [pendingStatus]="dragDisabled"
+          cdkDragBoundary=".ticket-board"
+          [ticket]="ticket"
+          *ngFor="let ticket of openTickets"
+          cdkDrag
+        ></app-ticket-board-item>
+      </mat-card>
+    </div>
 
-  <div fxLayout="column" fxLayoutGap="10px">
-    <mat-card
-      class="list-heading"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-    >
-      <h2 class="mat-h2">In Arbeit</h2>
-      <mat-spinner diameter="30" *ngIf="dragDisabled"></mat-spinner>
-    </mat-card>
-    <mat-card
-      cdkDropList
-      [attr.data-status]="'active'"
-      [cdkDropListData]="inProgressTickets"
-      (cdkDropListDropped)="drop($event)"
-      fxLayout="column"
-      fxLayoutGap="16px"
-    >
-      <app-ticket-board-item
-        [pendingStatus]="dragDisabled"
-        cdkDragBoundary=".ticket-board"
-        [ticket]="ticket"
-        *ngFor="let ticket of inProgressTickets"
-        cdkDrag
-      ></app-ticket-board-item>
-    </mat-card>
-  </div>
-
-  <div fxLayout="column" fxLayoutGap="10px">
-    <mat-card
-      class="list-heading"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-    >
-      <h2 class="mat-h2">Fertig</h2>
-      <mat-spinner
+    <div fxLayout="column" fxLayoutGap="10px">
+      <mat-card
+        class="list-heading"
         fxLayout="row"
-        diameter="30"
-        *ngIf="dragDisabled"
-      ></mat-spinner>
-    </mat-card>
-    <mat-card
-      cdkDropList
-      [attr.data-status]="'closed'"
-      [cdkDropListData]="closedTickets"
-      (cdkDropListDropped)="drop($event)"
-      fxLayout="column"
-      fxLayoutGap="16px"
-    >
-      <app-ticket-board-item
-        [pendingStatus]="dragDisabled"
-        cdkDragBoundary=".ticket-board"
-        [ticket]="ticket"
-        *ngFor="let ticket of closedTickets"
-        cdkDrag
-      ></app-ticket-board-item>
-    </mat-card>
+        fxLayoutAlign="space-between center"
+      >
+        <h2 class="mat-h2">In Arbeit <span *ngIf="inProgressTickets.length !== 0">({{inProgressTickets.length}})</span></h2>
+        <mat-spinner diameter="30" *ngIf="dragDisabled"></mat-spinner>
+      </mat-card>
+      <mat-card
+        cdkDropList
+        [attr.data-status]="'active'"
+        [cdkDropListData]="inProgressTickets"
+        (cdkDropListDropped)="drop($event)"
+        fxLayout="column"
+        fxLayoutGap="16px"
+      >
+        <app-ticket-board-item
+          [pendingStatus]="dragDisabled"
+          cdkDragBoundary=".ticket-board"
+          [ticket]="ticket"
+          *ngFor="let ticket of inProgressTickets"
+          cdkDrag
+        ></app-ticket-board-item>
+      </mat-card>
+    </div>
+
+    <div fxLayout="column" fxLayoutGap="10px">
+      <mat-card
+        class="list-heading"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+      >
+        <h2 class="mat-h2">Fertig <span *ngIf="closedTickets.length !== 0">({{closedTickets.length}})</span></h2>
+        <mat-spinner
+          fxLayout="row"
+          diameter="30"
+          *ngIf="dragDisabled"
+        ></mat-spinner>
+      </mat-card>
+      <mat-card
+        cdkDropList
+        [attr.data-status]="'closed'"
+        [cdkDropListData]="closedTickets"
+        (cdkDropListDropped)="drop($event)"
+        fxLayout="column"
+        fxLayoutGap="16px"
+      >
+        <app-ticket-board-item
+          [pendingStatus]="dragDisabled"
+          cdkDragBoundary=".ticket-board"
+          [ticket]="ticket"
+          *ngFor="let ticket of closedTickets"
+          cdkDrag
+        ></app-ticket-board-item>
+      </mat-card>
+    </div>
   </div>
+  <div></div>
 </div>
 <router-outlet></router-outlet>
