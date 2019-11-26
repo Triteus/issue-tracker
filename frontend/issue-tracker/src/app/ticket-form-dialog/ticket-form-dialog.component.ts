@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 @Component({
   selector: 'app-ticket-form-dialog',
   templateUrl: './ticket-form-dialog.component.html',
-  styleUrls: ['./ticket-form-dialog.component.sass']
+  styleUrls: ['./ticket-form-dialog.component.scss']
 })
 export class TicketFormDialogComponent implements OnInit {
 

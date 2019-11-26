@@ -24,7 +24,7 @@ export type TicketParams = FilterParams & PaginationSortParams;
 @Component({
   selector: 'app-issue-table',
   templateUrl: './issue-table.component.html',
-  styleUrls: ['./issue-table.component.css']
+  styleUrls: ['./issue-table.component.scss']
 })
 export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

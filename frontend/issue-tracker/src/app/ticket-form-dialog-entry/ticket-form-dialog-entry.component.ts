@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-ticket-form-dialog-entry',
   templateUrl: './ticket-form-dialog-entry.component.html',
-  styleUrls: ['./ticket-form-dialog-entry.component.sass']
+  styleUrls: ['./ticket-form-dialog-entry.component.scss']
 })
 export class TicketFormDialogEntryComponent implements OnInit, OnDestroy {
 

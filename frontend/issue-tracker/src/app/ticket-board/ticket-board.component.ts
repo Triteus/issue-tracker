@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-ticket-board',
   templateUrl: './ticket-board.component.html',
-  styleUrls: ['./ticket-board.component.css']
+  styleUrls: ['./ticket-board.component.scss']
 })
 export class TicketBoardComponent implements OnInit {
 

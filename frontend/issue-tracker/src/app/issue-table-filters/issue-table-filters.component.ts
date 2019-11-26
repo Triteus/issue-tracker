@@ -21,7 +21,7 @@ export interface FilterParams {
 @Component({
   selector: 'app-issue-table-filters',
   templateUrl: './issue-table-filters.component.html',
-  styleUrls: ['./issue-table-filters.component.sass']
+  styleUrls: ['./issue-table-filters.component.scss']
 })
 export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
 

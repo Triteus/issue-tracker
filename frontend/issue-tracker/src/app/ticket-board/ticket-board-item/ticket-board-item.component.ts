@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-ticket-board-item',
   templateUrl: './ticket-board-item.component.html',
-  styleUrls: ['./ticket-board-item.component.css']
+  styleUrls: ['./ticket-board-item.component.scss']
 })
 export class TicketBoardItemComponent implements OnInit, AfterViewInit, OnChanges {
 
