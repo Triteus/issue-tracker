@@ -19,7 +19,7 @@ export class TicketBoardComponent implements OnInit {
   closedTickets: Ticket[] = [];
   inProgressTickets: Ticket[] = [];
 
-  dragDisabled = false;
+  dragDisabled = true;
 
   querySub: Subscription;
 
@@ -50,6 +50,7 @@ export class TicketBoardComponent implements OnInit {
 
     this.ticketService.getTicketsGroupByStatus()
     .subscribe(ticketsByStatus => {
+      this.dragDisabled = false;
       this.openTickets = ticketsByStatus.openTickets;
       this.inProgressTickets = ticketsByStatus.activeTickets;
       this.closedTickets = ticketsByStatus.closedTickets;
@@ -79,7 +80,6 @@ export class TicketBoardComponent implements OnInit {
             this.dragDisabled = false;
           },
           err => {
-            console.error('sdkfjsldfjlkjfl');
             // move item back
             transferArrayItem(container.data,
               previousContainer.data,
