@@ -44,50 +44,52 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
   >
     <mat-nav-list>
-      <a
-        *ngIf="!($user | async)"
-        mat-list-item
-        [routerLink]="['/register']"
-        routerLinkActive="router-link-active"
-        >Registrieren</a
-      >
-      <a
-        *ngIf="!($user | async)"
-        mat-list-item
-        [routerLink]="['/login']"
-        routerLinkActive="router-link-active"
-        >Anmelden</a
-      >
-      <a
-        mat-list-item
-        [routerLink]="['/home']"
-        routerLinkActive="router-link-active"
+      <ng-container *ngIf="!($user | async)">
+        <a
+          mat-list-item
+          [routerLink]="['/register']"
+          routerLinkActive="router-link-active"
+          >Registrieren</a
         >
-        <div class="nav-item">
-          <mat-icon class="gap">dashboard</mat-icon>
-          <span>Home</span>
-        </div>
-        </a>
-      <a
-        mat-list-item
-        [routerLink]="['/tickets']"
-        routerLinkActive="router-link-active"
+        <a
+          mat-list-item
+          [routerLink]="['/login']"
+          routerLinkActive="router-link-active"
+          >Anmelden</a
         >
-        <div class="nav-item">
-          <mat-icon class="gap">list</mat-icon>
-          <span>Ticket-Katalog</span>
-        </div>
-        </a>
-      <a
-        mat-list-item
-        [routerLink]="['/ticket-board']"
-        routerLinkActive="router-link-active"
-        >
-        <div class="nav-item">
-          <mat-icon class="gap">local_offer</mat-icon>
-          <span>Ticket-Board</span>
-        </div>
-        </a>
+      </ng-container>
+      <ng-container *ngIf="$user | async">
+        <a
+          mat-list-item
+          [routerLink]="['/home']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">dashboard</mat-icon>
+            <span>Home</span>
+          </div>
+          </a>
+        <a
+          mat-list-item
+          [routerLink]="['/tickets']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">list</mat-icon>
+            <span>Ticket-Katalog</span>
+          </div>
+          </a>
+        <a
+          mat-list-item
+          [routerLink]="['/ticket-board']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">local_offer</mat-icon>
+            <span>Ticket-Board</span>
+          </div>
+          </a>
+      </ng-container>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
