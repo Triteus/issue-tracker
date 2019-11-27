@@ -118,7 +118,7 @@ describe('Ticket validators', () => {
         })
     })
 
-    describe('PATCH /api/ticket/:id/title', async () => {
+    describe('PATCH /api/ticket/:id/title', () => {
         const validators = TicketValidators.changeTitle;
 
         it('throws (title length < 5)', async () => {

@@ -131,7 +131,6 @@ export class TicketService {
 }
 
 export function pagination(query: PaginationParams) {
-    console.log('pagination', query);
     const pageIndex = Number.parseInt(query.pageIndex as string);
     const pageSize = Number.parseInt(query.pageSize as string);
     let options = {};

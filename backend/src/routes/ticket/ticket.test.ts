@@ -59,6 +59,14 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
+        it('returns status 422 (validator)', async () => {
+            const res = await request
+                .post(url)
+                .set(authHeaders)
+                .send({ ...ticketData(), status: 'invalidStatus' });
+            expect(res.status).toBe(422);
+        })
+
         it('returns status 201', async () => {
             const res = await request
                 .post(url)
@@ -156,35 +164,34 @@ describe('TicketController', () => {
         it('returns status 401 (no token)', async () => {
             const res = await request.delete(url + ticket._id)
             expect(res.status).toBe(401);
-        }),
+        })
 
-            it('returns status 404 (ticket not found)', async () => {
-                await TicketModel.findByIdAndRemove(ticket._id);
-                const res = await request.delete(url + ticket._id)
-                    .set({ Authorization: 'Bearer ' + owner.generateToken() });
-                expect(res.status).toBe(404);
-            })
+        it('returns status 404 (ticket not found)', async () => {
+            await TicketModel.findByIdAndRemove(ticket._id);
+            const res = await request.delete(url + ticket._id)
+                .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            expect(res.status).toBe(404);
+        })
 
         it('returns status 403 (no permission)', async () => {
             const res = await request.delete(url + ticket._id)
                 .set({ Authorization: 'Bearer ' + randomUser.generateToken() });
             expect(res.status).toBe(403);
-        }),
+        })
 
-            it('returns status 403 (owner wants to delete ticket with status other than open', async () => {
-                ticket.status = TicketStatus.ACTIVE;
-                await ticket.save();
-                const res = await request.delete(url + ticket._id)
-                    .set({ Authorization: 'Bearer ' + owner.generateToken() });
-                expect(res.status).toBe(403);
-            }),
+        it('returns status 403 (owner wants to delete ticket with status other than open', async () => {
+            ticket.status = TicketStatus.ACTIVE;
+            await ticket.save();
+            const res = await request.delete(url + ticket._id)
+                .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            expect(res.status).toBe(403);
+        })
 
-
-            it('returns status 200', async () => {
-                const res = await request.delete(url + ticket._id)
-                    .set({ Authorization: 'Bearer ' + owner.generateToken() });
-                expect(res.status).toBe(200);
-            })
+        it('returns status 200', async () => {
+            const res = await request.delete(url + ticket._id)
+                .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            expect(res.status).toBe(200);
+        })
 
         it('returns deleted ticket', async () => {
             const res = await request.delete(url + ticket._id)
@@ -209,6 +216,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
+
         it('returns status 200', async () => {
             const res = await request.get(url)
                 .set({ Authorization: 'Bearer ' + owner.generateToken() });
@@ -225,8 +233,8 @@ describe('TicketController', () => {
 
         it('returns object with tickets per status', async () => {
             const res = await request.get(url)
-            .set({ Authorization: 'Bearer ' + owner.generateToken() })
-            .query({groupByStatus: true});
+                .set({ Authorization: 'Bearer ' + owner.generateToken() })
+                .query({ groupByStatus: true });
             expect(res.body.openTickets).toBeTruthy();
             expect(res.body.activeTickets).toBeTruthy();
             expect(res.body.closedTickets).toBeTruthy();
@@ -262,67 +270,81 @@ describe('TicketController', () => {
                 ...ticketData(), id: ticket._id.toString()
             });
         })
-    }),
+    })
 
-        describe('PATCH /api/ticket/:id/status', () => {
-            const url = '/api/ticket/'
+    describe('PATCH /api/ticket/:id/status', () => {
+        const url = '/api/ticket/'
 
-            beforeEach(async () => {
-                owner = await UserModel.create(ownerData());
-                editor = await UserModel.create(editorData());
-                randomUser = await UserModel.create(randomUserData());
-                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
-            })
-
-            it('returns status 401 (no token)', async () => {
-                const res = await request.patch(url + ticket._id + '/status').send({ status: TicketStatus.ACTIVE });
-                expect(res.status).toBe(401);
-            })
-
-            it('returns 403 (user has no "support"-role)', async () => {
-                const res = await request.patch(url + ticket._id + '/status')
-                    .set({ Authorization: 'Bearer ' + randomUser.generateToken() })
-                    .send({ status: TicketStatus.ACTIVE });
-                expect(res.status).toBe(403);
-            })
-
-            it('returns status 200 (status changed)', async () => {
-                const res = await request.patch(url + ticket._id + '/status')
-                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                    .send({ status: TicketStatus.ACTIVE })
-                expect(res.status).toBe(200);
-            })
-        }),
-
-        describe('PATCH /api/ticket/:id/sub-task', () => {
-
-            const url = '/api/ticket/'
-
-            beforeEach(async () => {
-                owner = await UserModel.create(ownerData());
-                editor = await UserModel.create(editorData());
-                ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
-            })
-
-            it('return status 401 (no token)', async () => {
-                const res = await request.patch(url + ticket._id + '/sub-task').send({ status: TicketStatus.ACTIVE });
-                expect(res.status).toBe(401);
-            })
-
-            it('returns status 403 (no support role)', async () => {
-                const res = await request.patch(url + ticket._id + '/sub-task')
-                    .set({ Authorization: 'Bearer ' + owner.generateToken() })
-                    .send({ subTasks: subTasksData() });
-                expect(res.status).toBe(403);
-            })
-
-            it('returns status 200', async () => {
-                const res = await request.patch(url + ticket._id + '/sub-task')
-                    .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                    .send({ subTasks: subTasksData() });
-                expect(res.status).toBe(200);
-            })
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
+            randomUser = await UserModel.create(randomUserData());
+            ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
         })
+
+        it('returns status 401 (no token)', async () => {
+            const res = await request.patch(url + ticket._id + '/status').send({ status: TicketStatus.ACTIVE });
+            expect(res.status).toBe(401);
+        })
+
+        it('returns 403 (user has no "support"-role)', async () => {
+            const res = await request.patch(url + ticket._id + '/status')
+                .set({ Authorization: 'Bearer ' + randomUser.generateToken() })
+                .send({ status: TicketStatus.ACTIVE });
+            expect(res.status).toBe(403);
+        })
+        
+        it('return status 422 (validator)', async () => {
+            const res = await request.patch(url + ticket._id + '/status')
+                .set({ Authorization: 'Bearer ' + randomUser.generateToken() })
+                .send({ status: 'invalidStatus' });
+            expect(res.status).toBe(403);
+        })
+
+        it('returns status 200 (status changed)', async () => {
+            const res = await request.patch(url + ticket._id + '/status')
+                .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                .send({ status: TicketStatus.ACTIVE })
+            expect(res.status).toBe(200);
+        })
+    })
+
+    describe('PATCH /api/ticket/:id/sub-task', () => {
+
+        const url = '/api/ticket/'
+
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
+            ticket = await TicketModel.create({ ...ticketData(), owner: owner._id });
+        })
+
+        it('return status 401 (no token)', async () => {
+            const res = await request.patch(url + ticket._id + '/sub-task').send({ status: TicketStatus.ACTIVE });
+            expect(res.status).toBe(401);
+        })
+
+        it('returns status 403 (no support role)', async () => {
+            const res = await request.patch(url + ticket._id + '/sub-task')
+                .set({ Authorization: 'Bearer ' + owner.generateToken() })
+                .send({ subTasks: subTasksData() });
+            expect(res.status).toBe(403);
+        })
+        
+        it('returns status 422 (validator)', async () => {
+            const res = await request.patch(url + ticket._id + '/sub-task')
+                .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                .send({ subTasks: [{description: 'desc', isDone: 'invalidValue'}] });
+            expect(res.status).toBe(422);
+        })
+
+        it('returns status 200', async () => {
+            const res = await request.patch(url + ticket._id + '/sub-task')
+                .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                .send({ subTasks: subTasksData() });
+            expect(res.status).toBe(200);
+        })
+    })
 
     describe('PATCH /api/ticket/:id/title', () => {
         const url = '/api/ticket/';
@@ -344,6 +366,13 @@ describe('TicketController', () => {
                 .set({ Authorization: 'Bearer ' + owner.generateToken() })
                 .send({ title: 'validTitle' });
             expect(res.status).toBe(403);
+        })
+        
+        it('returns status 422 (validator)', async () => {
+            const res = await request.patch(url + ticket._id + subUrl)
+                .set({ Authorization: 'Bearer ' + editor.generateToken() })
+                .send({ title: 'iv' }); // invalid title
+            expect(res.status).toBe(422);
         })
 
         it('returns status 200', async () => {

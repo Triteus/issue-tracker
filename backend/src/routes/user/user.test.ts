@@ -90,6 +90,13 @@ describe(('UserController'), () => {
                 expect(res.status).toBe(403);
             })
 
+            it('returns status 422 (validator)', async () => {
+                const res = await request.patch(url + user._id)
+                    .set({ Authorization: 'Bearer ' + token })
+                    .send({ email: 'invalidMail' })
+                expect(res.status).toBe(422);
+            })
+
             it('changes email', async () => {
                 const res = await request.patch(url + user._id)
                     .set({ Authorization: 'Bearer ' + token })
