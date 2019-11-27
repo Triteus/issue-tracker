@@ -28,7 +28,7 @@ describe('TicketService', () => {
         })
 
         it('should get tickets grouped by status', async () => {
-            const ticketsByStatus = await ticketService.findAndGroupTicketsByStatus({});
+            const ticketsByStatus = await ticketService.groupTicketsByStatus({});
             expect(ticketsByStatus.openTickets[0]._id).toEqual(openTicket._id);
             expect(ticketsByStatus.activeTickets[0]._id).toEqual(activeTicket._id);
             expect(ticketsByStatus.closedTickets[0]._id).toEqual(closedTicket._id);

@@ -125,14 +125,10 @@ export class TicketController {
     private async getTickets(req: Request, res: Response) {
         const { sort, options: pagination, match } = this.ticketService.generateQueryObjects(req.query);
         if (req.query.groupByStatus) {
-            const ticketsByStatus = await this.ticketService.findAndGroupTicketsByStatus(pagination);
+            const ticketsByStatus = await this.ticketService.groupTicketsByStatus(pagination);
             return res.status(200).send(ticketsByStatus);
         } else {
-            const tickets = await TicketModel
-                .find(match, null, pagination)
-                .sort(sort)
-                .populate('owner assignedTo lastEditor');
-
+            const tickets = await this.ticketService.getTickets(match, sort, pagination);
             res.status(200).send({ tickets, numAllTickets: await TicketModel.count({}) });
         }
     }

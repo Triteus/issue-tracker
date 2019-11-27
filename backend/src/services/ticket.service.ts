@@ -95,9 +95,17 @@ export class TicketService {
         return ticket.setEditorAndSave(editorId);
     }
 
-    async findAndGroupTicketsByStatus(options: Partial<PaginationParams>) {
+    async getTickets(match: object, sort: SortParams, pagination: PaginationParams) {
         const tickets = await TicketModel
-            .find({}, null, options)
+        .find(match, null, pagination)
+        .sort(sort)
+        .populate('owner assignedTo lastEditor');
+
+        return tickets;
+    }
+    async groupTicketsByStatus(pagination: PaginationParams) {
+        const tickets = await TicketModel
+            .find({}, null, pagination)
             .populate('owner assignedTo lastEditor');
             
         const openTickets = [], activeTickets = [], closedTickets = [];
@@ -123,6 +131,7 @@ export class TicketService {
 }
 
 export function pagination(query: PaginationParams) {
+    console.log('pagination', query);
     const pageIndex = Number.parseInt(query.pageIndex as string);
     const pageSize = Number.parseInt(query.pageSize as string);
     let options = {};
