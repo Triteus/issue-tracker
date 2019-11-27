@@ -14,7 +14,7 @@
     >
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
-    <span>ISSUE TRACKER</span>
+    <span>{{currentPage}}</span>
   </div>
   <div *ngIf="$user | async as user; else offline">
     <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
