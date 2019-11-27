@@ -11,8 +11,8 @@ import { HomeComponent } from './home/home.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/tickets', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, data: {pageName: 'Home'} },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: {pageName: 'Home'} },
   {
     path: 'tickets',
     component: IssueOverviewComponent,
