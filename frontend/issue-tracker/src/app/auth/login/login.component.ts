@@ -18,10 +18,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     const {email, password} = form.form.value;
-    console.log('form', form.form);
     this.authService.login(email, password).subscribe(res => {
       this.snackBar.open('Anmeldung erfolgreich!', 'OK');
-      this.router.navigateByUrl('/tickets');
+      this.router.navigateByUrl('/home');
     });
   }
 

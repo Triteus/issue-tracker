@@ -25,3 +25,14 @@ mat-sidenav-container, mat-sidenav, mat-sidenav-content {
   height: 100vh;
   overflow: visible;
 }
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.gap {
+  margin-right: 10px;
+}

@@ -43,6 +43,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { TicketBoardItemComponent } from './ticket-board/ticket-board-item/ticket-board-item.component';
 import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { ConfirmationDialogComponent } from './shared/components/confirmation-di
     TicketBoardItemComponent,
     StatusIconPipe,
     ConfirmationDialogComponent,
+    HomeComponent,
 
   ],
   imports: [

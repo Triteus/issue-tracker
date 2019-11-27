@@ -7,10 +7,12 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 import { RoleGuardService } from './shared/services/role-guard.service';
+import { HomeComponent } from './home/home.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/tickets', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   {
     path: 'tickets',
     component: IssueOverviewComponent,

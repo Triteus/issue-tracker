@@ -60,16 +60,34 @@
       >
       <a
         mat-list-item
+        [routerLink]="['/home']"
+        routerLinkActive="router-link-active"
+        >
+        <div class="nav-item">
+          <mat-icon class="gap">dashboard</mat-icon>
+          <span>Home</span>
+        </div>
+        </a>
+      <a
+        mat-list-item
         [routerLink]="['/tickets']"
         routerLinkActive="router-link-active"
-        >Ticket-Katalog</a
-      >
+        >
+        <div class="nav-item">
+          <mat-icon class="gap">list</mat-icon>
+          <span>Ticket-Katalog</span>
+        </div>
+        </a>
       <a
         mat-list-item
         [routerLink]="['/ticket-board']"
         routerLinkActive="router-link-active"
-        >Ticket-Board</a
-      >
+        >
+        <div class="nav-item">
+          <mat-icon class="gap">local_offer</mat-icon>
+          <span>Ticket-Board</span>
+        </div>
+        </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
