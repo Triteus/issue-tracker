@@ -5,15 +5,43 @@
   fxLayoutGap="20px"
 >
   <button routerLink="/tickets" mat-raised-button>
-    <div class="card" fxLayout fxLayoutGap="30px" fxLayoutAlign="center center" >
-      <mat-icon>list</mat-icon>
-      <div>Ticket Übersicht</div>
-    </div>
+    <div class="card" fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="start center">
+        <div fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="center center">
+          <mat-icon>list</mat-icon>
+          <div class="mat-h1">Ticket-Übersicht</div>
+        </div>
+        <mat-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>check</mat-icon>
+            <div>Tabellarische Darstellung aller verfügbaren Tickets</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>check</mat-icon>
+            <div>Filterung, Sortierung, Pagination</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
     </button>
     <button routerLink="/ticket-board" mat-raised-button>
-      <div class="card" fxLayout fxLayoutGap="30px" fxLayoutAlign="center center">
-        <mat-icon>local_offer</mat-icon>
-        <div>Ticket-Board</div>
+      <div class="card" fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="start center">
+        <div fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="center center">
+          <mat-icon>local_offer</mat-icon>
+          <div class="mat-h1">Ticket-Board</div>
+        </div>
+        <mat-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>check</mat-icon>
+            <div>Einteilung in Spalten für jeden Status</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>check</mat-icon>
+            <div>Einfach Änderung des Status durch Drag and Drop</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>check</mat-icon>
+            <div>Zugriff für Nutzer mit Support-Rechten</div>
+          </mat-list-item>
+        </mat-list>
       </div>
     </button>
   </div>
