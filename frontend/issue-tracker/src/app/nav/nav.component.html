@@ -1,0 +1,100 @@
+<mat-toolbar
+  fxLayout
+  fxLayoutAlign="space-between center"
+  fxLayoutGap="10px"
+  class="toolbar"
+  color="primary"
+>
+  <div fxLayout fxLayoutAlign="center center">
+    <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="drawer.toggle()"
+    >
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+    <span>{{currentPage}}</span>
+  </div>
+  <div *ngIf="$user | async as user; else offline">
+    <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Einstellungen</button>
+      <button mat-menu-item (click)="logout()">Ausloggen</button>
+    </mat-menu>
+  </div>
+  <ng-template #offline>
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/login']"
+      routerLinkActive="router-link-active"
+    >
+      Einloggen
+    </button>
+  </ng-template>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    fixedInViewport
+    fixedTopGap="64"
+    #drawer
+    class="sidenav"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+  >
+    <mat-nav-list>
+      <ng-container *ngIf="!($user | async)">
+        <a
+          mat-list-item
+          [routerLink]="['/register']"
+          routerLinkActive="router-link-active"
+          >Registrieren</a
+        >
+        <a
+          mat-list-item
+          [routerLink]="['/login']"
+          routerLinkActive="router-link-active"
+          >Anmelden</a
+        >
+      </ng-container>
+      <ng-container *ngIf="$user | async">
+        <a
+          mat-list-item
+          [routerLink]="['/home']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">dashboard</mat-icon>
+            <span>Home</span>
+          </div>
+          </a>
+        <a
+          mat-list-item
+          [routerLink]="['/tickets']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">list</mat-icon>
+            <span>Ticket-Katalog</span>
+          </div>
+          </a>
+        <a
+          mat-list-item
+          [routerLink]="['/ticket-board']"
+          routerLinkActive="router-link-active"
+          >
+          <div class="nav-item">
+            <mat-icon class="gap">local_offer</mat-icon>
+            <span>Ticket-Board</span>
+          </div>
+          </a>
+      </ng-container>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- dummy toolbar to add height-offset for fixed toolbar -->
+    <mat-toolbar style="visibility: hidden;"></mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,41 @@
+<ng-container [formGroup]="ticketForm">
+  <div class="mat-h2">Aufgaben <span *ngIf="!!numSubTasks">({{numDoneSubTasks}}/{{numSubTasks}} fertig)</span></div>
+  <mat-list formArrayName="subTasks">
+    <mat-list-item
+      style="width: 100%"
+      *ngFor="let task of subTasks.controls; let i = index"
+    >
+      <div
+        fxFlexFill
+        fxLayout
+        fxLayoutAlign="space-between center"
+        [formGroupName]="i"
+      >
+        <mat-form-field fxFlex="3 1 0">
+          <input formControlName="description" matInput required />
+        </mat-form-field>
+        <div fxLayoutAlign="end center" fxLayoutGap="10px" fxFlex="1 1 0">
+          <mat-checkbox
+            matTooltip="Fertig?"
+            formControlName="isDone"
+          ></mat-checkbox>
+          <button type="button" (click)="deleteSubTask(i)" mat-icon-button>
+            <mat-icon matTooltip="Aufgabe löschen">delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-list-item>
+    <mat-list-item style="width: 100%">
+      <div fxFlexFill fxLayout fxLayoutAlign="space-between center">
+        <mat-form-field fxFlex="4 1 0">
+          <input disabled matInput placeholder="Neue Aufgabe..." />
+        </mat-form-field>
+        <div fxLayoutAlign="end center" fxFlex="1 1 0">
+          <button type="button" (click)="addSubTask()" mat-icon-button>
+            <mat-icon matTooltip="Aufgabe hinzufügen">add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</ng-container>

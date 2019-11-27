@@ -1,0 +1,89 @@
+<div
+  fxLayout="row"
+  fxLayout.lt-md="column"
+  fxLayoutAlign="space-around center"
+  fxLayoutGap="20px"
+  class="ticket-filters"
+>
+  <button (click)="openTicketDialog()" mat-mini-fab color="primary" matTooltip="Neues Ticket erstellen">
+    <mat-icon>add</mat-icon>
+  </button>
+  <mat-form-field>
+    <input matInput placeholder="Suche" #input />
+  </mat-form-field>
+  <div fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="20px">
+    <mat-form-field>
+      <mat-label>Priorität</mat-label>
+      <mat-select #prioSelect (valueChange)="filterChanged()">
+        <mat-option [value]="''">
+          -
+        </mat-option>
+        <mat-option [value]="'low'">
+          Niedrig
+        </mat-option>
+        <mat-option [value]="'moderate'">
+          Mittel
+        </mat-option>
+        <mat-option [value]="'high'">
+          Hoch
+        </mat-option>
+        <mat-option [value]="'very high'">
+          Sehr hoch
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Betroffenes System</mat-label>
+      <mat-select #systemsSelect (valueChange)="filterChanged()" multiple>
+        <mat-option
+          *ngFor="let system of systems"
+          [value]="system.toLowerCase()"
+        >
+          {{ system }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="" fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="20px">
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        placeholder="Beginn Bearbeitung"
+        (dateChange)="filterChanged()"
+        #startDate
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        placeholder="Ende Bearbeitung"
+        (dateChange)="filterChanged()"
+        #endDate
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="endPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="ticket-status">
+    <mat-checkbox (change)="filterChanged()" checked="true" #openCB class="checkbox"
+      >Offen</mat-checkbox
+    >
+    <mat-checkbox (change)="filterChanged()" checked="true" #progressCB class="checkbox"
+      >In Bearbeitung</mat-checkbox
+    >
+    <mat-checkbox (change)="filterChanged()" checked="true" #closedCB class="checkbox"
+      >Geschlossen</mat-checkbox
+    >
+  </div>
+</div>

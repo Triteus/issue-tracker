@@ -22,8 +22,8 @@ describe('Ticket model', () => {
         const id = new Types.ObjectId();
         const ticket = new TicketModel(ticketData());
         ticket.setEditor(id);
-        expect(ticket.lastEditorId).toEqual(id);
-        expect(ticket.editorIds).toContainEqual(id);
+        expect(ticket.lastEditor).toEqual(id);
+        expect(ticket.editors).toContainEqual(id);
     })
 
     it('sets editor and saves (method)', async () => {
@@ -74,5 +74,13 @@ describe('Ticket model', () => {
         expect(ticketJSON._id).toBeFalsy();
         expect(ticketJSON.__v).toBeFalsy();
 
+    })
+
+    it('performs tolowercase on all strings in affectedSystems', async () => {
+        const data = {...ticketData(), affectedSystems: ['JIRA', 'Confluence', 'OUTLOOK', 'dfdFkldsjfF']}
+        const ticket = new TicketModel(data);
+        data.affectedSystems.forEach(system => {
+            expect(ticket.affectedSystems).toContain(system.toLowerCase());
+        })
     })
 })

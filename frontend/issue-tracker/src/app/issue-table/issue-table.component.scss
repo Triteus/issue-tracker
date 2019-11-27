@@ -1,0 +1,30 @@
+.full-width-table {
+  width: 100%;
+}
+
+.checkbox {
+  margin: 0 5px;
+}
+
+.ticket-filters {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+.table-row:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+/* mat-chip {
+  padding: 2px 4px 2px 4px;
+} */
+
+td.mat-cell, th.mat-header-cell {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+

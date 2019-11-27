@@ -1,0 +1,35 @@
+.heading {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.card {
+  padding: 50px;
+  width: 80%;
+}
+
+.card mat-form-field, input {
+  width: 100%;
+}
+
+.submit-btn {
+  margin-top: 20px;
+}
+
+@media (min-width: 500px) {
+  .card {
+    width: 60%;
+  }
+}
+
+@media (min-width: 900px) {
+  .card {
+    width: 40%;
+  }
+}
+
+@media (min-width: 1350px) {
+  .card {
+    width: 30%;
+  }
+}

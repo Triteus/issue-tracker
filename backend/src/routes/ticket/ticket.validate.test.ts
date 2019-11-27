@@ -28,22 +28,22 @@ describe('Ticket validators', () => {
             checkResponse(errors, 'neededAt', 'Invalid value');
         })
 
-        it('throws (tried to change ownerID)', async () => {
+        it('throws (tried to change owner)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketData(), ownerId: id }, validators);
-            checkResponse(errors, 'ownerId', 'Invalid value');
+            const errors = await validateBody({ ...ticketData(), owner: id }, validators);
+            checkResponse(errors, 'owner', 'Invalid value');
         })
 
-        it('throws (tried to change lastEditorID)', async () => {
+        it('throws (tried to change lastEditor)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketData(), lastEditorId: id }, validators);
-            checkResponse(errors, 'lastEditorId', 'Invalid value');
+            const errors = await validateBody({ ...ticketData(), lastEditor: id }, validators);
+            checkResponse(errors, 'lastEditor', 'Invalid value');
         })
 
-        it('throws (tried to change editorIds)', async () => {
+        it('throws (tried to change editor)', async () => {
             const id = new ObjectID();
-            const errors = await validateBody({ ...ticketData(), editorIds: id }, validators);
-            checkResponse(errors, 'editorIds', 'Invalid value');
+            const errors = await validateBody({ ...ticketData(), editors: id }, validators);
+            checkResponse(errors, 'editors', 'Invalid value');
         })
     })
 
@@ -117,6 +117,20 @@ describe('Ticket validators', () => {
             checkResponses(errors, 'subTasks', 'Invalid value');
         })
     })
+
+    describe('PATCH /api/ticket/:id/title', async () => {
+        const validators = TicketValidators.changeTitle;
+
+        it('throws (title length < 5)', async () => {
+            const errors = await validateBody({ title: 'lul'}, validators);
+            checkResponse(errors, 'title', 'Invalid value');
+        })
+        
+        it('passes', async () => {
+            const errors = await validateBody({ title: 'valid-title'}, validators);
+            expect(errors.length).toBe(0);  
+        })
+    });
 
     describe('DELETE /api/ticket/:id', () => {
 

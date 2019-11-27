@@ -7,7 +7,8 @@
     "build": "rimraf build && tsc",
     "start": "nodemon --exec ts-node src/app.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "seedDB": "tsc seedDB.ts &&  node seedDB.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +20,9 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-validator": "^6.2.0",
+    "faker": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
+    "mongo-seeding": "^3.4.0-alpha.1",
     "mongoose": "^5.7.5",
     "mongoose-type-email": "^1.0.11",
     "passport": "^0.4.0",
@@ -31,6 +34,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/faker": "^4.1.7",
     "@types/jest": "^24.0.20",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/mongoose": "^5.5.23",

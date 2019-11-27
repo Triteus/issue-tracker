@@ -17,7 +17,7 @@ export function ticketData() {
         description: 'A sample ticket',
         priority: Priority.HIGH,
         neededAt,
-        affectedSystems: ['Confluence', 'JIRA', 'Outlook']
+        affectedSystems: ['confluence', 'jira', 'outlook']
     }
 }
 

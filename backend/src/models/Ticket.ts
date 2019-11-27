@@ -21,18 +21,19 @@ export const priorityArr = Object.values(Priority);
 
 
 export interface ITicketDocument extends mongoose.Document {
-  ownerId: mongoose.Types.ObjectId,
-  editorIds: mongoose.Types.ObjectId[],
-  lastEditorId: mongoose.Types.ObjectId,
-  assignedTo: mongoose.Types.ObjectId,
+  owner: mongoose.Types.ObjectId,
+  editors?: mongoose.Types.ObjectId[],
+  lastEditor?: mongoose.Types.ObjectId,
+  assignedTo?: mongoose.Types.ObjectId,
   priority: Priority,
-  neededAt: Date,
+  neededAt?: Date,
   title: string,
   description: string,
-  status: TicketStatus,
-  subTasks: ISubTask[],
-  createdAt: Date,
-  editedAt: Date
+  status?: TicketStatus,
+  subTasks?: ISubTask[],
+  affectedSystems?: string[],
+  createdAt?: Date,
+  updatedAt?: Date
 }
 
 export interface ITicket extends ITicketDocument {
@@ -47,18 +48,18 @@ export interface ITicketModel extends Model<ITicket> {
 }
 
 export const ticketSchema = new mongoose.Schema({
-  ownerId: {
+  owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User',
     immutable: true
   },
-  editorIds: [{
+  editors: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     default: []
   }],
-  lastEditorId:
+  lastEditor:
   {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -90,8 +91,8 @@ export const ticketSchema = new mongoose.Schema({
     default: []
   },
   affectedSystems: {
-    type: [String],
-    default: []
+    type: [{type: String, lowercase: true}],
+    default: [],
   }
 }, {
   toJSON: {
@@ -106,6 +107,7 @@ export const ticketSchema = new mongoose.Schema({
   timestamps: true
 });
 
+ticketSchema.index({title: 'text'});
 
 ticketSchema.methods.setSubTasks = function (subTasks: { description: string, isDone: boolean }[], editorId: mongoose.Types.ObjectId) {
   if(!subTasks) return;
@@ -113,8 +115,8 @@ ticketSchema.methods.setSubTasks = function (subTasks: { description: string, is
 }
 
 ticketSchema.methods.setEditor = function (editorId: mongoose.Types.ObjectId) {
-  this.lastEditorId = editorId;
-  this.editorIds.push(editorId);
+  this.lastEditor = editorId;
+  this.editors.push(editorId);
 }
 
 ticketSchema.methods.setEditorAndSave = async function (editorId: mongoose.Types.ObjectId) {

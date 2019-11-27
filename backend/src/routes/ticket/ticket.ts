@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware } from "@overnightjs/core";
-import { Request, Response, NextFunction } from "express";
-import TicketModel, { ticketSchema, TicketStatus, ITicket } from '../../models/Ticket';
+import { Request, Response, NextFunction, request } from "express";
+import TicketModel, { ticketSchema, TicketStatus, ITicket, Priority } from '../../models/Ticket';
 import { IUser, ERole, IUserDocument, RequestWithUser } from "../../models/User";
 import passport = require("passport");
 import { ResponseError, ErrorTypes } from "../../middlewares/error";
@@ -12,15 +12,14 @@ import { TicketValidators } from "./ticket.validate";
 const validate = validation(TicketValidators);
 
 @Controller('api/ticket')
-@ClassMiddleware([
-    passport.authenticate('jwt', { session: false }),
-])
+
 export class TicketController {
 
     ticketService = new TicketService();
 
     @Post('')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('createTicket')
     ])
     private async createIssue(req: RequestWithUser, res: Response) {
@@ -38,6 +37,7 @@ export class TicketController {
 
     @Put(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
@@ -55,6 +55,7 @@ export class TicketController {
 
     @Delete(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('deleteTicket')
     ])
     private async deleteTicket(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -63,7 +64,7 @@ export class TicketController {
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        if (req.user._id.equals(ticket.ownerId)) {
+        if (req.user._id.equals(ticket.owner)) {
             if (ticket.status !== TicketStatus.OPEN) {
                 throw new ResponseError('Missing permissions', ErrorTypes.NOT_AUTHORIZED);
             }
@@ -83,6 +84,7 @@ export class TicketController {
 
     @Patch(':id/status')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('changeStatus')
     ])
@@ -91,34 +93,60 @@ export class TicketController {
         res.status(200).send({ message: 'Status updated!' });
     }
 
+    @Patch(':id/title')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
+        Authorize.hasRoles(ERole.Support),
+        ...validate('changeTitle')
+    ])
+    private async changeTitle(req: RequestWithUser, res: Response) {
+        const ticket = await TicketModel.findById(req.params.id);
+        ticket.title = req.body.title;
+        await ticket.save();
+
+        res.status(200).send({ message: 'Title updated!' });
+    }
+
     @Patch(':id/sub-task')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         Authorize.hasRoles(ERole.Support),
         ...validate('changeSubTasks')
     ])
     private async changeSubTasks(req: RequestWithUser, res: Response) {
         await this.ticketService.findTicketAndChangeSubTasks(req.params.id, req.body.subTasks, req.user._id);
-        res.status(200).send({message: 'Subtasks updated!'});
-    }   
+        res.status(200).send({ message: 'Subtasks updated!' });
+    }
 
     @Get('')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
+    ])
     private async getTickets(req: Request, res: Response) {
-        // pagination, 
-        // sorting, 
-        // filter by category, system, status
-        const tickets = await TicketModel.find({});
-        res.status(404).send(tickets);
+        const { sort, options: pagination, match } = this.ticketService.generateQueryObjects(req.query);
+        if (req.query.groupByStatus) {
+            const ticketsByStatus = await this.ticketService.findAndGroupTicketsByStatus(pagination);
+            return res.status(200).send(ticketsByStatus);
+        } else {
+            const tickets = await TicketModel
+                .find(match, null, pagination)
+                .sort(sort)
+                .populate('owner assignedTo lastEditor');
+
+            res.status(200).send({ tickets, numAllTickets: await TicketModel.count({}) });
+        }
     }
 
     @Get(':id')
     @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('getTicket')
     ])
     private async getTicket(req: Request, res: Response) {
 
         const ticket = await TicketModel.findById(req.params.id)
-            .populate('ownerId')
-            .populate('lastEditorId');
+            .populate('owner')
+            .populate('lastEditor');
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
