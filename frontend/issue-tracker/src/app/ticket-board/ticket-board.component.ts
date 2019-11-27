@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { moveItemInArray, transferArrayItem, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, observable, of } from 'rxjs';
 import { Ticket, TicketStatus } from '../models/ticket.model';
 import { TicketService } from '../ticket.service';
 import { TicketBoardService } from './ticket-board.service';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
+import { switchMapTo, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ticket-board',
   templateUrl: './ticket-board.component.html',
   styleUrls: ['./ticket-board.component.scss']
 })
-export class TicketBoardComponent implements OnInit {
+export class TicketBoardComponent implements OnInit, OnDestroy {
 
   tickets$: Observable<Ticket[]>;
   openTickets: Ticket[] = [];
@@ -21,6 +22,7 @@ export class TicketBoardComponent implements OnInit {
 
   dragDisabled = true;
 
+  fetchSub: Subscription;
   querySub: Subscription;
 
   constructor(
@@ -43,12 +45,19 @@ export class TicketBoardComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.querySub.unsubscribe();
+    this.fetchSub.unsubscribe();
+  }
+
   private loadTickets() {
     this.openTickets = [];
     this.inProgressTickets = [];
     this.closedTickets = [];
 
-    this.ticketService.getTicketsGroupByStatus()
+    this.fetchSub = of([]).pipe(switchMap((res) => {
+      return this.ticketService.getTicketsGroupByStatus();
+    }))
     .subscribe(ticketsByStatus => {
       this.dragDisabled = false;
       this.openTickets = ticketsByStatus.openTickets;
@@ -65,7 +74,6 @@ export class TicketBoardComponent implements OnInit {
       // TODO locally save position of item within list
     } else {
       const ticketId = previousContainer.data[previousIndex].id;
-      console.log('ticket-id', ticketId);
       transferArrayItem(previousContainer.data,
         container.data,
         previousIndex,
