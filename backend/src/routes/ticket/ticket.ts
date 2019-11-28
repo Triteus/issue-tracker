@@ -129,7 +129,7 @@ export class TicketController {
             return res.status(200).send(ticketsByStatus);
         } else {
             const tickets = await this.ticketService.getTickets(match, sort, pagination);
-            res.status(200).send({ tickets, numAllTickets: await TicketModel.count({}) });
+            res.status(200).send({ tickets, numAllTickets: await TicketModel.countDocuments(match) });
         }
     }
 
