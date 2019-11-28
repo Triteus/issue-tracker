@@ -187,9 +187,23 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
         })
 
-        it('returns status 200', async () => {
+        it('returns status 200 (owner deletes ticket that has status "open"', async () => {
             const res = await request.delete(url + ticket._id)
                 .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            expect(res.status).toBe(200);
+        })
+
+        it('returns status 200 (support deletes ticket with status "open"', async () => {
+            const res = await request.delete(url + ticket._id)
+                .set({ Authorization: 'Bearer ' + editor.generateToken() });
+            expect(res.status).toBe(200);
+        })
+
+        it('returns status 200 (support deletes ticket with status other than "open"', async () => {
+            const activeTicket = new TicketModel({ ...ticketData(), owner: owner._id, status: 'active' });
+            await activeTicket.save();
+            const res = await request.delete(url + activeTicket._id)
+                .set({ Authorization: 'Bearer ' + editor.generateToken() });
             expect(res.status).toBe(200);
         })
 
@@ -198,6 +212,14 @@ describe('TicketController', () => {
                 .set({ Authorization: 'Bearer ' + owner.generateToken() });
             expect(res.body.ticket).toBeTruthy();
             expect(res.body.message).toBe('Ticket successfully deleted!');
+        })
+
+        it('deletes ticket from db', async () => {
+            const res = await request.delete(url + ticket._id)
+                .set({ Authorization: 'Bearer ' + owner.generateToken() });
+            
+            const deletedTicket = await TicketModel.findById(ticket._id);
+            expect(deletedTicket).toBeFalsy();
         })
 
     })
@@ -293,7 +315,7 @@ describe('TicketController', () => {
                 .send({ status: TicketStatus.ACTIVE });
             expect(res.status).toBe(403);
         })
-        
+
         it('return status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + '/status')
                 .set({ Authorization: 'Bearer ' + randomUser.generateToken() })
@@ -330,11 +352,11 @@ describe('TicketController', () => {
                 .send({ subTasks: subTasksData() });
             expect(res.status).toBe(403);
         })
-        
+
         it('returns status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + '/sub-task')
                 .set({ Authorization: 'Bearer ' + editor.generateToken() })
-                .send({ subTasks: [{description: 'desc', isDone: 'invalidValue'}] });
+                .send({ subTasks: [{ description: 'desc', isDone: 'invalidValue' }] });
             expect(res.status).toBe(422);
         })
 
@@ -367,7 +389,7 @@ describe('TicketController', () => {
                 .send({ title: 'validTitle' });
             expect(res.status).toBe(403);
         })
-        
+
         it('returns status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + subUrl)
                 .set({ Authorization: 'Bearer ' + editor.generateToken() })

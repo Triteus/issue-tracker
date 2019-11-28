@@ -223,5 +223,15 @@ describe('TicketService', () => {
             expect(res['skip']).toBe(60);
             expect(res['limit']).toBe(30);
         })
+        it('returns pageIndex + pageSize', () => {
+            const res = pagination({pageSize: 30, pageIndex: 0});
+            expect(res['skip']).toBe(0);
+            expect(res['limit']).toBe(30);
+        })
+        it('returns pageIndex + pageSize', () => {
+            const res = pagination({pageSize: 0, pageIndex: 2});
+            expect(res['skip']).toBe(0);
+            expect(res['limit']).toBe(0);
+        })
     })
 })
