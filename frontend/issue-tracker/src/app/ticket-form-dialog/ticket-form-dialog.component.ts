@@ -19,7 +19,7 @@ export class TicketFormDialogComponent implements OnInit {
   initialTicket: Ticket;
   ticketStatusArr = Object.values(TicketStatus);
   priorityArr = Object.values(Priority);
-  systemsArr = ['JIRA', 'Outlook', 'Confluence'];
+  systemsArr = ['jira', 'outlook', 'confluence'];
 
   editMode = true;
 
@@ -28,7 +28,7 @@ export class TicketFormDialogComponent implements OnInit {
     status: new FormControl(TicketStatus.OPEN, [Validators.required]),
     priority: new FormControl(Priority.LOW, [Validators.required]),
     description: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(1000)]),
-    affectedSystems: new FormControl(''),
+    affectedSystems: new FormControl([]),
     subTasks: new FormArray([])
   });
 

@@ -67,7 +67,7 @@
       <td id="system-chip-list" mat-cell *matCellDef="let row">
         <mat-chip-list selectable="false" focused="false">
           <mat-chip aria-readonly="true" *ngFor="let system of row.affectedSystems">
-            {{system}}
+            {{ system | titlecase }}
           </mat-chip>
         </mat-chip-list>
       </td>

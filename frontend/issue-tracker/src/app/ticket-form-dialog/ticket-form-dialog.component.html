@@ -121,7 +121,7 @@
       <mat-label>Systeme</mat-label>
       <mat-select formControlName="affectedSystems" multiple>
         <mat-option *ngFor="let system of systemsArr" [value]="system">{{
-          system
+          system | titlecase
         }}</mat-option>
       </mat-select>
     </mat-form-field>
