@@ -68,7 +68,7 @@ describe('Ticket model', () => {
         })
     })
 
-    it('to JSON', async () => {
+    it('delete path "__v" and "_id" (to JSON)', async () => {
         const ticket = new TicketModel(ticketData());
         const ticketJSON = ticket.toJSON();
         expect(ticketJSON._id).toBeFalsy();

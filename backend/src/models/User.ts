@@ -64,6 +64,7 @@ export const userSchema = new mongoose.Schema({
 }, {
     toJSON: { virtuals: true, versionKey: false,  transform: function (doc, ret) {
         delete ret._id;
+        delete ret.__v;
       } },
     toObject: { virtuals: true },
     timestamps: true
@@ -86,7 +87,8 @@ userSchema.statics.hashPassword = async function (plainPW: string) {
     return bcrypt.hash(plainPW, salt);
 }
 
-userSchema.pre('save', async function (next) {
+// instead of 'save'-hook, we use validate hook to be able to unit test
+userSchema.pre('validate', async function (next) {
     const user = this as any;
     if (!user.isModified('password')) return next();
     try {
