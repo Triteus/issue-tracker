@@ -135,7 +135,7 @@ export function pagination(query: PaginationParams) {
     const pageSize = Number.parseInt(query.pageSize as string);
     let options = {};
     if (Number.isInteger(pageIndex) && Number.isInteger(pageSize)
-        && pageIndex > 0 && pageSize > 0) {
+        && pageIndex >= 0 && pageSize >= 0) {
         options = {
             skip: pageIndex * pageSize,
             limit: pageSize
