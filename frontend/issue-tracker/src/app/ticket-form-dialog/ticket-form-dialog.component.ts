@@ -48,6 +48,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     if (this.data.ticketId === 'new') {
       // create new ticket -> empty dialog
       this.ticket$ = of(this.ticketForm.value);
+      this.initialTicket = this.ticketForm.value;
       this.editMode = false;
     } else {
       // existing dialog -> fill dialog with ticket-data
