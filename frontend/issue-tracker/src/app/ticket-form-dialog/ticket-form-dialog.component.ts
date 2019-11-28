@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar, MatDialog } from '@angular/material';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Ticket, TicketStatus, Priority } from '../models/ticket.model';
 import { TicketService } from '../ticket.service';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
-import { tap, take } from 'rxjs/operators';
+import { tap, take, map } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
@@ -13,13 +13,15 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
   templateUrl: './ticket-form-dialog.component.html',
   styleUrls: ['./ticket-form-dialog.component.scss']
 })
-export class TicketFormDialogComponent implements OnInit {
+export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
   ticket$: Observable<Ticket>;
   initialTicket: Ticket;
   ticketStatusArr = Object.values(TicketStatus);
   priorityArr = Object.values(Priority);
   systemsArr = ['jira', 'outlook', 'confluence'];
+
+  backDropSub: Subscription;
 
   editMode = true;
 
@@ -57,6 +59,31 @@ export class TicketFormDialogComponent implements OnInit {
           })
         );
     }
+
+    this.ticketDialogRef.disableClose = true;
+    this.backDropSub = this.ticketDialogRef.backdropClick().subscribe(() => {
+
+      if (this.editMode && this.ticketForm.dirty) {
+        const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
+          width: '500px',
+          id: 'confirm-dialog',
+          data: { message: 'Ticket wirklich schließen? Ungespeicherte Änderungen gehen verloren!' }
+        });
+
+        return dialogRef.afterClosed().pipe(
+          tap((res: string) => {
+            if (res === 'confirm') {
+              this.ticketDialogRef.close();
+            }
+          })
+        ).subscribe();
+      }
+      this.ticketDialogRef.close();
+    });
+  }
+
+  ngOnDestroy() {
+    this.backDropSub.unsubscribe();
   }
 
   private patchTicketForm(ticket: Ticket) {
@@ -128,6 +155,7 @@ export class TicketFormDialogComponent implements OnInit {
 
   resetTicket() {
     this.subTasks.clear();
+    this.ticketForm.reset();
     this.patchTicketForm(this.initialTicket);
   }
 

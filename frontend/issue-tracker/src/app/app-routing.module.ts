@@ -12,12 +12,12 @@ import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: {pageName: 'Home'} },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: { pageName: 'Home' } },
   {
     path: 'tickets',
     component: IssueOverviewComponent,
     canActivate: [AuthGuardService],
-    data: {pageName: 'Ticket-Übersicht'},
+    data: { pageName: 'Ticket-Übersicht' },
     children: [
       { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
     ]
@@ -31,9 +31,9 @@ const routes: Routes = [
       pageName: 'Ticket-Board'
     },
     children: [
-      {path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full'}
+      { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
     ]
-   },
+  },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];
