@@ -8,11 +8,11 @@ import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticke
 import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 import { RoleGuardService } from './shared/services/role-guard.service';
 import { HomeComponent } from './home/home.component';
+import { ErrorComponent } from './shared/components/error/error.component';
+import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: { pageName: 'Home' } },
   {
     path: 'tickets',
     component: IssueOverviewComponent,
@@ -34,8 +34,12 @@ const routes: Routes = [
       { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
     ]
   },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: { pageName: 'Home' } },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { path: 'error', component: ErrorComponent },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({

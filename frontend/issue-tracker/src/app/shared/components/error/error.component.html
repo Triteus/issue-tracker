@@ -1,0 +1,9 @@
+<div
+  *ngIf="error$ | async as error"
+  style="height: 90%"
+  fxLayout="column"
+  fxLayoutAlign="center center"
+>
+  <h1 class="mat-display-1">{{ error.status }}</h1>
+  <p class="mat-body-strong">{{ error.message }}</p>
+</div>

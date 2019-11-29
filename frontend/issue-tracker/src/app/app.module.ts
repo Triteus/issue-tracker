@@ -44,6 +44,9 @@ import { TicketBoardItemComponent } from './ticket-board/ticket-board-item/ticke
 import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './home/home.component';
+import { UploadModule } from './upload/upload.module';
+import { ErrorComponent } from './shared/components/error/error.component';
+import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,8 @@ import { HomeComponent } from './home/home.component';
     StatusIconPipe,
     ConfirmationDialogComponent,
     HomeComponent,
-
+    ErrorComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -101,8 +105,8 @@ import { HomeComponent } from './home/home.component';
     MatChipsModule,
     DragDropModule,
     ReactiveFormsModule,
-    JwtModule
-  ],
+    JwtModule,
+    ],
   providers: [
     AuthService,
     AuthGuardService,

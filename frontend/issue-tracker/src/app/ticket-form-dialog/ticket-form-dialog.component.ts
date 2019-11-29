@@ -131,6 +131,8 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.ticketDialogRef.close('updated');
         this.snackbar.open(`Ticket "${this.ticketForm.value.title}" erfolgreich aktualisiert!`, 'OK');
+      }, err => {
+        this.snackbar.open(`Ticket "${this.ticketForm.value.title}" konnte nicht aktualisiert werden: ${err.message}`, 'OK');
       });
   }
 
@@ -149,6 +151,8 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
           .subscribe(() => {
             this.ticketDialogRef.close('deleted');
             this.snackbar.open(`Ticket "${this.ticketForm.value.title}" erfolgreich gelöscht!`, 'OK');
+          }, err => {
+            this.snackbar.open(`Ticket "${this.ticketForm.value.title}" konnte nicht gelöscht werden: ${err.message}`, 'OK');
           });
       }
     });

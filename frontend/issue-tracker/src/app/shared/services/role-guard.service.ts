@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import decode from 'jwt-decode';
+import { MatSnackBar } from '@angular/material';
 
 export interface TokenPayload {
   _id: string;
@@ -14,7 +15,7 @@ export interface TokenPayload {
 })
 export class RoleGuardService {
 
-  constructor(public auth: AuthService, public router: Router) {}
+  constructor(public auth: AuthService, public router: Router, private snackbar: MatSnackBar) {}
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config
     // on the data property
@@ -26,7 +27,10 @@ export class RoleGuardService {
       !this.auth.isAuthenticated() ||
       !tokenPayload.roles.includes(expectedRole)
     ) {
-      this.router.navigate(['login']);
+
+      this.router.navigate(['']).then(() => {
+        this.snackbar.open('Seite konnte nicht aufgerufen werden: Fehlende Berechtigung', 'OK', {duration: 3000});
+      });
       return false;
     }
     return true;

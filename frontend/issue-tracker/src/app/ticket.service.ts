@@ -70,71 +70,35 @@ export class TicketService {
 
   getTickets(params?: object): Observable<{tickets: Ticket[], numAllTickets: number}> {
     console.log('params', params);
-    return this.http.get<{tickets: Ticket[], numAllTickets: number}>(this.url, { params: params as any })
-      .pipe(
-        catchError(this.handleError<{tickets: Ticket[], numAllTickets: number}>('getTickets', {tickets: [], numAllTickets: 0}))
-      );
+    return this.http.get<{tickets: Ticket[], numAllTickets: number}>(this.url, { params: params as any });
   }
-
+/*  */
   getTicketsGroupByStatus(params?: object): Observable<TicketsGroupByStatusRes> {
     console.log('params', params);
-    return this.http.get<TicketsGroupByStatusRes>(this.url, { params: {...params as any, groupByStatus: true} })
-      .pipe(
-        catchError(this.handleError<TicketsGroupByStatusRes>('getTicketsGroupByStatus'))
-      );
+    return this.http.get<TicketsGroupByStatusRes>(this.url, { params: {...params as any, groupByStatus: true} });
   }
 
   getTicket(ticketId: string): Observable<Ticket> {
-    return this.http.get<Ticket>(this.url + ticketId)
-      .pipe(
-        catchError(this.handleError<Ticket>('getTicket'))
-      );
+    return this.http.get<Ticket>(this.url + ticketId);
   }
 
   postTicket(ticketPayload: Partial<Ticket>): Observable<void> {
     return this.http.post<void>(this.url, ticketPayload)
       .pipe(
-        catchError(this.handleError<void>('postTicket'))
+        /* catchError(this.handleError<void>('postTicket')) */
       );
   }
 
   editTicket(payload: any, ticketId: string): Observable<any> {
-    return this.http.put<void>(this.url + ticketId, payload)
-      .pipe(
-        catchError(this.handleError<void>('editTicket'))
-      );
+    return this.http.put<void>(this.url + ticketId, payload);
   }
 
   deleteTicket(ticketId: string): Observable<Ticket> {
-    return this.http.delete<Ticket>(this.url + ticketId)
-      .pipe(
-        catchError(this.handleError<Ticket>('deleteTicket'))
-      );
+    return this.http.delete<Ticket>(this.url + ticketId);
   }
 
   editSubTasks(): Observable<void> {
     return of();
   }
-
-  /**
-  * Handle Http operation that failed.
-  * Let the app continue.
-  * @param operation - name of the operation that failed
-  * @param result - optional value to return as the observable result
-  */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
-
 
 }
