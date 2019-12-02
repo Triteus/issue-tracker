@@ -106,7 +106,8 @@ import { PageNotFoundComponent } from './shared/components/page-not-found/page-n
     DragDropModule,
     ReactiveFormsModule,
     JwtModule,
-    ],
+    UploadModule
+  ],
   providers: [
     AuthService,
     AuthGuardService,
