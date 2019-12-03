@@ -41,9 +41,6 @@ export class ErrorInterceptor {
         } else if (err.status === 401) {
           // this message is shown when there is no token, token is invalid or expired
           errMsg = 'Nutzer konnte nicht identifiziert werden. Bitte erneut anmelden.';
-        } else {
-          // generic error: open error component
-          this.router.navigate(['error']);
         }
         return throwError(new Error(errMsg));
       })
