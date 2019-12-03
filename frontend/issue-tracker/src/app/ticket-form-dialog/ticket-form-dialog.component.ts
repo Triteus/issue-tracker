@@ -25,6 +25,8 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
   editMode = true;
 
+  isUploadingFiles: boolean;
+
   ticketForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
     status: new FormControl(TicketStatus.OPEN, [Validators.required]),
@@ -45,6 +47,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.isUploadingFiles = false;
     if (this.data.ticketId === 'new') {
       // create new ticket -> empty dialog
       this.ticket$ = of(this.ticketForm.value);
@@ -122,6 +125,17 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     return this.ticketForm.get('subTasks') as FormArray;
   }
 
+  isUploading(val: boolean) {
+    // use setTimeout to fix ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.isUploadingFiles = val;
+    }, 0);
+  }
+
+  canSubmit() {
+      return this.ticketForm.valid && !this.isUploadingFiles;
+  }
+
   updateTicket() {
     const request = this.editMode ?
       this.ticketService.editTicket(this.ticketForm.value, this.data.ticketId) :
@@ -164,14 +178,12 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     this.patchTicketForm(this.initialTicket);
   }
 
-  updateStatus() {
-
-  }
+  updateStatus() {}
 
 
-  updateTasks() {
+  updateTasks() {}
 
-  }
+  updateFiles(updatedFileNames: string[]) {}
 
 }
 
