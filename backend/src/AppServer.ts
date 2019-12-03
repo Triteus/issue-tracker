@@ -11,6 +11,7 @@ import { UserController } from "./routes/user/user";
 import error from "./middlewares/error";
 import { TicketController } from "./routes/ticket/ticket";
 import cors from 'express';
+import { UploadController } from "./routes/upload/upload";
 
 require('express-async-errors');
 
@@ -19,7 +20,8 @@ export class AppServer extends Server {
         super(process.env.NODE_ENV === 'development');
 
         // Body Parser Middleware
-        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.json({limit: '50mb'}));
+        this.app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
         //CORS Middleware
 
          this.app.use(function (req, res, next) {
@@ -45,7 +47,8 @@ export class AppServer extends Server {
         const authController = new AuthController();
         const userController = new UserController();
         const ticketController = new TicketController();
-        super.addControllers([authController, userController, ticketController]);
+        const uploadController = new UploadController();
+        super.addControllers([authController, userController, ticketController, uploadController]);
     }
 
     public start(port: number): void {
