@@ -93,6 +93,10 @@ export const ticketSchema = new mongoose.Schema({
   affectedSystems: {
     type: [{type: String, lowercase: true}],
     default: [],
+  },
+  filenames: {
+    type: [String],
+    default: []
   }
 }, {
   toJSON: {

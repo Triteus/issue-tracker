@@ -45,6 +45,12 @@ describe('Ticket validators', () => {
             const errors = await validateBody({ ...ticketData(), editors: id }, validators);
             checkResponse(errors, 'editors', 'Invalid value');
         })
+        
+        it('throws (filenames is not array)', async () => {
+            const id = new ObjectID();
+            const errors = await validateBody({ ...ticketData(), filenames: 'invalid' }, validators);
+            checkResponse(errors, 'filenames', 'Invalid value');
+        })
     })
 
     describe('POST /api/ticket', () => {
@@ -112,7 +118,7 @@ describe('Ticket validators', () => {
             checkResponses(errors, 'subTasks', 'Invalid value');
         })
 
-        it('throws (isDone is not boolean', async () => {
+        it('throws (isDone is not boolean)', async () => {
             const errors = await validateBody({ subTasks: [{description: 'desc', isDone: 'noBool'}, {description: 'desc', isDone: 'noBool'}] }, validators);
             checkResponses(errors, 'subTasks', 'Invalid value');
         })

@@ -11,7 +11,8 @@ export const basicValidators = [
     body('neededAt').optional().isISO8601(),
     body('lastEditor').not().exists(),
     body('owner').not().exists(),
-    body('editors').not().exists()
+    body('editors').not().exists(),
+    body('filenames').optional().isArray()
 ]
 
 export const TicketValidators = {
