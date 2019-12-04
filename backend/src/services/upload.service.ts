@@ -11,7 +11,12 @@ export class UploadService {
             filename: function (req, file, cb) {
                 // WARNING: all file-extensions are allowed with this implementation
                 // TODO: restrict allowed extensions
-                cb(null, file.filename + '-' + Date.now() + path.extname(file.originalname))
+
+                // extract original filename without extension
+                const filenameArr = file.originalname.split('.');
+                filenameArr.pop();
+                const filename = filenameArr.join();
+                cb(null, filename + '-' + Date.now() + path.extname(file.originalname))
             }
         })
         return multer({ storage });
