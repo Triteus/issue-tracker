@@ -6,7 +6,10 @@
 
 
 html, body {
-  height: auto;
+  // IMPORTANT: Adding 1px is necessary to avoid scroll-locking when trying to scroll child div
+  height: calc(100% + 1px);
+  overflow: hidden;
+
 }
 
 

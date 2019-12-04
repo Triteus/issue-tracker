@@ -14,7 +14,7 @@
     >
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
-    <span>{{currentPage}}</span>
+    <span>{{ currentPage }}</span>
   </div>
   <div *ngIf="$user | async as user; else offline">
     <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
@@ -63,38 +63,38 @@
           mat-list-item
           [routerLink]="['/home']"
           routerLinkActive="router-link-active"
-          >
+        >
           <div class="nav-item">
             <mat-icon class="gap">dashboard</mat-icon>
             <span>Home</span>
           </div>
-          </a>
+        </a>
         <a
           mat-list-item
           [routerLink]="['/tickets']"
           routerLinkActive="router-link-active"
-          >
+        >
           <div class="nav-item">
             <mat-icon class="gap">list</mat-icon>
             <span>Ticket-Katalog</span>
           </div>
-          </a>
+        </a>
         <a
           mat-list-item
           [routerLink]="['/ticket-board']"
           routerLinkActive="router-link-active"
-          >
+        >
           <div class="nav-item">
             <mat-icon class="gap">local_offer</mat-icon>
             <span>Ticket-Board</span>
           </div>
-          </a>
+        </a>
       </ng-container>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!-- dummy toolbar to add height-offset for fixed toolbar -->
-    <mat-toolbar style="visibility: hidden;"></mat-toolbar>
-    <router-outlet></router-outlet>
+    <div class="app-content">
+        <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
