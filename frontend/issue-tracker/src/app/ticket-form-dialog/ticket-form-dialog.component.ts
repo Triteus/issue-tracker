@@ -33,7 +33,9 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     priority: new FormControl(Priority.LOW, [Validators.required]),
     description: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(1000)]),
     affectedSystems: new FormControl([]),
-    subTasks: new FormArray([])
+    subTasks: new FormArray([]),
+    newFilenames: new FormControl([]),
+    existingFilenames: new FormControl([])
   });
 
   constructor(
@@ -92,6 +94,12 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
   private patchTicketForm(ticket: Ticket) {
     this.ticketForm.patchValue(ticket);
+
+    // filenames in form are split up between filenames
+    // that user just uploaded (newFilenames) and filenames that were already added (existingFilenames)
+    this.existingFilenames.setValue(ticket.filenames);
+
+    // create formgroup for every subtask
     ticket.subTasks.forEach((task) => {
       this.subTasks.push(new FormGroup({
         description: new FormControl(task.description, Validators.required),
@@ -121,6 +129,14 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     return this.ticketForm.get('affectedSystems') as FormControl;
   }
 
+  get newFilenames() {
+    return this.ticketForm.get('newFilenames') as FormControl;
+  }
+
+  get existingFilenames() {
+    return this.ticketForm.get('existingFilenames') as FormControl;
+  }
+
   get subTasks() {
     return this.ticketForm.get('subTasks') as FormArray;
   }
@@ -132,14 +148,28 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  addNewFileNames(filenames: string[]) {
+    setTimeout(() => {
+      this.newFilenames.setValue(filenames);
+    }, 0);
+  }
+
   canSubmit() {
       return this.ticketForm.valid && !this.isUploadingFiles;
   }
 
   updateTicket() {
+
+    // combine newly added filenames with existing filenames
+    const {newFilenames, existingFilenames, ...value} = this.ticketForm.value;
+    const valueToSubmit = {
+      ...value,
+      filenames: [...newFilenames, ...existingFilenames]
+    };
+
     const request = this.editMode ?
-      this.ticketService.editTicket(this.ticketForm.value, this.data.ticketId) :
-      this.ticketService.postTicket(this.ticketForm.value);
+      this.ticketService.editTicket(valueToSubmit, this.data.ticketId) :
+      this.ticketService.postTicket(valueToSubmit);
 
     request.pipe(take(1))
       .subscribe(() => {
@@ -183,7 +213,6 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
   updateTasks() {}
 
-  updateFiles(updatedFileNames: string[]) {}
 
 }
 

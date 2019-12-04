@@ -138,8 +138,11 @@
         <mat-divider></mat-divider>
         <app-upload
           (isUploading)="isUploading($event)"
-          (uploadedFilenames)="updateFiles($event)"
+          (uploadedFilenames)="addNewFileNames($event)"
         ></app-upload>
+        <mat-list>
+          <mat-list-item *ngFor="let filename of ticket.filenames">{{filename}}</mat-list-item>
+        </mat-list>
         <mat-divider></mat-divider>
       </mat-dialog-content>
       <mat-dialog-actions

@@ -30,6 +30,7 @@ export class Ticket {
   description: string;
   status: TicketStatus;
   affectedSystems: string[];
+  filenames: string[];
   subTasks: SubTask[];
   createdAt: Date;
   updatedAt: Date;

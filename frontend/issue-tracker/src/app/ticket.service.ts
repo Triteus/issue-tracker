@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Ticket, Priority, TicketStatus } from './models/ticket.model';
+import { Ticket } from './models/ticket.model';
 import { HttpClient } from '@angular/common/http';
-import { catchError, delay } from 'rxjs/operators';
 import { User } from './models/user.model';
 
 
@@ -28,41 +27,6 @@ export class TicketService {
     updatedAt: new Date()
 
   };
-
-  private ticketsMock: Ticket[] = [
-    {
-      id: 'id',
-      owner: this.userMock,
-      lastEditor: this.userMock,
-      editors: [],
-      assignedTo: this.userMock,
-      priority: Priority.HIGH,
-      neededAt: new Date(),
-      title: 'title',
-      description: 'description',
-      status: TicketStatus.OPEN,
-      subTasks: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      affectedSystems: ['JIRA']
-    },
-    {
-      id: 'id2',
-      owner: this.userMock,
-      lastEditor: this.userMock,
-      editors: [],
-      assignedTo: this.userMock,
-      priority: Priority.HIGH,
-      neededAt: new Date(),
-      title: 'title2',
-      description: 'description2',
-      status: TicketStatus.OPEN,
-      subTasks: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      affectedSystems: ['OUTLOOK', 'WINDOWS']
-    },
-  ];
 
   constructor(private http: HttpClient) { }
 
