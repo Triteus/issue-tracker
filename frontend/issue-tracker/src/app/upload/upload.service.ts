@@ -17,9 +17,9 @@ export class UploadService implements OnDestroy {
   private url = 'http://localhost:3000/api/file';
 
   private uploadStartedSubject = new Subject<void>();
-  private uploadChanged = new BehaviorSubject<boolean>(true);
-  private progress: { [key: string]: Observable<ProgressPayload> } = {};
-  private progressSubs: { [key: string]: Subscription } = {};
+  private uploadChangedSubject = new BehaviorSubject<boolean>(true);
+  private progressSubjectsDict: { [key: string]: BehaviorSubject<ProgressPayload> } = {};
+  private progressSubsDict: { [key: string]: Subscription } = {};
 
   constructor(private http: HttpClient) { }
 
@@ -32,11 +32,11 @@ export class UploadService implements OnDestroy {
   }
 
   progress$(filename: string) {
-    return this.progress[filename];
+    return this.progressSubjectsDict[filename].asObservable();
   }
 
   hasProgress(filename: string) {
-    return Boolean(this.progress[filename]);
+    return Boolean(this.progressSubjectsDict[filename]);
   }
 
   public uploadFile(file: File): { key: string, progress$: Observable<ProgressPayload> } {
@@ -53,9 +53,9 @@ export class UploadService implements OnDestroy {
     // create a new progress-subject for every file
     // NOTE:  behavior-subject will never be completed, so that the final progress stays available
     //        to the outside upon subscribing
-    const progress = new BehaviorSubject<ProgressPayload>({ progress: 0, error: false, isCompleted: false });
-    this.progress[file.name] = progress.asObservable();
-    this.uploadChanged.next(true);
+    const progressSubject = new BehaviorSubject<ProgressPayload>({ progress: 0, error: false, isCompleted: false });
+    this.progressSubjectsDict[file.name] = progressSubject;
+    this.uploadChangedSubject.next(true);
     this.uploadStartedSubject.next();
 
     // send the http-request and subscribe for progress-updates
@@ -65,24 +65,24 @@ export class UploadService implements OnDestroy {
         // calculate the progress percentage
         const percentDone = Math.round(100 * event.loaded / event.total);
         // pass the percentage into the progress-stream
-        progress.next({ progress: percentDone, error: false, isCompleted: false });
+        progressSubject.next({ progress: percentDone, error: false, isCompleted: false });
       } else if (event instanceof HttpErrorResponse ||
         (event instanceof HttpHeaderResponse && !event.ok) ||
         (event instanceof HttpResponse && !event.ok)) {
         // indicate that upload was not successful
-        progress.next({ progress: 0, error: true, isCompleted: true });
+        progressSubject.next({ progress: 0, error: true, isCompleted: true });
       } else if (event instanceof HttpResponse) {
         // The upload is complete
-        progress.next({ progress: 100, error: false, isCompleted: true, filename: event.body.filename });
+        progressSubject.next({ progress: 100, error: false, isCompleted: true, filename: event.body.filename });
       }
     });
 
     // save subscription so we can unsubscribe later
-    this.progressSubs[file.name] = sub;
+    this.progressSubsDict[file.name] = sub;
 
     return {
       key: file.name,
-      progress$: progress.asObservable()
+      progress$: progressSubject.asObservable()
     };
   }
 
@@ -90,7 +90,7 @@ export class UploadService implements OnDestroy {
     for (const file of files) {
       this.uploadFile(file);
     }
-    return this.progress;
+    return this.progressSubjectsDict;
   }
 
   /**
@@ -105,9 +105,9 @@ export class UploadService implements OnDestroy {
      * upload-service uses behavior-subject, which means observables belonging to successfully uploaded
      * files emit latest value upon subscribing
      */
-    return this.uploadChanged.asObservable().pipe(
+    return this.uploadChangedSubject.asObservable().pipe(
       switchMap(() => {
-        const progressSubjects = Object.values(this.progress);
+        const progressSubjects = Object.values(this.progressSubjectsDict);
         if (progressSubjects.length === 0) {
           return of([]);
         }
@@ -124,19 +124,19 @@ export class UploadService implements OnDestroy {
   }
 
   stopUpload(file: File) {
-    delete this.progress[file.name];
+    delete this.progressSubjectsDict[file.name];
     // make sure to unsubscribe from progress sub
     this.unsubProgress(file.name);
-    this.uploadChanged.next(true);
+    this.uploadChangedSubject.next(true);
   }
 
   unsubProgress(filename: string) {
-    if (this.progressSubs[filename]) {
-      this.progressSubs[filename].unsubscribe();
+    if (this.progressSubsDict[filename]) {
+      this.progressSubsDict[filename].unsubscribe();
     }
   }
 
   unsubAll() {
-    Object.values(this.progressSubs).forEach(sub => sub.unsubscribe());
+    Object.values(this.progressSubsDict).forEach(sub => sub.unsubscribe());
   }
 }
