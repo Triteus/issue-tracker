@@ -1,4 +1,4 @@
-import { UploadController } from "./upload";
+import { FileController } from "./file";
 import { SuperTest, Test } from "supertest";
 import { setupDB } from "../../startup/testSetup";
 import { TestServer } from "../../TestServer";
@@ -10,7 +10,7 @@ import fs from 'fs';
 
 describe('UploadController', () => {
 
-    const uploadController = new UploadController();
+    const uploadController = new FileController();
     let request: SuperTest<Test>;
 
     setupDB('test-upload-controller');
@@ -50,5 +50,28 @@ describe('UploadController', () => {
 
     })
 
+    describe('GET /api/file', () => {
+        const url = '/api/file';
+
+        let user: IUser;
+        let token: string;
+       
+        beforeEach(async () => {
+            user = await UserModel.create(ownerData());
+            token = user.generateToken();
+        })
+
+        it('returns 401 (not authenticated)', async () => {
+            const res = await request.get(url + '/abc.png');
+            expect(res.status).toBe(401);
+        })
+
+        it('returns 404 (file not found)', async () => {
+            const res = await request.get(url + '/unknown-file.pdf')
+            .set({Authorization: 'Bearer ' + token});
+            expect(res.status).toBe(404);
+        })
+
+    })
 
 })

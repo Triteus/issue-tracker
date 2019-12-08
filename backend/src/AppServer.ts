@@ -11,7 +11,7 @@ import { UserController } from "./routes/user/user";
 import error from "./middlewares/error";
 import { TicketController } from "./routes/ticket/ticket";
 import cors from 'express';
-import { UploadController } from "./routes/upload/upload";
+import { FileController } from "./routes/file/file";
 
 require('express-async-errors');
 
@@ -29,6 +29,7 @@ export class AppServer extends Server {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType, Content-Type, Accept, Authorization");
+            res.header("Access-Control-Expose-Headers", "*")
             
             next();
         }); 
@@ -47,7 +48,7 @@ export class AppServer extends Server {
         const authController = new AuthController();
         const userController = new UserController();
         const ticketController = new TicketController();
-        const uploadController = new UploadController();
+        const uploadController = new FileController();
         super.addControllers([authController, userController, ticketController, uploadController]);
     }
 
