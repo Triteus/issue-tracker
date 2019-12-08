@@ -34,12 +34,13 @@
             </mat-error>
           </mat-form-field>
         </span>
-        <mat-card
+        <div
           fxLayout="column"
-          fxLayoutAlign="center center"
+          fxLayoutAlign="start stretch"
           fxLayoutGap="20px"
         >
-          <table *ngIf="editMode">
+        <mat-card>
+          <table cellpadding="10px" style="width: 100%" *ngIf="editMode">
             <tr>
               <th>Ersteller</th>
               <th>Letzter Bearbeiter</th>
@@ -57,7 +58,9 @@
               <td>{{ ticket.updatedAt | date }}</td>
             </tr>
           </table>
-
+        </mat-card>
+        <mat-divider></mat-divider>
+          <div fxLayout fxLayoutGap="20px" fxLayoutAlign="center center">
           <mat-form-field>
             <mat-label>Status</mat-label>
             <mat-select
@@ -96,7 +99,8 @@
               </mat-error>
             </mat-error>
           </mat-form-field>
-        </mat-card>
+        </div>
+      </div>
         <mat-form-field>
           <textarea
             cdkTextareaAutosize
@@ -140,9 +144,9 @@
           (isUploading)="isUploading($event)"
           (uploadedFilenames)="addNewFileNames($event)"
         ></app-upload>
-        <mat-list>
-          <mat-list-item *ngFor="let filename of ticket.filenames">{{filename}}</mat-list-item>
-        </mat-list>
+        <mat-divider></mat-divider>
+        <app-download [filenamesControl]="existingFilenames">
+        </app-download>
         <mat-divider></mat-divider>
       </mat-dialog-content>
       <mat-dialog-actions
