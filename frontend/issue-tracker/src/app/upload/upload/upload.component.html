@@ -5,25 +5,29 @@
   (change)="onFilesAdded()"
   multiple
 />
-<div class="container" fxLayout="column" >
+<div class="container" fxLayout="column">
   <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
     <h2 class="mat-h2">Dateien hochladen</h2>
-    <div fxLayoutAlign="start">
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        class="add-files-btn"
+      <div
+        matRipple
+        matRippleCentered="true"
         (click)="addFiles()"
+        fxLayoutAlign="center center"
+        fxLayout
+        fxLayoutGap="10px"
+        class="upload-area mat-elevation-z4"
       >
-        Dateien hinzufügen
-      </button>
+        <div class="upload-area-label">Dateien hinzufügen</div>
     </div>
   </div>
   <!-- This is the content of the dialog, containing a list of the files to upload -->
   <div fxFlex>
     <mat-list>
-      <app-upload-list-item *ngFor="let file of files" [file]="file" (fileDeleted)="deleteFile(file)"></app-upload-list-item>
+      <app-upload-list-item
+        *ngFor="let file of files"
+        [file]="file"
+        (fileDeleted)="deleteFile(file)"
+      ></app-upload-list-item>
     </mat-list>
   </div>
 </div>

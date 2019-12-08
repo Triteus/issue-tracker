@@ -12,3 +12,14 @@
 .container {
   height: 100%;
 }
+
+.upload-area {
+  padding: 20px;
+  border: dashed 1.5px grey;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
