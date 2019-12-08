@@ -47,6 +47,7 @@ import { HomeComponent } from './home/home.component';
 import { UploadModule } from './upload/upload.module';
 import { ErrorComponent } from './shared/components/error/error.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { DownloadModule } from './download/download.module';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { PageNotFoundComponent } from './shared/components/page-not-found/page-n
     DragDropModule,
     ReactiveFormsModule,
     JwtModule,
-    UploadModule
+    UploadModule,
+    DownloadModule
   ],
   providers: [
     AuthService,

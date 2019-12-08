@@ -1,0 +1,5 @@
+<h2 class="mat-h2">Herunterladbare Dateien</h2>
+
+<mat-list>
+  <app-download-list-item [filename]="filename" (fileRemoved)="removeFile($event)" *ngFor="let filename of filenames"></app-download-list-item>
+</mat-list>
