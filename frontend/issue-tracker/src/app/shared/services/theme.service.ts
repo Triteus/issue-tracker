@@ -7,10 +7,12 @@ import { Theme } from 'src/app/models/theme.model';
 })
 export class ThemeService {
 
-  private themeChangedSubject = new BehaviorSubject<Theme>(Theme.LIGHT);
+  // use a beaviourSubject so that every component can get currently activated theme by calling getTheme()
+  private themeChangedSubject: BehaviorSubject<Theme>;
 
   constructor() {
     const theme = localStorage.getItem('theme') as Theme || Theme.LIGHT;
+    this.themeChangedSubject =  new BehaviorSubject<Theme>(theme);
     this.themeChangedSubject.next(theme);
   }
 

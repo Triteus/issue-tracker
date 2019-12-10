@@ -8,7 +8,12 @@
     <h4 fxFlex="2 1 0">{{ filename | filename }}</h4>
     <ng-container *ngIf="hasProgress() && progress$() | async as fileProgress">
       <ng-container *ngIf="!fileProgress.error">
-        <div *ngIf="!fileProgress.isCompleted" fxFlex="2 1 0" fxLayout="column" fxLayoutAlign="center start">
+        <div
+          *ngIf="!fileProgress.isCompleted"
+          fxFlex="2 1 0"
+          fxLayout="column"
+          fxLayoutAlign="center start"
+        >
           <mat-progress-bar
             mode="determinate"
             [value]="fileProgress.progress"
@@ -26,7 +31,12 @@
           Download erfolgreich!
         </div>
       </ng-container>
-      <div fxLayout fxLayoutAlign="end" fxFlex="2 1 0" *ngIf="fileProgress.error">
+      <div
+        fxLayout
+        fxLayoutAlign="end"
+        fxFlex="2 1 0"
+        *ngIf="fileProgress.error"
+      >
         Download fehlgeschlagen!
       </div>
     </ng-container>
@@ -37,9 +47,8 @@
         type="button"
         (click)="downloadFile()"
         mat-icon-button
-        color="primary"
       >
-        <mat-icon>
+        <mat-icon class="save-file-icon">
           save
         </mat-icon>
       </button>

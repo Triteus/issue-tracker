@@ -1,0 +1,38 @@
+@import "~@angular/material/theming";
+@import "./ticket-board-item//ticket-board-item.component.scss-theme.scss";
+// mixin name will be used in main style.scss
+// TODO: Find out how to change style of element when it gets dragged
+
+@mixin dark-ticket-board-component-theme($theme) {
+  $background: map-get($theme, background);
+  $grey: mat-palette($mat-grey);
+
+  app-ticket-board {
+    .list-heading,
+    .cdk-drop-list {
+      background-color: mat-color($background, 100);
+    }
+
+    .ticket-dialog-open-button {
+      background-color: mat-color($grey, 600);
+    }
+
+    @include dark-ticket-board-item-component-theme($theme);
+  }
+}
+
+@mixin light-ticket-board-component-theme($theme) {
+
+  app-ticket-board {
+    .list-heading,
+    .cdk-drop-list {
+      background-color: #ebecf0;
+    }
+
+    .ticket-dialog-open-button {
+      background-color: #f6f6f6;
+    }
+
+    @include light-ticket-board-item-component-theme($theme);
+  }
+}

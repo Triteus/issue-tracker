@@ -1,0 +1,22 @@
+@import "~@angular/material/theming";
+
+
+@mixin dark-download-list-item-component-theme($theme) {
+  $background: map-get($theme, background);
+
+  app-download-list-item {
+    .save-file-icon {
+      color : mat-color($background, icon);
+    }
+  }
+}
+
+@mixin light-download-list-item-component-theme($theme) {
+  $primary: map-get($theme, primary);
+
+  app-download-list-item {
+    .save-file-icon {
+      color : mat-color($primary);
+    }
+  }
+}

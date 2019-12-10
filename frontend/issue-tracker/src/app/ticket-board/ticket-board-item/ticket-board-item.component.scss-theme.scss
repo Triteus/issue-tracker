@@ -1,0 +1,28 @@
+@import "~@angular/material/theming";
+
+@mixin dark-ticket-board-item-component-theme($theme) {
+  $background: map-get($theme, background);
+  $grey: mat-palette($mat-grey);
+
+  app-ticket-board-item,
+  .cdk-drag-preview {
+    .mat-card {
+      background-color: mat-color($grey, 700);
+    }
+    .tasks-completed-icon {
+      color: white;
+    }
+  }
+}
+
+@mixin light-ticket-board-item-component-theme($theme) {
+  app-ticket-board-item,
+  .cdk-drag-preview {
+    .mat-card {
+      background-color: white;
+    }
+    .tasks-completed-icon {
+      color: green;
+    }
+  }
+}

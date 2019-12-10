@@ -1,42 +1,44 @@
 <form
-fxLayout
+  fxLayout
+  class="card-wrapper"
   fxLayoutAlign="start center"
   fxLayoutGap="5px"
   [formGroup]="ticketPreviewForm"
-  >
-  <div style="padding: 10px" fxLayout="column">
-      <mat-form-field>
-        <textarea formControlName="title" matInput cdkTextareaAutosize></textarea>
-      </mat-form-field>
-      <div fxLayout fxLayoutAlign="center center" fxLayoutGap="20px">
-        <div style="cursor: help" matTooltip="Ersteller">
-            {{ ticket.owner.username }}
-          </div>
-          <mat-icon
-          style="cursor: help"
-          [matTooltip]="'Priorität: ' + (ticket.priority | priorityName)"
-          >
-          {{ ticket.priority | prioIconName }}
-        </mat-icon>
-        <div
+>
+  <mat-card fxLayout="column">
+    <mat-form-field>
+      <textarea formControlName="title" matInput cdkTextareaAutosize></textarea>
+    </mat-form-field>
+    <div fxLayout fxLayoutAlign="center center" fxLayoutGap="20px">
+      <div style="cursor: help" matTooltip="Ersteller">
+        {{ ticket.owner.username }}
+      </div>
+      <mat-icon
+        style="cursor: help"
+        [matTooltip]="'Priorität: ' + (ticket.priority | priorityName)"
+      >
+        {{ ticket.priority | prioIconName }}
+      </mat-icon>
+      <div
         *ngIf="!!this.ticket.subTasks.length"
         fxLayout
         fxLayoutAlign="center center"
         fxLayoutGap="2px"
         style="cursor: help"
         matTooltip="Erledigte Aufgaben"
-        >
+      >
         <span>{{ numSubTasks }}/{{ this.ticket.subTasks.length }}</span>
-        <mat-icon style="color: green">check_box</mat-icon>
+        <mat-icon class="tasks-completed-icon">check_box</mat-icon
+        >
       </div>
     </div>
-  </div>
+  </mat-card>
   <button
-  style="background-color: #F6F6F6"
-  fxFlexAlign="stretch"
-  mat-raised-button
-  (click)="openTicketForm()"
+    class="ticket-dialog-open-button"
+    fxFlexAlign="stretch"
+    mat-raised-button
+    (click)="openTicketForm()"
   >
-  <mat-icon>pageview</mat-icon>
-</button>
+    <mat-icon>pageview</mat-icon>
+  </button>
 </form>

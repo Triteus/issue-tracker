@@ -2,7 +2,7 @@ import { Component, OnInit, Input, AfterViewInit, ViewChild, OnChanges, SimpleCh
 import { Ticket } from 'src/app/models/ticket.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, filter, tap } from 'rxjs/operators';
-import { of, fromEvent, Subscribable, Subscription } from 'rxjs';
+import { of } from 'rxjs';
 import { TicketBoardService } from '../ticket-board.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -16,19 +16,19 @@ export class TicketBoardItemComponent implements OnInit, AfterViewInit, OnChange
   @Input() ticket: Ticket;
   @Input() pendingStatus: boolean;
 
-  @ViewChild('title', {static: false}) titleInput: any;
+  @ViewChild('title', { static: false }) titleInput: any;
 
   numSubTasks = 0;
   lastTitleValue: string;
   ticketPreviewForm = new FormGroup({
-    title: new FormControl({value: '', disabled: this.pendingStatus}),
+    title: new FormControl({ value: '', disabled: this.pendingStatus }),
   });
 
   constructor(
     private ticketBoardService: TicketBoardService,
     private router: Router,
     private route: ActivatedRoute
-    ) {}
+  ) { }
 
   ngOnInit() {
     this.numSubTasks = this.ticket.subTasks.reduce((prev, curr) => {
@@ -39,6 +39,10 @@ export class TicketBoardItemComponent implements OnInit, AfterViewInit, OnChange
   }
 
   ngOnChanges(values: SimpleChanges) {
+    if (!values.pendingStatus) {
+      return;
+    }
+
     if (values.pendingStatus.currentValue) {
       this.title.disable();
     } else {
@@ -51,29 +55,29 @@ export class TicketBoardItemComponent implements OnInit, AfterViewInit, OnChange
   }
 
   ngAfterViewInit() {
-      this.title.valueChanges.pipe(
-        // only update if len of title >= 4
-        filter((val) => val.length >= 4),
-        // wait 350ms and cancel curr observable if new one occurs
-        debounceTime(350),
-        // cancel observable if val is the same
-        distinctUntilChanged(),
-        // cancel curr request to change title, if there is any
-        switchMap((val) => {
-          return this.ticketBoardService.changeTitle(val, this.ticket.id);
-        }),
-        // set title to previous value if an error occured
-        catchError(() => {
-          this.ticketPreviewForm.get('title').setValue(this.lastTitleValue);
-          return of();
-        }),
-        tap((val) => {
-          this.lastTitleValue = val;
-        })
-      ).subscribe();
+    this.title.valueChanges.pipe(
+      // only update if len of title >= 4
+      filter((val) => val.length >= 4),
+      // wait 350ms and cancel curr observable if new one occurs
+      debounceTime(350),
+      // cancel observable if val is the same
+      distinctUntilChanged(),
+      // cancel curr request to change title, if there is any
+      switchMap((val) => {
+        return this.ticketBoardService.changeTitle(val, this.ticket.id);
+      }),
+      // set title to previous value if an error occured
+      catchError(() => {
+        this.ticketPreviewForm.get('title').setValue(this.lastTitleValue);
+        return of();
+      }),
+      tap((val) => {
+        this.lastTitleValue = val;
+      })
+    ).subscribe();
   }
 
   openTicketForm() {
-    this.router.navigate([this.ticket.id], {relativeTo: this.route});
+    this.router.navigate([this.ticket.id], { relativeTo: this.route });
   }
 }
