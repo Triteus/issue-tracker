@@ -58,8 +58,12 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/login');
   }
 
-ngOnDestroy() {
+  ngOnDestroy() {
     this.paramSub.unsubscribe();
-}
+  }
+
+  changeTheme() {
+    
+  }
 
 }

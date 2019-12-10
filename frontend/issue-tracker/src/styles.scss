@@ -1,7 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
 
-.router-link-active {
-  background-color: grey;
+@include mat-core();
+
+
+@import './themes/custom-dark-theme.scss';
+@import './themes/custom-light-theme.scss';
+
+@import './app/shared/components/theme-slide-toggle/theme-slide-toggle.component.scss-theme.scss';
+@import './app/nav/nav.component.scss-theme.scss';
+
+@mixin custom-components-theme($theme) {
+  @include slide-toggle-component-theme($theme)
+}
+
+.light-theme {
+  @include angular-material-theme($custom-light-theme);
+  @include custom-components-theme($custom-light-theme);
+  @include light-toolbar-component-theme($custom-light-theme);
+}
+
+.dark-theme {
+  @include angular-material-theme($custom-dark-theme);
+  @include custom-components-theme($custom-dark-theme);
 }
 
 
@@ -9,7 +30,10 @@ html, body {
   // IMPORTANT: Adding 1px is necessary to avoid scroll-locking when trying to scroll child div
   height: calc(100% + 1px);
   overflow: hidden;
-
+  margin: 0;
+  padding: 0;
 }
 
-
+.router-link-active {
+  background-color: grey;
+}

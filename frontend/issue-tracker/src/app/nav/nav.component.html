@@ -3,7 +3,6 @@
   fxLayoutAlign="space-between center"
   fxLayoutGap="10px"
   class="toolbar"
-  color="primary"
 >
   <div fxLayout fxLayoutAlign="center center">
     <button
@@ -16,12 +15,17 @@
     </button>
     <span>{{ currentPage }}</span>
   </div>
-  <div *ngIf="$user | async as user; else offline">
-    <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>Einstellungen</button>
-      <button mat-menu-item (click)="logout()">Ausloggen</button>
-    </mat-menu>
+  <div fxLayout fxLayoutAlign="center center" fxLayoutGap="10px">
+    <ng-container *ngIf="$user | async as user; else offline">
+      <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
+      <mat-menu #menu="matMenu">
+        <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
+          <app-theme-slide-toggle></app-theme-slide-toggle>
+        </div>
+        <button mat-menu-item>Einstellungen</button>
+        <button mat-menu-item (click)="logout()">Ausloggen</button>
+      </mat-menu>
+    </ng-container>
   </div>
   <ng-template #offline>
     <button
@@ -94,7 +98,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="app-content">
-        <router-outlet></router-outlet>
+      <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule, MatSidenavModule, MatToolbar, MatToolbarModule,
   MatButtonModule, MatIconModule, MatProgressSpinnerModule,
   MatInputModule, MatFormFieldModule, MatCheckboxModule,
-  MatSelectModule, MatDatepickerModule, MatSnackBarModule, MatDialogModule, MatChipsModule, MatTooltipModule } from '@angular/material/';
+  MatSelectModule, MatDatepickerModule, MatSnackBarModule, MatDialogModule, MatChipsModule, MatTooltipModule, MatSlideToggleModule } from '@angular/material/';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatListModule } from '@angular/material/list';
@@ -48,6 +48,8 @@ import { UploadModule } from './upload/upload.module';
 import { ErrorComponent } from './shared/components/error/error.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { DownloadModule } from './download/download.module';
+import { ThemeSlideToggleComponent } from './shared/components/theme-slide-toggle/theme-slide-toggle.component';
+import { ThemePipe } from './shared/pipes/theme.pipe';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,8 @@ import { DownloadModule } from './download/download.module';
     HomeComponent,
     ErrorComponent,
     PageNotFoundComponent,
+    ThemeSlideToggleComponent,
+    ThemePipe,
   ],
   imports: [
     BrowserModule,
@@ -108,7 +112,8 @@ import { DownloadModule } from './download/download.module';
     ReactiveFormsModule,
     JwtModule,
     UploadModule,
-    DownloadModule
+    DownloadModule,
+    MatSlideToggleModule
   ],
   providers: [
     AuthService,
