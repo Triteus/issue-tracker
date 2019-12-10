@@ -1,8 +1,10 @@
 <mat-toolbar
+  *ngIf="theme$ | async as theme"
   fxLayout
   fxLayoutAlign="space-between center"
   fxLayoutGap="10px"
   class="toolbar"
+  [color]="theme === 'light-theme' ? 'primary' : ''"
 >
   <div fxLayout fxLayoutAlign="center center">
     <button
@@ -16,7 +18,7 @@
     <span>{{ currentPage }}</span>
   </div>
   <div fxLayout fxLayoutAlign="center center" fxLayoutGap="10px">
-    <ng-container *ngIf="$user | async as user; else offline">
+    <ng-container *ngIf="user$ | async as user; else offline">
       <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
       <mat-menu #menu="matMenu">
         <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
@@ -48,7 +50,7 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
   >
     <mat-nav-list>
-      <ng-container *ngIf="!($user | async)">
+      <ng-container *ngIf="!(user$ | async)">
         <a
           mat-list-item
           [routerLink]="['/register']"
@@ -62,7 +64,7 @@
           >Anmelden</a
         >
       </ng-container>
-      <ng-container *ngIf="$user | async">
+      <ng-container *ngIf="user$ | async">
         <a
           mat-list-item
           [routerLink]="['/home']"

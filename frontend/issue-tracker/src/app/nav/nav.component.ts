@@ -5,6 +5,8 @@ import { map, shareReplay, tap, filter } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
 import { Router, ActivatedRoute, NavigationEnd, Event } from '@angular/router';
+import { ThemeService } from '../shared/services/theme.service';
+import { Theme } from '../models/theme.model';
 
 @Component({
   selector: 'app-nav',
@@ -13,26 +15,28 @@ import { Router, ActivatedRoute, NavigationEnd, Event } from '@angular/router';
 })
 export class NavComponent implements OnInit, OnDestroy {
 
-  $user: Observable<User>;
+  user$: Observable<User>;
   paramSub: Subscription;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
+  theme$: Observable<Theme>;
 
   currentPage: string;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private authService:
-      AuthService,
+    private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private themeService: ThemeService
   ) { }
 
   ngOnInit() {
-    this.$user = this.authService.$user();
+    this.user$ = this.authService.$user();
+    this.theme$ = this.themeService.theme$();
 
     this.paramSub = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -63,7 +67,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   changeTheme() {
-    
+
   }
 
 }

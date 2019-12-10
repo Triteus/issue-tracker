@@ -17,7 +17,6 @@
 .light-theme {
   @include angular-material-theme($custom-light-theme);
   @include custom-components-theme($custom-light-theme);
-  @include light-toolbar-component-theme($custom-light-theme);
 }
 
 .dark-theme {
