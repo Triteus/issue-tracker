@@ -42,6 +42,7 @@
         <td mat-cell *matCellDef="let row">
           <mat-icon
             [matTooltip]="'Priorität: ' + (row.priority | priorityName)"
+            [appPrioIcon]="row.priority | prioIconName"
           >
             {{ row.priority | prioIconName }}
           </mat-icon>

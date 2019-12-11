@@ -50,6 +50,7 @@ import { PageNotFoundComponent } from './shared/components/page-not-found/page-n
 import { DownloadModule } from './download/download.module';
 import { ThemeSlideToggleComponent } from './shared/components/theme-slide-toggle/theme-slide-toggle.component';
 import { ThemePipe } from './shared/pipes/theme.pipe';
+import { PrioIconDirective } from './shared/directives/prio-icon.directive';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { ThemePipe } from './shared/pipes/theme.pipe';
     PageNotFoundComponent,
     ThemeSlideToggleComponent,
     ThemePipe,
+    PrioIconDirective,
   ],
   imports: [
     BrowserModule,
@@ -113,7 +115,7 @@ import { ThemePipe } from './shared/pipes/theme.pipe';
     JwtModule,
     UploadModule,
     DownloadModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
   ],
   providers: [
     AuthService,
