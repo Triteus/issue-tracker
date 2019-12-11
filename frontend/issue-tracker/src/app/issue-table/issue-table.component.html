@@ -1,12 +1,10 @@
-<div fxLayout="column" fxLayoutAlign="start stretch">
+<div fxLayout="column" fxLayoutAlign="start stretch" [ngStyle.gt-sm]="{'padding': '30px'}">
 
   <app-issue-table-filters
     (paramsChanged)="filterChanged($event)"
   ></app-issue-table-filters>
 
-  <mat-divider></mat-divider>
-
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="margin-top: 20px">
     <div class="spinner-container" *ngIf="dataSource.loading$ | async">
       <mat-spinner></mat-spinner>
     </div>
