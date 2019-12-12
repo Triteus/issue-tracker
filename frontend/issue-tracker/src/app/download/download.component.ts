@@ -13,9 +13,19 @@ export class DownloadComponent implements OnInit {
   // holds array of existing filenames
   @Input() filenamesControl: FormControl;
 
+  // filenames passed to this input cannot be removed
+  @Input() readOnlyFilenames: string[];
+  readOnly = false;
+
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (!this.filenamesControl) {
+      // set to download-only mode (user cannot remove file)
+      this.filenamesControl = new FormControl(this.readOnlyFilenames || []);
+      this.readOnly = true;
+    }
+  }
 
   get filenames() {
     return this.filenamesControl.value;

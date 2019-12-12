@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 export class DownloadListItemComponent implements OnInit, OnDestroy {
 
   @Input() filename: string;
+  @Input() readOnly: boolean;
   @Output() fileRemoved = new EventEmitter<string>();
 
   downloaded = false;
