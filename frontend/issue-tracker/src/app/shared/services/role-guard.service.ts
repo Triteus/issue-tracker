@@ -21,19 +21,27 @@ export class RoleGuardService {
     // on the data property
     const expectedRole = route.data.expectedRole;
     const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.handleInvalidPerms();
+      return false;
+    }
     // decode the token to get its payload
     const tokenPayload = decode<TokenPayload>(token);
     if (
       !this.auth.isAuthenticated() ||
       !tokenPayload.roles.includes(expectedRole)
     ) {
-
-      this.router.navigate(['']).then(() => {
-        this.snackbar.open('Seite konnte nicht aufgerufen werden: Fehlende Berechtigung', 'OK', {duration: 3000});
-      });
+      this.handleInvalidPerms();
       return false;
     }
     return true;
+  }
+
+  private handleInvalidPerms() {
+    this.router.navigate(['']).then(() => {
+      this.snackbar.open('Seite konnte nicht aufgerufen werden: Fehlende Berechtigung', 'OK', {duration: 3000});
+    });
   }
 
 }
