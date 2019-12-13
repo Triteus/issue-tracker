@@ -2,9 +2,9 @@ import { Component, AfterViewInit, OnInit, Output, EventEmitter, ViewChild, Elem
 import { MatSelect, MatCheckbox, MatDatepicker } from '@angular/material';
 import { fromEvent, merge, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Priority } from '../models/ticket.model';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Priority } from 'src/app/models/ticket.model';
 
 
 export interface FilterParams {

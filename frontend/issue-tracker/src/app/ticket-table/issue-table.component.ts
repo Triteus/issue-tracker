@@ -6,9 +6,9 @@ import { IssueTableDataSource, IssueTableItem } from './issue-table-datasource';
 import { TicketService } from '../ticket.service';
 import { Observable, merge, Subscription, } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { FilterParams } from '../issue-table-filters/issue-table-filters.component';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FilterParams } from './ticket-table-filters/issue-table-filters.component';
 
 
 

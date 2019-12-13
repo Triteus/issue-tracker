@@ -1,11 +1,11 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar, MatDialog } from '@angular/material';
 import { Observable, of, Subscription } from 'rxjs';
-import { Ticket, TicketStatus, Priority } from '../models/ticket.model';
-import { TicketService } from '../ticket.service';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { tap, take, map } from 'rxjs/operators';
-import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { Ticket, TicketStatus, Priority } from 'src/app/models/ticket.model';
+import { TicketService } from 'src/app/ticket.service';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
