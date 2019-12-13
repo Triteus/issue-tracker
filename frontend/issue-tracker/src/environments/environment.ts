@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  systems: ['JIRA', 'Outlook', 'Confluence', 'Bitbucket']
+  systems: ['JIRA', 'Outlook', 'Confluence', 'Bitbucket'],
+  baseUrl: 'http://localhost:3000/api'
 };
 
 /*

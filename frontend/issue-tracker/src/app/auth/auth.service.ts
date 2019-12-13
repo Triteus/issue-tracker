@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { take, map, tap } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
 
 interface RegisterParams {
   password: string;
@@ -16,7 +17,7 @@ interface RegisterParams {
 @Injectable()
 export class AuthService {
 
-  url = 'http://localhost:3000/api/auth/';
+  url = environment.baseUrl + '/auth/';
 
   user: User | null = null;
   token: string | null = null;

@@ -4,13 +4,14 @@ import { HttpParams, HttpClient } from '@angular/common/http';
 import { delay, map } from 'rxjs/operators';
 import { TicketService } from '../ticket.service';
 import { TicketStatus } from '../models/ticket.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketBoardService {
 
-  url = 'http://localhost:3000/api/ticket/';
+  url = environment.baseUrl + '/ticket/';
 
   constructor(private http: HttpClient) { }
 

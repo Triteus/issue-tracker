@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpEventType, HttpErrorResponse, HttpHeaderResponse } from '@angular/common/http';
 import { Observable, Subject, Subscription, BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, filter, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 export interface ProgressPayload {
@@ -14,7 +15,7 @@ export interface ProgressPayload {
 @Injectable()
 export class UploadService implements OnDestroy {
 
-  private url = 'http://localhost:3000/api/file';
+  private url = environment.baseUrl + '/file';
 
   private uploadStartedSubject = new Subject<void>();
   private uploadChangedSubject = new BehaviorSubject<boolean>(true);

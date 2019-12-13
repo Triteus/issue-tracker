@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Ticket } from './models/ticket.model';
 import { HttpClient } from '@angular/common/http';
 import { User } from './models/user.model';
+import { environment } from 'src/environments/environment';
 
 
 interface TicketsGroupByStatusRes {
@@ -30,7 +31,7 @@ export class TicketService {
 
   constructor(private http: HttpClient) { }
 
-  url = 'http://localhost:3000/api/ticket/';
+  url = environment.baseUrl + '/ticket/';
 
   getTickets(params?: object): Observable<{tickets: Ticket[], numAllTickets: number}> {
     console.log('params', params);

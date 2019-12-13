@@ -4,6 +4,7 @@ import { HttpClient, HttpRequest, HttpEventType, HttpErrorResponse, HttpHeaderRe
 import * as contentDisposition from 'content-disposition';
 import { saveAs } from 'file-saver';
 import { FilenamePipe } from './filename.pipe';
+import { environment } from 'src/environments/environment';
 
 // https://stackoverflow.com/questions/35138424/how-do-i-download-a-file-with-angular2
 
@@ -20,7 +21,7 @@ export interface DownloadProgressPayload {
 @Injectable()
 export class DownloadService implements OnDestroy {
 
-  private url = 'http://localhost:3000/api/file';
+  private url = environment.baseUrl + '/file';
 
   private downloadStartedSubject = new Subject<void>();
   private downloadChangedSubject = new BehaviorSubject<boolean>(true);
