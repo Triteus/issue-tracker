@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { User } from '../models/user.model';
+import { User, UserRole } from '../models/user.model';
 import { take, map, tap } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
+import decode from 'jwt-decode';
+
 
 interface RegisterParams {
   password: string;
@@ -19,14 +21,24 @@ export class AuthService {
 
   url = environment.baseUrl + '/auth/';
 
-  user: User | null = null;
-  token: string | null = null;
-
   userSubject: BehaviorSubject<User | null>;
 
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {
-    const user = localStorage.getItem('user');
-    this.userSubject = new BehaviorSubject<User | null>(user ? JSON.parse(user) : null);
+    this.userSubject = new BehaviorSubject<User | null>(null);
+
+    // clear token if it is invalid/expired
+    if (!this.isAuthenticated()) {
+      this.logout();
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return;
+    }
+    // decode token to get its payload
+    const tokenPayload = decode<User & {iat: number}>(token);
+    this.userSubject.next(tokenPayload);
    }
 
   register(payload: RegisterParams): Observable<any> {
@@ -39,20 +51,14 @@ export class AuthService {
       .pipe(
         take(1),
         map((payload: any) => {
-          this.user = payload.user;
-          this.token = payload.token;
           localStorage.setItem('token', payload.token);
-          localStorage.setItem('user', JSON.stringify(payload.user));
           this.userSubject.next(payload.user);
         })
       );
   }
 
   logout() {
-    this.user = null;
-    this.token = null;
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     this.userSubject.next(null);
   }
 
@@ -60,14 +66,13 @@ export class AuthService {
     return this.userSubject.asObservable();
   }
 
-  getToken() {
-    return this.token;
-  }
-
   isAuthenticated() {
     const token = localStorage.getItem('token');
     return !this.jwtHelper.isTokenExpired(token);
   }
 
+  hasRole(role: UserRole) {
+    return this.userSubject.getValue().roles.includes(role);
+  }
 
 }

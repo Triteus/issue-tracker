@@ -18,7 +18,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     data: { pageName: 'Ticket-Details' },
     children: [
-      { path: 'edit', component: TicketFormDialogEntryComponent, canActivate: [RoleGuardService], data: { expectedRole: 'support' } }
+      {
+        path: 'edit',
+        component: TicketFormDialogEntryComponent,
+        canActivate: [AuthGuardService, RoleGuardService],
+        data: { expectedRole: 'support' }
+      }
     ]
   },
   { path: 'tickets-overview/:ticketId', redirectTo: 'tickets/:ticketId', pathMatch: 'full' },
