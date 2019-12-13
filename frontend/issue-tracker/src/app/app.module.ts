@@ -35,25 +35,16 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
 import { TicketFormDialogComponent } from './ticket-form-dialog/ticket-form-dialog.component';
 import { TicketFormDialogEntryComponent } from './ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { TaskListComponent } from './ticket-form-dialog/task-list/task-list.component';
-import { PriorityIconNamePipe } from './shared/pipes/priority-icon.pipe';
-import { StatusPipe } from './shared/pipes/status-name.pipe';
-import { PriorityNamePipe } from './shared/pipes/priority-name.pipe';
 import { TicketBoardComponent } from './ticket-board/ticket-board.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { TicketBoardItemComponent } from './ticket-board/ticket-board-item/ticket-board-item.component';
-import { StatusIconPipe } from './shared/pipes/status-icon.pipe';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './home/home.component';
 import { UploadModule } from './upload/upload.module';
-import { ErrorComponent } from './shared/components/error/error.component';
-import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { DownloadModule } from './download/download.module';
-import { ThemeSlideToggleComponent } from './shared/components/theme-slide-toggle/theme-slide-toggle.component';
-import { ThemePipe } from './shared/pipes/theme.pipe';
-import { PrioIconDirective } from './shared/directives/prio-icon.directive';
 import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
-import { PriorityIconComponent } from './shared/components/priority-icon/priority-icon.component';
-import { StatusIconComponent } from './shared/components/status-icon/status-icon.component';
+import { SharedModule } from './shared/shared.module';
+import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [
@@ -68,60 +59,26 @@ import { StatusIconComponent } from './shared/components/status-icon/status-icon
     TicketFormDialogComponent,
     TicketFormDialogEntryComponent,
     TaskListComponent,
-    PriorityIconNamePipe,
-    StatusPipe,
-    PriorityNamePipe,
     TicketBoardComponent,
     TicketBoardItemComponent,
-    StatusIconPipe,
-    ConfirmationDialogComponent,
     HomeComponent,
-    ErrorComponent,
-    PageNotFoundComponent,
-    ThemeSlideToggleComponent,
-    ThemePipe,
-    PrioIconDirective,
     TicketDetailsComponent,
-    PriorityIconComponent,
-    StatusIconComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatSliderModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
     LayoutModule,
-    MatListModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    FlexLayoutModule,
-    MatDatepickerModule,
-    MatMomentDateModule,
-    MatTooltipModule,
     FormsModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatChipsModule,
     DragDropModule,
     ReactiveFormsModule,
     JwtModule,
     UploadModule,
     DownloadModule,
-    MatSlideToggleModule,
+    SharedModule,
+    MaterialModule
   ],
   providers: [
     AuthService,
