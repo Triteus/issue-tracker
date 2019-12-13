@@ -11,9 +11,11 @@
 @import './app/nav/nav.component.scss-theme.scss';
 @import './app/ticket-board/ticket-board.component.scss-theme.scss';
 @import './app/download/download-list-item/download-list-item.component.scss-theme.scss';
+@import "./app/ticket-details/ticket-details.component.scss-theme.scss";
 
 @mixin custom-components-theme($theme) {
-  @include slide-toggle-component-theme($theme)
+  @include slide-toggle-component-theme($theme);
+  @include ticket-details-component-theme($theme);
 }
 
 .light-theme {

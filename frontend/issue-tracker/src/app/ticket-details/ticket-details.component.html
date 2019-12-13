@@ -1,0 +1,153 @@
+<div *ngIf="ticket$ | async as ticket; else spinner" class="container">
+  <div
+    class="container"
+    gdRows="1fr 1fr"
+    gdColumns="1fr 1fr"
+    gdGap="20px 20px"
+    gdAreas="general-info tasks | general-info files"
+  >
+    <div gdArea="general-info" fxLayout="column" fxLayoutGap="30px">
+      <h1 class="mat-h1">{{ ticket.title }}</h1>
+      <div class="ticket-actions" fxLayoutGap="15px">
+        <button
+          (click)="openTicketForm()"
+          matTooltip="Ticket bearbeiten"
+          mat-mini-fab
+          color="primary"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          (click)="deleteTicket()"
+          matTooltip="Ticket löschen"
+          mat-mini-fab
+          color="warn"
+        >
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+      <div fxLayout fxLayoutGap="30px">
+        <div>
+          <h2 class="mat-h2">Ersteller</h2>
+          <mat-card>
+            <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon
+                matTooltip="Name des Erstellers"
+                matTooltipPosition="above"
+                >person</mat-icon
+              >
+              <div>{{ ticket.owner?.username }}</div>
+            </div>
+            <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon matTooltip="Erstellt am" matTooltipPosition="below"
+                >access_time</mat-icon
+              >
+              <div>{{ ticket.createdAt | date }}</div>
+            </div>
+          </mat-card>
+        </div>
+        <div>
+          <h2 class="mat-h2">Bearbeiter</h2>
+          <mat-card>
+            <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon
+                matTooltip="Name des Bearbeiters"
+                matTooltipPosition="above"
+                >person</mat-icon
+              >
+              <div>{{ ticket.lastEditor?.username }}</div>
+            </div>
+            <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon
+                matTooltip="Zuletzt bearbeitet am"
+                matTooltipPosition="below"
+                >access_time</mat-icon
+              >
+              <div>{{ ticket.updatedAt | date }}</div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="mat-h2">Beschreibung</h2>
+        <mat-card style="max-width: 500px" class="mat-body">{{
+          ticket.description
+        }}</mat-card>
+      </div>
+
+      <div fxLayout fxLayoutGap="30px">
+        <div fxLayout="column" fxLayoutAlign="start center">
+          <h2 class="mat-h2">Status</h2>
+          <mat-card>
+            <app-status-icon [status]="ticket.status"></app-status-icon>
+          </mat-card>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start center">
+          <h2 class="mat-h2">Priorität</h2>
+          <mat-card>
+            <app-priority-icon [priority]="ticket.priority"></app-priority-icon>
+          </mat-card>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start center">
+          <h2 class="mat-h2">Betroffene Systeme</h2>
+          <mat-card
+            *ngIf="ticket.affectedSystems.length > 0; else systemsPlaceholder"
+          >
+            <mat-chip-list>
+              <mat-chip *ngFor="let system of ticket.affectedSystems">{{
+                system | titlecase
+              }}</mat-chip>
+            </mat-chip-list>
+          </mat-card>
+          <ng-template #systemsPlaceholder>
+            <span class="mat-body">
+              keine Angabe
+            </span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div gdArea="tasks">
+      <h2 class="mat-h2">Aufgaben</h2>
+      <mat-list
+        *ngIf="ticket.subTasks.length > 0; else tasksPlaceholder"
+        class="elevation mat-elevation-z1"
+      >
+        <ng-container *ngFor="let task of ticket.subTasks">
+          <mat-list-item>
+            <span matLine>{{ task.description }}</span>
+            <mat-icon *ngIf="task.isDone">check_box</mat-icon>
+            <mat-icon *ngIf="!task.isDone">check_box_outline_blank</mat-icon>
+          </mat-list-item>
+        </ng-container>
+      </mat-list>
+      <ng-template #tasksPlaceholder>
+        <span class="mat-body">
+          Keine Aufgaben hinzugefügt
+        </span>
+      </ng-template>
+    </div>
+    <div gdArea="files">
+      <h2 class="mat-h2">Herunterladbare Dateien</h2>
+      <div
+        class="elevation mat-elevation-z1"
+        *ngIf="ticket.filenames.length > 0; else filesPlaceholder"
+      >
+        <app-download [readOnlyFilenames]="ticket.filenames"></app-download>
+      </div>
+      <ng-template #filesPlaceholder>
+        <span class="mat-body">
+          Keine Dateien verfügbar
+        </span>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+
+<ng-template #spinner>
+  <div fxLayout fxLayoutAlign="center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

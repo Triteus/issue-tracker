@@ -86,6 +86,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     });
 
+    // TODO provide button to open edit-form directly
     this.querySub = this.route.queryParamMap.subscribe((queryParamMap) => {
       // user deleted or updated ticket in dialog-component
       if (queryParamMap.get('reset')) {
@@ -131,7 +132,6 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   openDialog(ticketId: string) {
-    console.log('open dialog', ticketId);
     this.router.navigate([ticketId], { relativeTo: this.route });
   }
 

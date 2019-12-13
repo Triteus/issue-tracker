@@ -13,12 +13,7 @@
       <div style="cursor: help" matTooltip="Ersteller">
         {{ ticket.owner.username }}
       </div>
-      <mat-icon
-        style="cursor: help"
-        [matTooltip]="'Priorität: ' + (ticket.priority | priorityName)"
-      >
-        {{ ticket.priority | prioIconName }}
-      </mat-icon>
+      <app-priority-icon [priority]="ticket.priority"></app-priority-icon>
       <div
         *ngIf="!!this.ticket.subTasks.length"
         fxLayout

@@ -28,10 +28,17 @@ export class TicketFormDialogEntryComponent implements OnInit, OnDestroy {
   }
 
   openDialog(): void {
+    let ticketId = '';
+    if (this.route.snapshot.data.new) {
+      ticketId = 'new';
+    } else {
+      ticketId = this.route.parent.snapshot.paramMap.get('ticketId');
+    }
+
     const dialogRef = this.dialog.open(TicketFormDialogComponent, {
       width: '600px',
       maxHeight: '90vh',
-      data: { ticketId: this.route.snapshot.paramMap.get('ticketId') }
+      data: { ticketId }
     });
     this.dialogSub = dialogRef.afterClosed().subscribe(result => {
       console.log('result', result);
@@ -45,7 +52,6 @@ export class TicketFormDialogEntryComponent implements OnInit, OnDestroy {
       } else {
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-      console.log('The dialog was closed');
     });
   }
 }

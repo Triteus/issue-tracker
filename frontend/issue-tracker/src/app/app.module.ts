@@ -51,6 +51,9 @@ import { DownloadModule } from './download/download.module';
 import { ThemeSlideToggleComponent } from './shared/components/theme-slide-toggle/theme-slide-toggle.component';
 import { ThemePipe } from './shared/pipes/theme.pipe';
 import { PrioIconDirective } from './shared/directives/prio-icon.directive';
+import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
+import { PriorityIconComponent } from './shared/components/priority-icon/priority-icon.component';
+import { StatusIconComponent } from './shared/components/status-icon/status-icon.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +81,9 @@ import { PrioIconDirective } from './shared/directives/prio-icon.directive';
     ThemeSlideToggleComponent,
     ThemePipe,
     PrioIconDirective,
+    TicketDetailsComponent,
+    PriorityIconComponent,
+    StatusIconComponent,
   ],
   imports: [
     BrowserModule,

@@ -78,6 +78,6 @@ export class TicketBoardItemComponent implements OnInit, AfterViewInit, OnChange
   }
 
   openTicketForm() {
-    this.router.navigate([this.ticket.id], { relativeTo: this.route });
+    this.router.navigate(['tickets', this.ticket.id]);
   }
 }

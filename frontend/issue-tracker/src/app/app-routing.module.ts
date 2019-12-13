@@ -10,18 +10,29 @@ import { RoleGuardService } from './shared/services/role-guard.service';
 import { HomeComponent } from './home/home.component';
 import { ErrorComponent } from './shared/components/error/error.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
 
 
 const routes: Routes = [
   {
-    path: 'tickets',
+    path: 'tickets/:ticketId',
+    component: TicketDetailsComponent,
+    canActivate: [AuthGuardService],
+    data: { pageName: 'Ticket-Details' },
+    children: [
+      { path: 'edit', component: TicketFormDialogEntryComponent, canActivate: [RoleGuardService], data: { expectedRole: 'support' } }
+    ]
+  },
+  {
+    path: 'tickets-overview',
     component: IssueOverviewComponent,
     canActivate: [AuthGuardService],
     data: { pageName: 'Ticket-Übersicht' },
     children: [
-      { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
+      { path: 'new', component: TicketFormDialogEntryComponent, pathMatch: 'full', canActivate: [AuthGuardService], data: { new: true } },
     ]
   },
+  { path: 'tickets-overview/:ticketId', redirectTo: 'tickets/:ticketId', pathMatch: 'full' },
   {
     path: 'ticket-board',
     component: TicketBoardComponent,
@@ -30,9 +41,6 @@ const routes: Routes = [
       expectedRole: 'support',
       pageName: 'Ticket-Board'
     },
-    children: [
-      { path: ':ticketId', component: TicketFormDialogEntryComponent, pathMatch: 'full' }
-    ]
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: { pageName: 'Home' } },

@@ -38,21 +38,14 @@
       <ng-container matColumnDef="priority">
         <th mat-header-cell *matHeaderCellDef>Priorität</th>
         <td mat-cell *matCellDef="let row">
-          <mat-icon
-            [matTooltip]="'Priorität: ' + (row.priority | priorityName)"
-            [appPrioIcon]="row.priority | prioIconName"
-          >
-            {{ row.priority | prioIconName }}
-          </mat-icon>
+          <app-priority-icon [priority]="row.priority"></app-priority-icon>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
         <td mat-cell *matCellDef="let row">
-          <mat-icon [matTooltip]="row.status | statusName">
-            {{ row.status | statusIcon }}
-          </mat-icon>
+          <app-status-icon [status]="row.status"></app-status-icon>
         </td>
       </ng-container>
 
