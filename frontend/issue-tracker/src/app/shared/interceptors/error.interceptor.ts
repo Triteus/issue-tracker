@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 interface ErrorPayload {
   msg: string;
@@ -16,7 +17,7 @@ interface ErrorPayload {
 @Injectable()
 export class ErrorInterceptor {
 
-  constructor(private router: Router, private errorService: ErrorService) { }
+  constructor(private authService: AuthService, private errorService: ErrorService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -39,8 +40,10 @@ export class ErrorInterceptor {
           // user is missing role to access resource
           errMsg = 'Fehlende Berechtigung!';
         } else if (err.status === 401) {
+          this.authService.logout();
           // this message is shown when there is no token, token is invalid or expired
-          errMsg = 'Nutzer konnte nicht identifiziert werden. Bitte erneut anmelden.';
+          errMsg = 'Nutzer konnte nicht identifiziert werden. Bitte (erneut) anmelden.';
+          this.router.navigate(['login']);
         }
         return throwError(new Error(errMsg));
       })
