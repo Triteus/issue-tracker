@@ -13,9 +13,18 @@
 @import './app/download/download-list-item/download-list-item.component.scss-theme.scss';
 @import "./app/ticket-details/ticket-details.component.scss-theme.scss";
 
+@mixin custom-router-theme($theme) {
+  $background: map-get($theme, background);
+  
+  .router-link-active {
+    background-color: mat-color($background, selected-button);
+  }
+}
+
 @mixin custom-components-theme($theme) {
   @include slide-toggle-component-theme($theme);
   @include ticket-details-component-theme($theme);
+  @include custom-router-theme($theme);
 }
 
 .light-theme {
@@ -39,8 +48,4 @@ html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-}
-
-.router-link-active {
-  background-color: grey;
 }

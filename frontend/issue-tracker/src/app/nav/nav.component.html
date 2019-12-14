@@ -21,7 +21,7 @@
     <ng-container *ngIf="user$ | async as user; else offline">
       <button mat-button [matMenuTriggerFor]="menu">
         <mat-icon>person</mat-icon>
-        <span style="margin-left: 5px">{{ user.username }}</span>
+        {{ user.username }}
       </button>
       <mat-menu #menu="matMenu">
         <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
