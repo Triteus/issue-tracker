@@ -4,7 +4,7 @@ import { fromEvent, merge, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Priority } from 'src/app/models/ticket.model';
+import { Priority, priorityArr, ticketCategoryArr } from 'src/app/models/ticket.model';
 
 
 export interface FilterParams {
@@ -38,6 +38,8 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
   @ViewChild('endDate', { static: false }) endDate: ElementRef;
 
   systems = environment.systems;
+  priorityArr = priorityArr;
+  categoryArr = ticketCategoryArr;
 
   constructor(
     private router: Router,

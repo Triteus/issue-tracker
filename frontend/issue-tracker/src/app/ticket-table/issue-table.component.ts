@@ -30,12 +30,13 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<IssueTableItem>;
+  
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
-  columnsSmallScreen = ['priority', 'status', 'title', 'lastEditorName', 'updatedAt'];
-  columnsMiddleScreen = ['priority', 'status', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'updatedAt'];
-  columnsBigScreen = ['priority', 'status', 'title', 'description', 'affectedSystems', 'ownerName', 'lastEditorName', 'createdAt', 'updatedAt'];
+  columnsSmallScreen = ['priority', 'status', 'category', 'title', 'lastEditorName', 'updatedAt'];
+  columnsMiddleScreen = ['priority', 'status', 'category', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'updatedAt'];
+  columnsBigScreen = ['priority', 'status', 'category', 'title', 'affectedSystems', 'ownerName', 'lastEditorName', 'createdAt', 'updatedAt'];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = this.columnsBigScreen;
 
