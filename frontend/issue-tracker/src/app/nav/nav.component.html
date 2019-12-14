@@ -19,7 +19,10 @@
   </div>
   <div fxLayout fxLayoutAlign="center center" fxLayoutGap="10px">
     <ng-container *ngIf="user$ | async as user; else offline">
-      <button mat-button [matMenuTriggerFor]="menu">{{ user.username }}</button>
+      <button mat-button [matMenuTriggerFor]="menu">
+        <mat-icon>person</mat-icon>
+        <span style="margin-left: 5px">{{ user.username }}</span>
+      </button>
       <mat-menu #menu="matMenu">
         <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
           <app-theme-slide-toggle></app-theme-slide-toggle>
