@@ -18,7 +18,7 @@
     <div fxLayout>
       <mat-form-field>
         <mat-label>Kategorie</mat-label>
-        <mat-select #systemsSelect (valueChange)="filterChanged()" multiple>
+        <mat-select #categorySelect (valueChange)="filterChanged()">
           <mat-option [value]="''">
             -
           </mat-option>

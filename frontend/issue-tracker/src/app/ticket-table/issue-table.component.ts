@@ -30,7 +30,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<IssueTableItem>;
-  
+
   dataSource: IssueTableDataSource;
   $dataLength: Observable<number>;
 
@@ -46,6 +46,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
     openSelected: true,
     closedSelected: true,
     progressSelected: true,
+    category: '',
     priority: '',
     editedDateStart: '',
     editedDateEnd: ''

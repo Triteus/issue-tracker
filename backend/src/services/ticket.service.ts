@@ -187,7 +187,7 @@ export function filter(query: FilterParams) {
         match['affectedSystems'] = { $in: systems }
     }
 
-    const filters = ['priority', 'status'];
+    const filters = ['priority', 'status', 'category'];
     for (let filter of filters) {
         if (query[filter]) {
             match[filter] = query[filter];
