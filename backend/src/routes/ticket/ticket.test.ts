@@ -11,10 +11,6 @@ import { ticketData, updatedTicketData, subTasksData } from "../../test-data/tic
 import { ownerData, editorData, randomUserData } from "../../test-data/user";
 
 
-function createBearerToken(token: string) {
-    return 'Bearer ' + token;
-}
-
 describe('TicketController', () => {
 
     const ticketController = new TicketController();

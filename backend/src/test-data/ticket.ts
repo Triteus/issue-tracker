@@ -1,4 +1,4 @@
-import { Priority, TicketStatus } from "../models/Ticket";
+import { Priority, TicketStatus, TicketCategory } from "../models/Ticket";
 
 
 export function subTasksData() {
@@ -16,6 +16,7 @@ export function ticketData() {
         title: 'Something does not work',
         description: 'A sample ticket',
         priority: Priority.HIGH,
+        category: TicketCategory.BUG,
         neededAt,
         affectedSystems: ['confluence', 'jira', 'outlook']
     }
@@ -26,6 +27,7 @@ export function updatedTicketData() {
         title: 'updated title',
         description: 'updated description',
         priority: Priority.VERY_HIGH,
+        category: TicketCategory.FEATURE,
         neededAt,
         status: TicketStatus.ACTIVE,
         subTasks: [

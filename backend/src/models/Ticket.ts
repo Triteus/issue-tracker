@@ -9,6 +9,15 @@ export enum TicketStatus {
 }
 export const ticketStatusArr = Object.values(TicketStatus);
 
+export enum TicketCategory {
+  BUG = 'bug',
+  FEATURE = 'feature',
+  REQUEST = 'request',
+  SUGGESTION = 'suggestion',
+  INFO = 'info',
+  OTHER = 'other'
+}
+export const ticketCategoryArr = Object.values(TicketCategory);
 
 export enum Priority {
   LOW = 'low',
@@ -85,6 +94,11 @@ export const ticketSchema = new mongoose.Schema({
     type: String,
     enum: ticketStatusArr,
     default: TicketStatus.OPEN
+  },
+  category: {
+    type: String,
+    enum: ticketCategoryArr,
+    default: TicketCategory.OTHER
   },
   subTasks: {
     type: [subTaskSchema],

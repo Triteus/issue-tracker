@@ -14,6 +14,12 @@ describe('Ticket validators', () => {
             const errors = await validateBody({ ...ticketData(), title: 't' }, validators);
             checkResponse(errors, 'title', 'Invalid value');
         })
+        
+        it('throws (invalid category', async () => {
+            const errors = await validateBody({ ...ticketData(), category: 'invalidCat' }, validators);
+            checkResponse(errors, 'category', 'Invalid value');
+        })
+
         it('throws (invalid priority)', async () => {
             const errors = await validateBody({ ...ticketData(), priority: 100000 }, validators);
             checkResponse(errors, 'priority', 'Invalid value');

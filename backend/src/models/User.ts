@@ -6,8 +6,6 @@ require('mongoose-type-email');
 import config from 'config';
 
 import { Request } from 'express';
-import { IUser } from './User';
-
 
 export type RequestWithUser = Request & {user: IUser};
 

@@ -1,10 +1,11 @@
 import { body, param } from "express-validator"
-import { TicketStatus, ticketStatusArr, priorityArr } from "../../models/Ticket"
+import { TicketStatus, ticketStatusArr, priorityArr, ticketCategoryArr } from "../../models/Ticket"
 
 
 
 export const basicValidators = [
     body('title').isLength({ min: 4, max: 100 }),
+    body('category').optional().isIn(ticketCategoryArr),
     body('priority').optional().isIn(priorityArr),
     body('description').optional().isString(),
     body('affectedSystems').optional().isArray(),
