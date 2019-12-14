@@ -90,7 +90,7 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
     this.querySub = this.route.queryParamMap.subscribe((queryParamMap) => {
       // user deleted or updated ticket in dialog-component
       if (queryParamMap.get('reset')) {
-        this.router.navigateByUrl('tickets')
+        this.router.navigate(['./'], {relativeTo: this.route})
           .then(() => this.loadTicketsPage());
       }
     });
