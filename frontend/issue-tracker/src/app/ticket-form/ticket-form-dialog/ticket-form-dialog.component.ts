@@ -60,8 +60,8 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
       this.ticket$ = this.ticketService.getTicket(this.data.ticketId)
         .pipe(
           tap((ticket) => {
-            this.initialTicket = ticket;
             this.patchTicketForm(ticket);
+            this.initialTicket = ticket;
           })
         );
     }
@@ -205,6 +205,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   resetTicket() {
     this.subTasks.clear();
     this.ticketForm.reset();
+    this.newFilenames.setValue([]);
     this.patchTicketForm(this.initialTicket);
   }
 
