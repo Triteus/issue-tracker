@@ -25,6 +25,7 @@ import { TicketBoardModule } from './ticket-board/ticket-board.module';
 import { TicketTableModule } from './ticket-table/ticket-table.module';
 import { TicketFormDialogComponent } from './ticket-form/ticket-form-dialog/ticket-form-dialog.component';
 import { TicketDetailsModule } from './ticket-details/ticket-details.module';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { TicketDetailsModule } from './ticket-details/ticket-details.module';
       JwtHelperService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
   ],
   entryComponents: [
     TicketFormDialogComponent,
