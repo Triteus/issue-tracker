@@ -12,8 +12,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { StatusPipe } from './pipes/status-name.pipe';
 import { PriorityNamePipe } from './pipes/priority-name.pipe';
 import { PriorityIconNamePipe } from './pipes/priority-icon.pipe';
-import { MatTooltipModule } from '@angular/material';
 import { MaterialModule } from '../material.module';
+import { CategoryNamePipe } from './pipes/category-name.pipe';
 
 
 
@@ -31,6 +31,7 @@ import { MaterialModule } from '../material.module';
     StatusPipe,
     PriorityNamePipe,
     PriorityIconNamePipe,
+    CategoryNamePipe,
   ],
   imports: [
     CommonModule,
@@ -49,6 +50,7 @@ import { MaterialModule } from '../material.module';
     StatusPipe,
     PriorityNamePipe,
     PriorityIconNamePipe,
+    CategoryNamePipe
 
   ]
 })

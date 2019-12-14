@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar, MatDialog } from '@angular/
 import { Observable, of, Subscription } from 'rxjs';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { tap, take, map } from 'rxjs/operators';
-import { Ticket, TicketStatus, Priority } from 'src/app/models/ticket.model';
+import { Ticket, TicketStatus, Priority, ticketCategoryArr, TicketCategory } from 'src/app/models/ticket.model';
 import { TicketService } from 'src/app/ticket.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 
@@ -20,6 +20,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   ticketStatusArr = Object.values(TicketStatus);
   priorityArr = Object.values(Priority);
   systemsArr = ['jira', 'outlook', 'confluence'];
+  categoryArr = ticketCategoryArr;
 
   backDropSub: Subscription;
 
@@ -30,6 +31,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   ticketForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
     status: new FormControl(TicketStatus.OPEN, [Validators.required]),
+    category: new FormControl(TicketCategory.OTHER, [Validators.required]),
     priority: new FormControl(Priority.LOW, [Validators.required]),
     description: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(1000)]),
     affectedSystems: new FormControl([]),
@@ -119,6 +121,10 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
   get priority() {
     return this.ticketForm.get('priority') as FormControl;
+  }
+
+  get category() {
+    return this.ticketForm.get('category') as FormControl;
   }
 
   get description() {

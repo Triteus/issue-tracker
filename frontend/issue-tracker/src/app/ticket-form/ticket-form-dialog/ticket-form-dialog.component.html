@@ -60,6 +60,24 @@
           </table>
         </mat-card>
         <mat-divider></mat-divider>
+        <div fxLayoutAlign="center">
+          <mat-form-field>
+            <mat-label>Kategorie</mat-label>
+            <mat-select formControlName="category" required>
+              <mat-option *ngFor="let cat of categoryArr" [value]="cat">{{
+                cat | categoryName
+              }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="category.invalid && (category.dirty || category.touched)"
+              class="alert alert-danger"
+            >
+              <mat-error *ngIf="!!category.errors.required">
+                Kategorie benötigt.
+              </mat-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
           <div fxLayout fxLayoutGap="20px" fxLayoutAlign="center center">
           <mat-form-field>
             <mat-label>Status</mat-label>

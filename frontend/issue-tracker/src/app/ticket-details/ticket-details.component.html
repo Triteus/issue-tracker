@@ -35,7 +35,7 @@
     </div>
 
     <div gdArea="general-info" fxLayout="column" fxLayoutGap="30px">
-      <div fxLayout fxLayoutGap="30px">
+      <div fxLayout fxLayoutGap="30px" fxLayoutAlign.lt-sm="space-around">
         <div>
           <h2 class="mat-h2">Ersteller</h2>
           <mat-card>
@@ -80,12 +80,12 @@
 
       <div>
         <h2 class="mat-h2">Beschreibung</h2>
-        <mat-card style="max-width: 500px" class="mat-body">{{
+        <mat-card class="mat-body">{{
           ticket.description
         }}</mat-card>
       </div>
 
-      <div fxLayout fxLayoutGap="30px">
+      <div fxLayout fxLayoutGap="30px" fxLayoutAlign.lt-sm="center">
         <div fxLayout="column" fxLayoutAlign="start center">
           <h2 class="mat-h2">Status</h2>
           <mat-card>
@@ -99,22 +99,30 @@
           </mat-card>
         </div>
         <div fxLayout="column" fxLayoutAlign="start center">
-          <h2 class="mat-h2">Betroffene Systeme</h2>
-          <mat-card
-            *ngIf="ticket.affectedSystems.length > 0; else systemsPlaceholder"
-          >
-            <mat-chip-list>
-              <mat-chip *ngFor="let system of ticket.affectedSystems">{{
-                system | titlecase
-              }}</mat-chip>
-            </mat-chip-list>
+          <h2 class="mat-h2">Kategorie</h2>
+          <mat-card>
+            {{ ticket.category | categoryName }}
           </mat-card>
-          <ng-template #systemsPlaceholder>
-            <span class="mat-body">
-              keine Angabe
-            </span>
-          </ng-template>
         </div>
+      </div>
+
+      <div fxLayout="column">
+        <h2 class="mat-h2">Betroffene Systeme</h2>
+        <mat-card
+          *ngIf="ticket.affectedSystems.length > 0; else systemsPlaceholder"
+          fxLayoutAlign.lt-sm="center"
+        >
+          <mat-chip-list>
+            <mat-chip *ngFor="let system of ticket.affectedSystems">{{
+              system | titlecase
+            }}</mat-chip>
+          </mat-chip-list>
+        </mat-card>
+        <ng-template #systemsPlaceholder>
+          <span class="mat-body">
+            keine Angabe
+          </span>
+        </ng-template>
       </div>
     </div>
     <div gdArea="tasks">
