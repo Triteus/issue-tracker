@@ -4,7 +4,7 @@ import { fromEvent, merge, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Priority, priorityArr, ticketCategoryArr } from 'src/app/models/ticket.model';
+import { Priority, priorityArr, ticketCategoryArr, TicketCategory } from 'src/app/models/ticket.model';
 
 
 export interface FilterParams {
@@ -13,6 +13,7 @@ export interface FilterParams {
   closedSelected: boolean;
   progressSelected: boolean;
   priority: Priority | '';
+  category: TicketCategory | '';
   systems: string[];
   editedDateStart: string | '';
   editedDateEnd: string | '';
@@ -30,6 +31,7 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
   @ViewChild('input', { static: false }) input: ElementRef;
   @ViewChild('prioSelect', { static: false }) prioSelect: MatSelect;
   @ViewChild('systemsSelect', {static: false}) systemsSelect: MatSelect;
+  @ViewChild('categorySelect', {static: false}) categorySelect: MatSelect;
 
   @ViewChild('openCB', { static: false }) openCb: MatCheckbox;
   @ViewChild('progressCB', { static: false }) progressCb: MatCheckbox;
@@ -73,6 +75,7 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
       progressSelected: this.progressCb.checked,
       closedSelected: this.closedCb.checked,
       priority: this.prioSelect.value || '',
+      category: this.categorySelect.value || '',
       systems: this.systemsSelect.value || '',
       // Note: toJSON() does not preserve timezone!
       editedDateStart: new Date(this.startDate.nativeElement.value).toJSON() || '',
