@@ -1,12 +1,18 @@
 <div *ngIf="ticket$ | async as ticket; else spinner" class="container">
   <div
     class="container"
-    gdRows="1fr 1fr"
-    gdColumns="1fr 1fr"
-    gdGap="20px 20px"
-    gdAreas="general-info tasks | general-info files"
+    gdRows="auto 1fr"
+    gdRows.lt-lg="auto 1fr"
+    gdRows.lt-sm="auto 1fr"
+    gdColumns="1fr 2fr 2fr 1fr"
+    gdColumns.lt-lg="1fr 1fr"
+    gdColumns.lt-sm="1fr"
+    gdGap="30px 50px"
+    gdAreas=". heading heading . | . general-info tasks . | . general-info files ."
+    gdAreas.lt-lg="heading heading | general-info tasks | general-info files"
+    gdAreas.lt-sm="heading | general-info | tasks | files"
   >
-    <div gdArea="general-info" fxLayout="column" fxLayoutGap="30px">
+    <div gdArea="heading">
       <h1 class="mat-h1">{{ ticket.title }}</h1>
       <div class="ticket-actions" fxLayoutGap="15px">
         <button
@@ -26,6 +32,9 @@
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
+    </div>
+
+    <div gdArea="general-info" fxLayout="column" fxLayoutGap="30px">
       <div fxLayout fxLayoutGap="30px">
         <div>
           <h2 class="mat-h2">Ersteller</h2>
