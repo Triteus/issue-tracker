@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Aktion bestätigen</h2>
 <mat-dialog-content>
-  <p>{{data.message}}</p>
+  <p class="mat-body">{{data.message}}</p>
 </mat-dialog-content>
 <mat-dialog-actions fxLayout fxLayoutAlign="center center">
-  <button mat-raised-button color="primary" (click)="cancelDialog()">Abbrechen</button>
   <button aria-label="Ticket löschen" color="warn" mat-raised-button mat-dialog-close="confirm" cdkFocusInitial>OK</button>
+  <button mat-raised-button color="primary" (click)="cancelDialog()">Abbrechen</button>
 </mat-dialog-actions>
