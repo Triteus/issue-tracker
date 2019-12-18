@@ -6,6 +6,8 @@ import UserModel from "../models/User";
 import { ObjectID } from "bson";
 import { ownerData, editorData } from "../test-data/user";
 import { ticketData, subTasksData, updatedTicketData } from "../test-data/ticket";
+import { IProject, ProjectModel } from "../models/Project";
+import { projectData } from "../test-data/project";
 
 describe('TicketService', () => {
 
@@ -16,19 +18,30 @@ describe('TicketService', () => {
     let owner: IUser;
     let editor: IUser;
     let ticket: ITicket;
+    let project: IProject;
     
+    beforeEach(async () => {
+        project = await ProjectModel.create(projectData());    
+    })
+
     describe('get tickets', () => {
         
         let openTicket: ITicket, activeTicket: ITicket, closedTicket: ITicket;
+
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
-            openTicket = await TicketModel.create({...ticketData(), status: TicketStatus.OPEN, owner: owner._id});
-            activeTicket = await TicketModel.create({...ticketData(), status: TicketStatus.ACTIVE, owner: owner._id});
-            closedTicket = await TicketModel.create({...ticketData(), status: TicketStatus.CLOSED, owner: owner._id});
+            project.tickets.push(new TicketModel({...ticketData(), status: TicketStatus.OPEN, owner: owner._id}));
+            project.tickets.push(new TicketModel({...ticketData(), status: TicketStatus.ACTIVE, owner: owner._id}));
+            project.tickets.push(new TicketModel({...ticketData(), status: TicketStatus.CLOSED, owner: owner._id}));
+            project = await project.save(),
+            
+            openTicket = (project.tickets as any)[0] as ITicket;
+            activeTicket = (project.tickets as any)[1] as ITicket;
+            closedTicket = (project.tickets as any)[2] as ITicket;
         })
 
         it('should get tickets grouped by status', async () => {
-            const ticketsByStatus = await ticketService.groupTicketsByStatus({});
+            const ticketsByStatus = await ticketService.groupTicketsByStatus();
             expect(ticketsByStatus.openTickets[0]._id).toEqual(openTicket._id);
             expect(ticketsByStatus.activeTickets[0]._id).toEqual(activeTicket._id);
             expect(ticketsByStatus.closedTickets[0]._id).toEqual(closedTicket._id);
@@ -36,21 +49,21 @@ describe('TicketService', () => {
 
     })
 
-    describe('create ticket', () => {
+    describe('create and save ticket', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
         })
 
         it('created new ticket', async () => {
-            const ticket = await ticketService.createTicket(owner._id, ticketData());
+            const ticket = await ticketService.createAndSaveTicket(project, owner._id, ticketData());
             expect(ticket.toJSON()).toMatchObject(ticketData());
         })
 
         it('saves ticket in db', async () => {
-            await ticketService.createTicket(owner._id, ticketData());
-            const ticket = await TicketModel.findOne({owner: owner._id});
-            expect(ticket).toBeTruthy();
-            expect(ticket.toJSON()).toMatchObject(ticketData());
+            await ticketService.createAndSaveTicket(project, owner._id, ticketData());
+            const updatedProject = await ProjectModel.findOne({'tickets.owner': owner._id});
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].toJSON()).toMatchObject(ticketData());
         })
 
     })
@@ -59,16 +72,20 @@ describe('TicketService', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
-            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
+
+            project.tickets.push(new TicketModel({...ticketData(), owner: owner._id}));
+            project = await project.save();
+            ticket = project.tickets[0] as ITicket;
         })
 
-        it('throws ResponseError (ticket not found)', async () => {
+         it('throws ResponseError (ticket not found)', async () => {
             const id = new ObjectID();
-            await expect(ticketService.findAndUpdateTicket(id, editor._id, ticket.toJSON())).rejects.toThrow('Ticket not found!');
+            await expect(ticketService.findAndUpdateTicket(project, id, editor._id, ticket.toJSON())).rejects.toThrow('Ticket not found!');
         })
     
+
         it('returns updated ticket', async () => {
-            const updatedTicket = await ticketService.findAndUpdateTicket(ticket._id, editor._id, updatedTicketData());
+            const updatedTicket = ticketService.updateTicket(ticket, editor._id, updatedTicketData() as any);
             const {subTasks, ...expectedPayload } = updatedTicketData();
             expect(updatedTicket.toJSON()).toMatchObject(expectedPayload);
             // check if editor was changed
@@ -79,6 +96,13 @@ describe('TicketService', () => {
             updatedTicket.subTasks.forEach((subTask, index) => {
                 expect(subTask).toMatchObject(subTasksData()[index]);
             })
+        }) 
+
+        it('updates and saves ticket in project', async () => {
+            await ticketService.findAndUpdateTicket(project, ticket._id, editor._id, updatedTicketData() as any);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id});
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].toJSON()).toMatchObject(updatedTicketData());
         })
     }),
 
@@ -87,44 +111,52 @@ describe('TicketService', () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
 
-            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
+            ticket = new TicketModel({...ticketData(), owner: owner._id});
+            project.tickets.push(new TicketModel({...ticketData(), owner: owner._id}));
+            project = await project.save();
+            ticket = project.tickets[0] as ITicket;
         })
 
         it('throws error (ticket not found)', async () => {
             const id = new ObjectID();
-            await expect(ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, id, new ObjectID()))
+            await expect(ticketService.findTicketAndChangeStatus(project, TicketStatus.ACTIVE, id, new ObjectID()))
             .rejects.toThrow('Ticket not found!');
         })
 
         it('changed status of ticket', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.status).toBe(TicketStatus.ACTIVE);
+            await ticketService.findTicketAndChangeStatus(project, TicketStatus.ACTIVE, ticket._id, editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].status).toBe(TicketStatus.ACTIVE);
         })
 
         it('assigns editor to ticket', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.assignedTo).toStrictEqual(editor._id);
+            await ticketService.findTicketAndChangeStatus(project, TicketStatus.ACTIVE, ticket._id, editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].assignedTo).toStrictEqual(editor._id);
         })
 
-        it('removes assigned user from ticket (status switches to closed', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.CLOSED, ticket._id, editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.assignedTo).toBeFalsy();
+        it('removes assigned user from ticket (status switches to closed)', async () => {
+            await ticketService.findTicketAndChangeStatus(project, TicketStatus.CLOSED, ticket._id, editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].assignedTo).toBeFalsy();
         })
 
-        it('removes assigned user from ticket (status switches to open', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.OPEN, ticket._id, editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.assignedTo).toBeFalsy();
+        it('removes assigned user from ticket (status switches to open)', async () => {
+            await ticketService.findTicketAndChangeStatus(project, TicketStatus.OPEN, ticket._id, editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].assignedTo).toBeFalsy();
         })
 
         it('added editor to ticket', async () => {
-            await ticketService.findTicketAndChangeStatus(TicketStatus.ACTIVE, ticket._id, editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            expect(updatedTicket.lastEditor).toStrictEqual(editor._id);
-            expect(updatedTicket.editors).toContainEqual(editor._id);
+            await ticketService.findTicketAndChangeStatus(project, TicketStatus.ACTIVE, ticket._id, editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            expect(updatedProject.tickets[0].lastEditor).toStrictEqual(editor._id);
+            expect(updatedProject.tickets[0].editors).toContainEqual(editor._id);
         })
     }),
 
@@ -132,17 +164,22 @@ describe('TicketService', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
-            ticket = await TicketModel.create({...ticketData(), owner: owner._id});
+      
+            ticket = new TicketModel({...ticketData(), owner: owner._id});
+            project.tickets.push(new TicketModel({...ticketData(), owner: owner._id}));
+            project = await project.save();
+            ticket = project.tickets[0] as ITicket;
         })
 
         it('throws error (ticket not found)', async () => {
-            await expect(ticketService.findTicketAndChangeSubTasks(new ObjectID(), subTasksData(), editor._id)).rejects.toThrow('Ticket not found!');
+            await expect(ticketService.findTicketAndChangeSubTasks(project, new ObjectID(), subTasksData(), editor._id)).rejects.toThrow('Ticket not found!');
         })
 
         it('updated sub-tasks in db', async () => {
-            await ticketService.findTicketAndChangeSubTasks(ticket._id, subTasksData(), editor._id);
-            const updatedTicket = await TicketModel.findById(ticket._id);
-            updatedTicket.subTasks.forEach((subTask, index) => {
+            await ticketService.findTicketAndChangeSubTasks(project, ticket._id, subTasksData(), editor._id);
+            const updatedProject = await ProjectModel.findOne({'tickets._id': ticket._id})
+            expect(updatedProject).toBeTruthy();
+            updatedProject.tickets[0].subTasks.forEach((subTask, index) => {
                 expect(subTask).toMatchObject(subTasksData()[index]);
             })
         })

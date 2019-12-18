@@ -1,7 +1,9 @@
 import { Types } from "mongoose";
-import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority } from "../models/Ticket";
+import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSchema } from "../models/Ticket";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
+import { IProject, ProjectModel } from "../models/Project";
+import tickets from "../data/tickets/tickets";
 
 type boolStr = 'true' | 'false';
 
@@ -28,86 +30,104 @@ export interface SortParams {
 
 export type TicketParams = FilterParams & PaginationParams & SortParams;
 
+type ID = Types.ObjectId | String
 
 export class TicketService {
 
-    async findAndUpdateTicket(ticketId: Types.ObjectId | String, editorId: Types.ObjectId | String, payload: Object) {
-        const ticket = await TicketModel.findById(ticketId);
+    async findAndUpdateTicket(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
+        const ticket = (project.tickets as any).id(ticketId);
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        return this.updateTicket(ticket, editorId, payload);
+        this.updateTicket(ticket, editorId, payload);
+        await project.save();
+        return ticket;
     }
 
-    async updateTicket(ticket: ITicket, editorId: Types.ObjectId | String, payload: Partial<ITicketDocument>) {
+    updateTicket(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
         const { status, subTasks, ...ticketPayload } = payload;
         // update paths
         ticket.set(payload);
         ticket.setSubTasks(payload.subTasks, Types.ObjectId(editorId.toString()));
         ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
-        return ticket.setEditorAndSave(editorId);
+        ticket.setEditor(editorId);
+        return ticket;
     }
 
-    async createTicket(ownerId: Types.ObjectId | String, payload: Object) {
-        return TicketModel.create({ ...payload, owner: ownerId });
+    async createAndSaveTicket(project: IProject, ownerId: ID, payload: Object) {
+        const ticket = this.createTicket(ownerId, payload);
+        project.tickets.push(ticket);
+        await project.save();
+        return ticket;
     }
 
-    async findAndDeleteTicket(ticketId: Types.ObjectId | String) {
-        const ticket = await TicketModel.findById(ticketId);
+    createTicket(ownerId: ID, payload: Object) {
+        return new TicketModel({ ...payload, owner: ownerId });
+    }
+
+    async findAndDeleteTicket(project: IProject, ticketId: Types.ObjectId | String) {
+        const ticket = (project.tickets as any).id(ticketId);
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        return ticket.remove();
+        ticket.remove();
+        await project.save();
+        return ticket;
     }
 
-    async deleteExistingTicket(ticket: ITicket) {
-        return ticket.remove();
-    }
-
-    async findTicketAndChangeStatus(status: TicketStatus, ticketId: String | Types.ObjectId, editorId: String | Types.ObjectId) {
-        const ticket = await TicketModel.findById(ticketId);
+    async findTicketAndChangeStatus(project: IProject, status: TicketStatus, ticketId: ID, editorId: ID) {
+        const ticket = (project.tickets as any).id(ticketId);
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        return this.changeStatus(ticket, status, editorId);
+        this.changeStatus(ticket, status, editorId);
+        await project.save();
+        return ticket;
     }
 
-    async changeStatus(ticket: ITicket, status: TicketStatus, editorId: String | Types.ObjectId) {
+    changeStatus(ticket: ITicket, status: TicketStatus, editorId: ID) {
         ticket.changeStatus(status, Types.ObjectId(editorId.toString()));
-        await ticket.setEditorAndSave(editorId);
+        ticket.setEditor(editorId);
+        return ticket;
     }
 
-    async findTicketAndChangeSubTasks(ticketId: String | Types.ObjectId, subTasks: { description: string, isDone: boolean }[], editorId: String | Types.ObjectId) {
-        const ticket = await TicketModel.findById(ticketId);
+    async findTicketAndChangeSubTasks(project: IProject, ticketId: ID, subTasks: { description: string, isDone: boolean }[], editorId: ID) {
+        const ticket = (project.tickets as any).id(ticketId);
         if (!ticket) {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
-        return this.changeSubTasks(ticket, subTasks, editorId);
+        this.changeSubTasks(ticket, subTasks, editorId);
+        await project.save();
+        return ticket;
     }
 
     async changeSubTasks(ticket: ITicket, subTasks: { description: string, isDone: boolean }[], editorId: String | Types.ObjectId) {
         const id = mongoose.Types.ObjectId(editorId.toString());
         ticket.setSubTasks(subTasks, id);
-        return ticket.setEditorAndSave(editorId);
+        ticket.setEditor(editorId);
+        return ticket;
     }
 
-    async addEditorAndSave(ticket: ITicket, editorId: String | Types.ObjectId) {
-        return ticket.setEditorAndSave(editorId);
-    }
-
-    async getTickets(match: object, sort: SortParams, pagination: PaginationParams) {
-        const tickets = await TicketModel
-        .find(match, null, pagination)
-        .sort(sort)
-        .populate('owner assignedTo lastEditor');
-
+    async getTickets(match = {}, sort = {}, pagination = {}) {
+        const stages = prepareAggregateStages(match, sort, pagination);
+        console.log('stages', stages);
+        const result = await ProjectModel
+            .aggregate(stages) as ITicket[];
+        const tickets = await TicketModel.populate(result, { path: 'owner assignedto lastEditor' });
+        console.log('tickets', tickets);
         return tickets;
     }
-    async groupTicketsByStatus(pagination: PaginationParams) {
-        const tickets = await TicketModel
-            .find({}, null, pagination)
-            .populate('owner assignedTo lastEditor');
-            
+
+
+    async groupTicketsByStatus(pagination: PaginationParams = { pageIndex: 0, pageSize: Number.MAX_VALUE }, match: object = {}, sort: SortParams = {}) {
+        
+        const stages = prepareAggregateStages(match, sort, pagination);
+        const result = await ProjectModel.aggregate(stages) as ITicket[];
+
+        //console.log('aggregation result', result);
+        const tickets = await TicketModel.populate(result, { path: 'owner assignedto lastEditor' });
+        //console.log('tickets', tickets);
+
         const openTickets = [], activeTickets = [], closedTickets = [];
         for (let ticket of tickets) {
             if (ticket.status === TicketStatus.OPEN) {
@@ -124,8 +144,8 @@ export class TicketService {
     generateQueryObjects(query: TicketParams) {
         return {
             options: pagination(query),
-            sort: sort(query),
-            match: filter(query)
+            sort: remapObject(sort(query), 'tickets'),
+            match: remapObject(filter(query), 'tickets')
         }
     }
 }
@@ -204,4 +224,60 @@ export function filter(query: FilterParams) {
         }
     }
     return match;
+}
+
+/**
+ * Is necessary for mongodb aggregate function since tickets are subdocuments
+ * @param obj object to be mapped
+ * @param fieldname is added in front of original object keys 
+ */
+// Note: original object does not get mutated
+function remapObject(obj: object, fieldname: string) {
+    const mappedObj = {};
+    for (let key of Object.keys(obj)) {
+        mappedObj[fieldname + '.' + key] = obj[key];
+    }
+    return mappedObj;
+}
+
+function isEmpty(obj: object) {
+    return Object.entries(obj).length === 0 && obj.constructor === Object;
+}
+
+function prepareAggregateStages(match: object, sort: SortParams, pagination: PaginationParams) {
+
+    // IMPORTANT: Order of adding objects is essential for correct aggregate
+    // 1 $sort; 2 $match; 3 $limit; 4 $skip; 5 $unwind; 6 $match; 7 $project
+    const aggregates = [];
+
+    if (!isEmpty(sort)) {
+        // 1 $sort
+        aggregates.push({ $sort: sort });
+    }
+    // 2 $match
+    aggregates.push({ $match: match })
+
+    const { pageIndex, pageSize } = pagination;
+    if (pageIndex) {
+        const limit = Number.parseInt(pageSize + '');
+        // 3 $limit
+        aggregates.push({ $limit: limit });
+    }
+    if (pageSize && pageIndex) {
+        const skip = Number.parseInt(pageIndex + '') * Number.parseInt(pageSize + '');
+        // 4 $skip
+        aggregates.push({ $skip: skip });
+    }
+    // 5 $unwind and 6 $match
+    aggregates.push({ $unwind: '$tickets' }, { $match: match });
+
+    const projection = {};
+    ticketSchema.eachPath((path) => {
+        projection[path] = `$tickets.${path}`;
+    })
+    // 7 $project
+    aggregates.push({$project: projection});
+
+    return aggregates;
+
 }

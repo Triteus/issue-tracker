@@ -12,6 +12,7 @@ import error from "./middlewares/error";
 import { TicketController } from "./routes/ticket/ticket";
 import cors from 'express';
 import { FileController } from "./routes/file/file";
+import { ProjectController } from "./routes/v2/project/project";
 
 require('express-async-errors');
 
@@ -47,9 +48,9 @@ export class AppServer extends Server {
     private setupControllers(): void {
         const authController = new AuthController();
         const userController = new UserController();
-        const ticketController = new TicketController();
         const uploadController = new FileController();
-        super.addControllers([authController, userController, ticketController, uploadController]);
+        const projectController = new ProjectController();
+        super.addControllers([authController, userController, uploadController, projectController]);
     }
 
     public start(port: number): void {

@@ -8,6 +8,14 @@ const uploadService = new UploadService();
 const upload = uploadService.initUploadMiddleware();
 
 
+const delay = () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('lul');
+        }, 2000)
+    })
+}
+
 @Controller('api/file')
 export class FileController {
 
@@ -18,6 +26,7 @@ export class FileController {
     ])
     private async uploadFiles(req: Request, res: Response) {
 
+        await delay();
         if (!req.files) {
             return res.status(400).send({ message: 'No files sent!' });
         }
