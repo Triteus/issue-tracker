@@ -183,12 +183,20 @@ describe('TicketService', () => {
             expect(res['status']).toEqual({$in: ['open', 'active', 'closed']});
         })
         
-        it('returns object with updatedAt default values', () => {
-            const res = filter({});
+        it('returns object with updatedAt: {$gte: xxx}', () => {
+            const date = new Date();
+            const res = filter({editedDateStart: date.toJSON() });
             expect(res['updatedAt']).toBeTruthy();
-            expect(res.updatedAt.$gte).toBe(0);
-            expect(res.updatedAt.$lte).toBeTruthy();
+            expect(res['updatedAt'].$gte).toBe(date.toJSON());
         })
+        
+        it('returns object with updatedAt: {$lte: xxx}', () => {
+            const date = new Date();
+            const res = filter({editedDateEnd: date.toJSON() });
+            expect(res['updatedAt']).toBeTruthy();
+            expect(res['updatedAt'].$lte).toBe(date.toJSON());
+        })
+
         it('returns systems array (all values lowercase)', () => {
             const res = filter({systems: ['JIRA', 'CONFLUENCE', 'OUTLOOK']});
             expect(res['affectedSystems']).toEqual({$in: ['jira', 'confluence', 'outlook']});

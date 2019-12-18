@@ -169,8 +169,18 @@ export function filter(query: FilterParams) {
     }
     const match = {
         status: { $in: statusArr },
-        updatedAt: { $gte: query.editedDateStart || 0, $lte: query.editedDateEnd || new Date().toJSON() }
     };
+
+    if(query.editedDateStart || query.editedDateEnd) {
+        const obj = {};
+        if(query.editedDateStart) {
+            obj['$gte'] = query.editedDateStart;
+        }
+        if(query.editedDateEnd) {
+            obj['$lte'] = query.editedDateEnd;            
+        }
+        match['updatedAt'] = obj;
+    }
 
     if (query.filter) {
         match['title'] = { $regex: `.*${query.filter}.*`, $options: 'i' };
