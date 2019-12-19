@@ -49,9 +49,8 @@ export class ProjectController {
         const {id, tickets, ...payload} = req.body;
         payload.projectLeader = Types.ObjectId();
         let project = new ProjectModel(payload);
-        //asign creator-id to projectLeader-path
-        project.projectLeader = req.user._id;
-        project = await project.save();
+        await project.addProjectLeaderAndSave(req.user._id);
+        
         return res.status(201).send({message: 'Project created successfully!', project});
     }
 

@@ -1,6 +1,9 @@
 import mongoose, { Model, Types, Schema as MongooseSchema, Schema } from 'mongoose';
 import { ITicketDocument, ticketSchema } from './Ticket';
 
+
+type ID = String | Types.ObjectId;
+
 export interface IProjectDocument extends mongoose.Document {
     id: Types.ObjectId,
     name: string,
@@ -13,7 +16,12 @@ export interface IProjectDocument extends mongoose.Document {
 }
 
 export interface IProject extends IProjectDocument {
-
+    addUserToProject: (userId: ID) => void;
+    addUserToProjectAndSave: (userId: ID) => Promise<IProject>;
+    removeUserFromProject: (userId: ID) => void;
+    removeUserFromProjectAndSave: (userId: ID) => Promise<IProject>;
+    addProjectLeader: (leaderId: ID) => void;
+    addProjectLeaderAndSave: (leaderId: ID) => Promise<IProject>;
 }
 
 export interface IProjectModel extends Model<IProject> {
@@ -57,6 +65,34 @@ export const projectSchema = new MongooseSchema({
     toObject: { virtuals: true },
     timestamps: true
 })
+
+projectSchema.methods.removeUserFromProject = function (userId: ID) {
+    this.assignedUsers = this.assignedUsers.filter((uid) => uid + '' !== userId + '');
+}
+
+projectSchema.methods.removeUserFromProjectAndSave = async function (userId: ID) {
+    this.removeUserFromProject(userId);
+    await this.save();
+}
+
+projectSchema.methods.addUserToProject = function(userId: ID) {
+    this.assignedUsers.push(userId);
+}
+
+projectSchema.methods.addUserToProjectAndSave = async function(userId: ID) {
+    this.addUserToProject(userId);
+    await this.save();
+}
+
+projectSchema.methods.addProjectLeader = function (leaderId: ID) {
+    this.projectLeader = leaderId;
+    this.addUserToProject(leaderId);
+}
+
+projectSchema.methods.addProjectLeaderAndSave = async function (leaderId: ID) {
+    this.addProjectLeader(leaderId);
+    await this.save();
+}
 
 
 export const ProjectModel =  mongoose.model<IProject, IProjectModel>('Project', projectSchema);

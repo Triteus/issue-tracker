@@ -48,6 +48,10 @@ describe('TicketController', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
+
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            await project.save();
         })
 
         it('returns status 401 (no token)', async () => {
@@ -99,7 +103,13 @@ describe('TicketController', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
+            randomUser = await UserModel.create(randomUserData());
 
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            project.addUserToProject(randomUser._id);
+            await project.save();
+            
             ticket = new TicketModel({ ...ticketData(), owner: owner._id });
             project.tickets.push(ticket);
             await project.save();
@@ -112,9 +122,19 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
+        it('returns status 403 (user not assigned to project)', async () => {
+            await project.removeUserFromProjectAndSave(randomUser._id);
+
+            const res = await request.put(url + ticket._id)
+                .set(authHeaderObject(randomUser.generateToken()))
+                .send(updatedTicketData());
+            expect(res.status).toBe(403);
+            expect(res.body.error).toMatch(/not assigned to project/i);
+        })
+        
         it('returns status 403 (user does not have support-role)', async () => {
             const res = await request.put(url + ticket._id)
-                .set(authHeaderObject(owner.generateToken()))
+                .set(authHeaderObject(randomUser.generateToken()))
                 .send(updatedTicketData());
             expect(res.status).toBe(403);
         })
@@ -153,6 +173,11 @@ describe('TicketController', () => {
             editor = await UserModel.create(editorData());
             randomUser = await UserModel.create(randomUserData());
 
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            project.addUserToProject(randomUser._id);
+            await project.save();
+
             ticket = new TicketModel({ ...ticketData(), owner: owner._id });
             project.tickets.push(ticket);
             // assign project with added ticket so that we can access ticket's id field
@@ -173,12 +198,21 @@ describe('TicketController', () => {
                 .set(authHeaderObject(owner.generateToken()));
             expect(res.status).toBe(404);
         })
+      
+        it('returns status 403 (user not assigned to project)', async () => {
+            await project.removeUserFromProjectAndSave(randomUser._id)
+            const res = await request.delete(url + ticket._id)
+                .set(authHeaderObject(randomUser.generateToken()));
+            expect(res.status).toBe(403);
+            expect(res.body.error).toMatch(/not assigned to project/i);
+        })
 
         it('returns status 403 (no permission)', async () => {
             const res = await request.delete(url + ticket._id)
                 .set(authHeaderObject(randomUser.generateToken()));
             expect(res.status).toBe(403);
         })
+
 
         it('returns status 403 (owner wants to delete ticket with status other than open', async () => {
             ticket.status = TicketStatus.ACTIVE;
@@ -304,6 +338,11 @@ describe('TicketController', () => {
             editor = await UserModel.create(editorData());
             randomUser = await UserModel.create(randomUserData());
 
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            project.addUserToProject(randomUser._id);
+            await project.save();
+
             project.tickets.push(new TicketModel({ ...ticketData(), owner: owner._id }));
             project = await project.save();
             ticket = project.tickets[0] as ITicket;
@@ -312,6 +351,15 @@ describe('TicketController', () => {
         it('returns status 401 (no token)', async () => {
             const res = await request.patch(url + ticket._id + '/status').send({ status: TicketStatus.ACTIVE });
             expect(res.status).toBe(401);
+        })
+
+        it('returns status 403 (user not assigned to project)', async () => {
+            await project.removeUserFromProjectAndSave(randomUser._id);
+            const res = await request.patch(url + ticket._id + '/status')
+                .set(authHeaderObject(randomUser.generateToken()))
+                .send({ status: TicketStatus.ACTIVE });
+            expect(res.status).toBe(403);
+            expect(res.body.error).toMatch(/not assigned to project/i);
         })
 
         it('returns 403 (user has no "support"-role)', async () => {
@@ -341,6 +389,12 @@ describe('TicketController', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
+            randomUser = await UserModel.create(randomUserData());
+
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            project.addUserToProject(randomUser._id);
+            await project.save();
 
             project.tickets.push(new TicketModel({ ...ticketData(), owner: owner._id }));
             project = await project.save();
@@ -352,9 +406,17 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
+        it('returns status 403 (user not assigned to project)', async () => {
+            await project.removeUserFromProjectAndSave(randomUser._id);
+            const res = await request.patch(url + ticket._id + '/sub-task')
+                .set(authHeaderObject(randomUser.generateToken()))
+                .send({ subTasks: subTasksData() });
+            expect(res.status).toBe(403);
+            expect(res.body.error).toMatch(/not assigned to project/i);
+        })
         it('returns status 403 (no support role)', async () => {
             const res = await request.patch(url + ticket._id + '/sub-task')
-                .set(authHeaderObject(owner.generateToken()))
+                .set(authHeaderObject(randomUser.generateToken()))
                 .send({ subTasks: subTasksData() });
             expect(res.status).toBe(403);
         })
@@ -380,6 +442,11 @@ describe('TicketController', () => {
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());
             editor = await UserModel.create(editorData());
+            randomUser = await UserModel.create(randomUserData());
+
+            project.addUserToProject(owner._id);
+            project.addUserToProject(editor._id);
+            await project.save();
 
             project.tickets.push(new TicketModel({ ...ticketData(), owner: owner._id }));
             project = await project.save();
@@ -391,9 +458,18 @@ describe('TicketController', () => {
             expect(res.status).toBe(401);
         })
 
+        it('returns status 403 (user not assigned to project)', async () => {
+            await project.removeUserFromProjectAndSave(randomUser._id);
+            const res = await request.patch(url + ticket._id + subUrl)
+                .set(authHeaderObject(randomUser.generateToken()))
+                .send({ title: 'validTitle' });
+            expect(res.status).toBe(403);
+            expect(res.body.error).toMatch(/not assigned to project/i)
+        })
+
         it('returns status 403 (no support role)', async () => {
             const res = await request.patch(url + ticket._id + subUrl)
-                .set(authHeaderObject(owner.generateToken()))
+                .set(authHeaderObject(randomUser.generateToken()))
                 .send({ title: 'validTitle' });
             expect(res.status).toBe(403);
         })

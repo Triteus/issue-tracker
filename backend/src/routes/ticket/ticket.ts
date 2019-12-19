@@ -10,6 +10,7 @@ import { validation } from '../../middlewares/validation';
 import { TicketValidators } from "./ticket.validate";
 import { ProjectModel, IProject } from "../../models/Project";
 import { findProject } from "../../middlewares/project";
+import { userBelongsToProject } from "../../middlewares/ticket";
 
 const validate = validation(TicketValidators);
 
@@ -25,6 +26,7 @@ export class TicketController {
     @Post('')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         ...validate('createTicket')
     ])
     private async createIssue(req: RequestWithUser, res: Response) {
@@ -47,6 +49,7 @@ export class TicketController {
     @Put(':ticketId')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
@@ -69,6 +72,7 @@ export class TicketController {
     @Delete(':ticketId')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         ...validate('deleteTicket')
     ])
     private async deleteTicket(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -103,6 +107,7 @@ export class TicketController {
     @Patch(':ticketId/status')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         Authorize.hasRoles(ERole.Support),
         ...validate('changeStatus')
     ])
@@ -124,6 +129,7 @@ export class TicketController {
     @Patch(':ticketId/title')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         Authorize.hasRoles(ERole.Support),
         ...validate('changeTitle')
     ])
@@ -146,6 +152,7 @@ export class TicketController {
     @Patch(':ticketId/sub-task')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
+        userBelongsToProject,
         Authorize.hasRoles(ERole.Support),
         ...validate('changeSubTasks')
     ])

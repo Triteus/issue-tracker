@@ -42,7 +42,8 @@ describe(('UserController'), () => {
         const url = '/api/v2/project/'
 
         beforeEach(async () => {
-            project = await ProjectModel.create(projectData());
+            project = new ProjectModel(projectData());
+            await project.addUserToProjectAndSave(user._id);
         })
 
         it('returns status 401 (not authenticated)', async () => {
@@ -64,7 +65,8 @@ describe(('UserController'), () => {
         const url = '/api/v2/project/';
 
         beforeEach(async () => {
-            project = await ProjectModel.create(projectData());
+            project = new ProjectModel(projectData());
+            await project.addUserToProjectAndSave(user._id);
         })
 
         it('returns status 401 (not authenticated)', async () => {
@@ -118,6 +120,7 @@ describe(('UserController'), () => {
                 .set(authHeaderObject(token))
                 .send(projectData());
             expect(res.body.project.projectLeader + '').toBe(user._id + '');
+            expect(res.body.project.assignedUsers).toContain(user._id + '');
         })
     })
 
@@ -128,7 +131,8 @@ describe(('UserController'), () => {
 
         beforeEach(async () => {
             leader = await UserModel.create(ownerData());
-            project = await ProjectModel.create(projectData());
+            project = new ProjectModel(projectData());
+            await project.addUserToProjectAndSave(user._id);
         })
 
         it('returns status 401 (not authenticated)', async () => {
