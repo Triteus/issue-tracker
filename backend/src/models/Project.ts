@@ -4,6 +4,30 @@ import { ITicketDocument, ticketSchema } from './Ticket';
 
 type ID = String | Types.ObjectId;
 
+
+export enum ProjectType {
+    DESIGN = 'design',
+    PLANNING = 'planning',
+    REQUIREMENTS = 'requirements',
+    ARCHITECTURE = 'architecture',
+    PROTOTYPING="prototyping",
+    DEV = 'dev',
+    TESTING = 'testing',
+    PROD = 'prod',
+    INFRA = 'infra',
+    OTHER = 'other'
+}
+export const projectTypeArr = Object.values(ProjectType);
+
+export enum ProjectStatus {
+    OPEN = 'open',
+    ACTIVE = 'active',
+    FINISHED = 'closed',
+    DEFERRED = 'deferred',
+    ABORTED = 'aborted'
+}
+export const projectStatusArr = Object.values(ProjectStatus);
+
 export interface IProjectDocument extends mongoose.Document {
     id: Types.ObjectId,
     name: string,
@@ -37,6 +61,16 @@ export const projectSchema = new MongooseSchema({
     description: {
         type: String,
         default: ''
+    },
+    type: {
+        type: String,
+        enum: projectTypeArr,
+        default : ProjectType.OTHER
+    },
+    status: {
+        type: String,
+        enum: projectStatusArr,
+        default: ProjectStatus.OPEN
     },
     tickets: {
         type: [ticketSchema],

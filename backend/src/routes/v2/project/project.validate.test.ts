@@ -37,6 +37,18 @@ describe('Ticket validators', () => {
             const errors = await validateBody({ ...projectData(), assignedUsers: 'invalid' }, validators);
             checkResponse(errors, 'assignedUsers', 'Invalid value');
         })
+        
+        it('throws (invalid status)', async () => {
+            const errors = await validateBody({ ...projectData(), status: 'invalid' }, validators);
+            checkResponse(errors, 'status', 'Invalid value');
+        })
+
+        it('throws (invalid type)', async () => {
+            const errors = await validateBody({ ...projectData(), type: 'invalid' }, validators);
+            checkResponse(errors, 'type', 'Invalid value');
+        })
+
+    
     })
 
 
