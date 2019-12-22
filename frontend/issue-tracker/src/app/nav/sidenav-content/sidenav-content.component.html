@@ -1,0 +1,58 @@
+  <mat-nav-list>
+      <ng-container *ngIf="!(user$ | async)">
+        <a
+          mat-list-item
+          [routerLink]="['/register']"
+          routerLinkActive="router-link-active"
+          >Registrieren</a
+        >
+        <a
+          mat-list-item
+          [routerLink]="['/login']"
+          routerLinkActive="router-link-active"
+          >Anmelden</a
+        >
+      </ng-container>
+      <ng-container *ngIf="user$ | async">
+        <a
+          mat-list-item
+          [routerLink]="['/home']"
+          routerLinkActive="router-link-active"
+        >
+          <div class="nav-item">
+            <mat-icon class="gap">dashboard</mat-icon>
+            <span>Home</span>
+          </div>
+        </a>
+        <a
+          mat-list-item
+          [routerLink]="['/projects']"
+          routerLinkActive="router-link-active"
+        >
+          <div class="nav-item">
+            <mat-icon class="gap">list</mat-icon>
+            <span>Projekte</span>
+          </div>
+        </a>
+        <a
+          mat-list-item
+          [routerLink]="['/tickets-overview']"
+          routerLinkActive="router-link-active"
+        >
+          <div class="nav-item">
+            <mat-icon class="gap">list</mat-icon>
+            <span>Ticket-Katalog</span>
+          </div>
+        </a>
+        <a
+          mat-list-item
+          [routerLink]="['/ticket-board']"
+          routerLinkActive="router-link-active"
+        >
+          <div class="nav-item">
+            <mat-icon class="gap">local_offer</mat-icon>
+            <span>Ticket-Board</span>
+          </div>
+        </a>
+      </ng-container>
+    </mat-nav-list>

@@ -22,10 +22,10 @@ import { DownloadModule } from './download/download.module';
 import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
 import { TicketBoardModule } from './ticket-board/ticket-board.module';
-import { TicketTableModule } from './ticket-table/ticket-table.module';
 import { TicketFormDialogComponent } from './ticket-form/ticket-form-dialog/ticket-form-dialog.component';
-import { TicketDetailsModule } from './ticket-details/ticket-details.module';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+
+import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +35,7 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
     RegisterComponent,
     MatSnackBarComponent,
     HomeComponent,
+    SidenavContentComponent,
 
   ],
   imports: [
