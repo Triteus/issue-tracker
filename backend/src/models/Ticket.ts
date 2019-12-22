@@ -53,7 +53,7 @@ export interface ITicket extends ITicketDocument {
 }
 
 export interface ITicketModel extends Model<ITicket> {
-
+  toJSON: (tickets: ITicket[]) => ITicketDocument[];
 }
 
 export const ticketSchema = new mongoose.Schema({
@@ -153,5 +153,17 @@ ticketSchema.methods.changeStatus = function (status: TicketStatus, editorId: mo
   }
   this.status = status;
 }
+
+ticketSchema.statics.toJSON = function (tickets: ITicket[]) {
+  const TicketModel = mongoose.models['Ticket'];
+  return tickets.map((ticket) => {
+    return new TicketModel(ticket).toJSON();
+  });
+}
+
+ticketSchema.virtual("id").get(function (this: { _id: string}) {
+  return this._id;
+});
+
 
 export default mongoose.model<ITicket, ITicketModel>('Ticket', ticketSchema);

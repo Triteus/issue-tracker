@@ -176,10 +176,15 @@ export class TicketController {
 
         if (req.query.groupByStatus) {
             const ticketsByStatus = await this.ticketService.groupTicketsByStatus(project, pagination, match, sort);
-            return res.status(200).send(ticketsByStatus);
+            const ticketsJSON = {
+                openTickets: TicketModel.toJSON(ticketsByStatus.openTickets),
+                activeTickets: TicketModel.toJSON(ticketsByStatus.activeTickets),
+                closedTickets: TicketModel.toJSON(ticketsByStatus.closedTickets)
+            }
+            return res.status(200).send(ticketsJSON);
         } else {
             const tickets = await this.ticketService.getTickets(project, match, sort, pagination);
-            res.status(200).send({ tickets, numAllTickets: project.tickets.length });
+            res.status(200).send({ tickets: TicketModel.toJSON(tickets), numAllTickets: project.tickets.length });
         }
     }
 
