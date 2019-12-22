@@ -175,10 +175,10 @@ export class TicketController {
         const { sort, options: pagination, match } = this.ticketService.generateQueryObjects(req.query);
 
         if (req.query.groupByStatus) {
-            const ticketsByStatus = await this.ticketService.groupTicketsByStatus(pagination);
+            const ticketsByStatus = await this.ticketService.groupTicketsByStatus(project, pagination, match, sort);
             return res.status(200).send(ticketsByStatus);
         } else {
-            const tickets = await this.ticketService.getTickets(match, sort, pagination);
+            const tickets = await this.ticketService.getTickets(project, match, sort, pagination);
             res.status(200).send({ tickets, numAllTickets: project.tickets.length });
         }
     }
