@@ -113,11 +113,9 @@ export class TicketService {
         match = withProjectId(match, project._id);
 
         const stages = prepareAggregateStages(match, sort, pagination);
-        console.log('stages', stages);
         const result = await ProjectModel
             .aggregate(stages) as ITicket[];
         const tickets = await TicketModel.populate(result, { path: 'owner assignedto lastEditor' });
-        console.log('tickets', tickets);
         return tickets;
     }
 

@@ -58,7 +58,7 @@ export class TicketController {
         const {ticketId, projectId} = req.params;
         const editorId = req.user._id;
         const project = res.locals.project;
-
+        
         const updatedTicket = await this.ticketService.findAndUpdateTicket(project, ticketId, editorId, req.body);
 
         res.status(200).send({
@@ -121,8 +121,7 @@ export class TicketController {
         if(!ticket) {
             throw new ResponseError('ticket not found!', ErrorTypes.NOT_FOUND);
         }
-
-        this.ticketService.changeStatus(ticket, req.body.status, req.user._id);
+        await this.ticketService.findTicketAndChangeStatus(project, req.body.status, ticketId, req.user._id);
         res.status(200).send({ message: 'Status updated!' });
     }
 
