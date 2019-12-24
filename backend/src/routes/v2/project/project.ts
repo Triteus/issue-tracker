@@ -39,6 +39,19 @@ export class ProjectController {
         return res.status(200).send({project});
     }
 
+    @Get(':projectId/name')
+    @Middleware([
+        passport.authenticate('jwt', {session: false})
+    ])
+    private async getProjectName(req: Request, res: Response) {
+        const project = await ProjectModel.findById(req.params.projectId);
+        if(!project) {
+            throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
+        }
+
+        return res.status(200).send({projectName: project.name});
+    }
+
     @Post()
     @Middleware([
         passport.authenticate('jwt', { session: false }),
