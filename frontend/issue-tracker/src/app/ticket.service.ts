@@ -3,8 +3,8 @@ import { Observable, of, Subscription, merge } from 'rxjs';
 import { Ticket } from './models/ticket.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { ParamTrackerService } from './param-tracker.service';
 import { map } from 'rxjs/operators';
+import { ProjectTrackerService } from './shared/services/project-tracker.service';
 
 
 interface TicketsGroupByStatusRes {
@@ -31,29 +31,22 @@ export class TicketService implements OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private paramTrackerService: ParamTrackerService
-  ) {
-    this.selectedProjectId = this.paramTrackerService.getParam('projectId');
-    this.paramTrackerService.param$('projectId').subscribe((id) => {
-      this.selectedProjectId = id;
-    });
-  }
+    private projectTrackerService: ProjectTrackerService
+  ) { }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
 
   get url() {
-    return environment.baseUrl + '/v2/project/' + this.selectedProjectId + '/ticket/';
+    return environment.baseUrl + '/v2/project/' + this.projectTrackerService.getSelectedObjectId() + '/ticket/';
   }
 
   getTickets(params?: object): Observable<{ tickets: Ticket[], numAllTickets: number }> {
-    console.log('params', params);
     return this.http.get<{ tickets: Ticket[], numAllTickets: number }>(this.url, { params: params as any });
   }
 
   getTicketsGroupByStatus(params?: object): Observable<TicketsGroupByStatusRes> {
-    console.log('params', params);
     return this.http.get<TicketsGroupByStatusRes>(this.url, { params: { ...params as any, groupByStatus: true } });
   }
 
@@ -62,10 +55,10 @@ export class TicketService implements OnDestroy {
   }
 
   getTicketTitle(ticketId: string): Observable<string> {
-    return this.http.get<{title: string}>(this.url + ticketId + '/title')
-    .pipe(
-      map(res => res.title)
-    );
+    return this.http.get<{ title: string }>(this.url + ticketId + '/title')
+      .pipe(
+        map(res => res.title)
+      );
   }
 
   postTicket(ticketPayload: Partial<Ticket>): Observable<void> {

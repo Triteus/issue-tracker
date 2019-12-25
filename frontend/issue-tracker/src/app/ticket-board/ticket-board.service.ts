@@ -13,27 +13,22 @@ export class TicketBoardService implements OnDestroy {
   selectedProjectId = '';
   sub: Subscription;
 
-  constructor(private http: HttpClient, private projectTrackerService: ProjectTrackerService) {
-      this.selectedProjectId = this.projectTrackerService.getSelectedObjectId();
-      this.projectTrackerService.selectedObjectId$().subscribe((id) => {
-        this.selectedProjectId = id;
-      });
-  }
+  constructor(private http: HttpClient, private projectTrackerService: ProjectTrackerService) { }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
 
   get url() {
-    return environment.baseUrl + '/v2/project/' + this.selectedProjectId + '/ticket/';
+    return environment.baseUrl + '/v2/project/' + this.projectTrackerService.getSelectedObjectId() + '/ticket/';
   }
 
   public changeStatus(status: TicketStatus, ticketId: string): Observable<any> {
-    return this.http.patch(this.url + ticketId + '/status', {status});
+    return this.http.patch(this.url + ticketId + '/status', { status });
   }
 
   public changeTitle(title: string, ticketId: string): Observable<any> {
-    return this.http.patch(this.url + ticketId + '/title', {title});
+    return this.http.patch(this.url + ticketId + '/title', { title });
   }
 
 }
