@@ -26,6 +26,7 @@ import { TicketFormDialogComponent } from './ticket-form/ticket-form-dialog/tick
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import { ProjectModule } from './project/project.module';
 import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.component';
+import { NavbarComponent } from './nav/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.c
     MatSnackBarComponent,
     HomeComponent,
     SidenavContentComponent,
+    NavbarComponent,
 
   ],
   imports: [

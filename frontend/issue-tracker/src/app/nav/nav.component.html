@@ -1,48 +1,4 @@
-<mat-toolbar
-  *ngIf="theme$ | async as theme"
-  fxLayout
-  fxLayoutAlign="space-between center"
-  fxLayoutGap="10px"
-  class="toolbar"
-  [color]="theme === 'light-theme' ? 'primary' : ''"
->
-  <div fxLayout fxLayoutAlign="center center">
-    <button
-      type="button"
-      aria-label="Toggle sidenav"
-      mat-icon-button
-      (click)="drawer.toggle()"
-    >
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
-    <span>{{ currentPage }}</span>
-  </div>
-  <div fxLayout fxLayoutAlign="center center" fxLayoutGap="10px">
-    <ng-container *ngIf="user$ | async as user; else offline">
-      <button mat-button [matMenuTriggerFor]="menu">
-        <mat-icon>person</mat-icon>
-        {{ user.username }}
-      </button>
-      <mat-menu #menu="matMenu">
-        <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
-          <app-theme-slide-toggle></app-theme-slide-toggle>
-        </div>
-        <button mat-menu-item>Einstellungen</button>
-        <button mat-menu-item (click)="logout()">Ausloggen</button>
-      </mat-menu>
-    </ng-container>
-  </div>
-  <ng-template #offline>
-    <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['/login']"
-      routerLinkActive="router-link-active"
-    >
-      Einloggen
-    </button>
-  </ng-template>
-</mat-toolbar>
+<app-navbar (toggleDrawer)="toggleDrawer()"></app-navbar>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
     fixedInViewport

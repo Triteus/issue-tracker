@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay, tap, filter } from 'rxjs/operators';
@@ -13,10 +13,12 @@ import { Theme } from '../models/theme.model';
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent implements OnInit, OnDestroy {
+export class NavComponent implements OnInit {
+
+
+  @ViewChild('drawer', {static: false}) drawer;
 
   user$: Observable<User>;
-  paramSub: Subscription;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
@@ -30,31 +32,12 @@ export class NavComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
     private themeService: ThemeService
   ) { }
 
   ngOnInit() {
     this.user$ = this.authService.$user();
     this.theme$ = this.themeService.theme$();
-
-    this.paramSub = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => {
-        let child = this.route.firstChild;
-        while (child) {
-          if (child.firstChild) {
-            child = child.firstChild;
-          } else if (child.snapshot.data && child.snapshot.data.pageName) {
-            return child.snapshot.data.pageName;
-          } else {
-            return null;
-          }
-        }
-        return null;
-      })).subscribe((pageName: string) => {
-        this.currentPage = pageName;
-      });
   }
 
   logout() {
@@ -62,12 +45,9 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/login');
   }
 
-  ngOnDestroy() {
-    this.paramSub.unsubscribe();
-  }
-
-  changeTheme() {
-
+  toggleDrawer() {
+    console.log('toggle');
+    this.drawer.toggle();
   }
 
 }
