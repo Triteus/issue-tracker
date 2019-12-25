@@ -4,6 +4,7 @@ import { Ticket } from './models/ticket.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ParamTrackerService } from './param-tracker.service';
+import { map } from 'rxjs/operators';
 
 
 interface TicketsGroupByStatusRes {
@@ -58,6 +59,13 @@ export class TicketService implements OnDestroy {
 
   getTicket(ticketId: string): Observable<Ticket> {
     return this.http.get<Ticket>(this.url + ticketId);
+  }
+
+  getTicketTitle(ticketId: string): Observable<string> {
+    return this.http.get<{title: string}>(this.url + ticketId + '/title')
+    .pipe(
+      map(res => res.title)
+    );
   }
 
   postTicket(ticketPayload: Partial<Ticket>): Observable<void> {

@@ -205,4 +205,14 @@ export class TicketController {
         }
         res.status(200).send(ticket);
     }
+
+    @Get(':id/title')
+    private async getTicketTitle(req: Request, res: Response) {
+        let project = res.locals.project as IProject;
+        const ticket = (project.tickets as any).id(req.params.id) as ITicket;
+        if (!ticket) {
+            throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
+        }
+        res.status(200).send({title: ticket.title});
+    }
 }

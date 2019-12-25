@@ -26,7 +26,7 @@ export class TicketTrackerService implements Tracker, OnDestroy {
         // do not go on if there is no id
         filter((id) => !!id),
         // get name of project
-        switchMap((id) => of('')))
+        switchMap((id) => this.ticketService.getTicketTitle(id)))
       .subscribe((ticketTitle) => {
         this.selectedTicketTitleSubject.next(ticketTitle);
       }));
