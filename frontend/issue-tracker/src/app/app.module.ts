@@ -24,7 +24,7 @@ import { MaterialModule } from './material.module';
 import { TicketBoardModule } from './ticket-board/ticket-board.module';
 import { TicketFormDialogComponent } from './ticket-form/ticket-form-dialog/ticket-form-dialog.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
-
+import { ProjectModule } from './project/project.module';
 import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.component';
 
 @NgModule({
@@ -50,8 +50,7 @@ import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.c
     MaterialModule,
     DownloadModule,
     TicketBoardModule,
-    TicketTableModule,
-    TicketDetailsModule,
+    ProjectModule,
     AppRoutingModule, // make sure root routing module is at the bottom
   ],
   providers: [
@@ -61,11 +60,11 @@ import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.c
       JwtHelperService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}},
   ],
   entryComponents: [
     TicketFormDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
   ],
   bootstrap: [AppComponent]
 })

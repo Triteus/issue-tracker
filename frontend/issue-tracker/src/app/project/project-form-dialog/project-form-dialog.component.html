@@ -1,0 +1,149 @@
+<ng-container *ngIf="project$ | async as project; else loading">
+  <form [formGroup]="projectForm" (ngSubmit)="updateProject()">
+    <div>
+      <mat-dialog-content
+        style="max-height: 80vh"
+        fxLayout="column"
+        fxLayoutGap="10px"
+      >
+        <span fxLayout>
+          <mat-form-field appearance="outline" fxFlexFill>
+            <input
+              formControlName="name"
+              aria-label="Name des Projekts"
+              matInput
+              placeholder="Projektname"
+              required
+              minlength="4"
+              maxlength="50"
+            />
+            <mat-hint>{{ name.value.length }}/50 Zeichen</mat-hint>
+            <mat-error
+              *ngIf="name.invalid && (name.dirty || name.touched)"
+              class="alert alert-danger"
+            >
+              <mat-error *ngIf="!!name.errors.required">
+                Titel benötigt.
+              </mat-error>
+              <mat-error *ngIf="!!name.errors.minlength">
+                Titel muss mind. 4 Zeichen lang sein.
+              </mat-error>
+              <mat-error *ngIf="!!name.errors.maxlength">
+                Titel darf max. 50 Zeichen lang sein.
+              </mat-error>
+            </mat-error>
+          </mat-form-field>
+        </span>
+        <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+          <div fxLayoutAlign="center">
+            <mat-form-field>
+              <mat-label>Kategorie</mat-label>
+              <mat-select formControlName="type" required>
+                <mat-option *ngFor="let type of projectTypeArr" [value]="type">{{
+                  type
+                }}</mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="type.invalid && (type.dirty || type.touched)"
+                class="alert alert-danger"
+              >
+                <mat-error *ngIf="!!type.errors.required">
+                  Kategorie benötigt.
+                </mat-error>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout fxLayoutGap="20px" fxLayoutAlign="center center">
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select
+                [disabled]="!editMode"
+                formControlName="status"
+                required
+              >
+                <mat-option
+                  *ngFor="let status of projectStatusArr"
+                  [value]="status"
+                  >{{ status | statusName }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="status.invalid && (status.dirty || status.touched)"
+                class="alert alert-danger"
+              >
+                <mat-error *ngIf="!!status.errors.required">
+                  Status benötigt.
+                </mat-error>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-form-field>
+          <textarea
+            cdkTextareaAutosize
+            matInput
+            placeholder="Beschreibung"
+            formControlName="description"
+            required
+            minlength="4"
+            maxlength="1000"
+          ></textarea>
+          <mat-hint>{{ description.value.length }}/1000 Zeichen</mat-hint>
+          <mat-error
+            *ngIf="
+              description.invalid && (description.dirty || description.touched)
+            "
+            class="alert alert-danger"
+          >
+            <mat-error *ngIf="!!description.errors.required">
+              Beschreibung benötigt
+            </mat-error>
+            <mat-error *ngIf="!!description.errors.minlength">
+              Beschreibung muss mind. 4 Zeichen lang sein.
+            </mat-error>
+            <mat-error *ngIf="!!description.errors.maxlength">
+              Beschreibung darf max 50 Zeichen lang sein.
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+        <mat-divider></mat-divider>
+
+      </mat-dialog-content>
+      <mat-dialog-actions
+        class="dialog-btns"
+        fxLayoutGap="5px"
+        fxLayoutAlign="center center"
+      >
+        <button
+          [disabled]="projectForm.invalid"
+          type="submit"
+          mat-raised-button
+          color="primary"
+        >
+          Speichern
+        </button>
+        <button
+          *ngIf="editMode"
+          type="button"
+          (click)="deleteProject()"
+          mat-raised-button
+          color="warn"
+        >
+          Löschen
+        </button>
+        <button
+          type="button"
+          (click)="resetProject()"
+          mat-raised-button
+          color="second"
+        >
+          Zurücksetzen
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </form>
+</ng-container>
+
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>

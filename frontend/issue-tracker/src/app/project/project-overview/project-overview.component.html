@@ -1,0 +1,6 @@
+<div class="container" *ngIf="project$ | async as project">
+  <h1 class="mat-h1">{{project.name}}</h1>
+  <div>{{project.type}}</div>
+  <div>{{project.status}}</div>
+  <div>{{project.description}}</div>
+</div>

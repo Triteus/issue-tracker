@@ -14,6 +14,8 @@ import { PriorityNamePipe } from './pipes/priority-name.pipe';
 import { PriorityIconNamePipe } from './pipes/priority-icon.pipe';
 import { MaterialModule } from '../material.module';
 import { CategoryNamePipe } from './pipes/category-name.pipe';
+import { ProjectTypePipe } from './pipes/project-type.pipe';
+import { ProjectStatusPipe } from './pipes/project-status.pipe';
 
 
 
@@ -32,6 +34,8 @@ import { CategoryNamePipe } from './pipes/category-name.pipe';
     PriorityNamePipe,
     PriorityIconNamePipe,
     CategoryNamePipe,
+    ProjectTypePipe,
+    ProjectStatusPipe,
   ],
   imports: [
     CommonModule,
@@ -50,7 +54,9 @@ import { CategoryNamePipe } from './pipes/category-name.pipe';
     StatusPipe,
     PriorityNamePipe,
     PriorityIconNamePipe,
-    CategoryNamePipe
+    CategoryNamePipe,
+    ProjectTypePipe,
+    ProjectStatusPipe,
 
   ]
 })

@@ -4,8 +4,9 @@ import { TicketBoardComponent } from './ticket-board.component';
 import { RoleGuardService } from '../shared/services/role-guard.service';
 import { AuthGuardService } from '../shared/services/auth-guard.service';
 
-
-const routes: Routes = [
+// NOTE routes are imported and included in another parent-routing-module.
+// This routing module itself is now being imported anywhere for now.
+export const ticketBoardRoutes: Routes = [
   {
     path: 'ticket-board',
     component: TicketBoardComponent,
@@ -18,7 +19,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(ticketBoardRoutes)],
   exports: [RouterModule]
 })
 export class TicketBoardRoutingModule { }

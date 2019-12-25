@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Observable, of, Subscription, merge } from 'rxjs';
 import { Ticket } from './models/ticket.model';
 import { HttpClient } from '@angular/common/http';
-import { User } from './models/user.model';
 import { environment } from 'src/environments/environment';
+import { ParamTrackerService } from './param-tracker.service';
 
 
 interface TicketsGroupByStatusRes {
@@ -12,35 +12,48 @@ interface TicketsGroupByStatusRes {
   closedTickets: Ticket[];
 }
 
+
+// TODO At the moment, project-id is taken from current route and used for every route.
+// Since ticket-ids are already unique, we should not need to provide
+// a project-id all the time. This has to be adjusted on the backend.
+
 @Injectable({
   providedIn: 'root'
 })
-export class TicketService {
+export class TicketService implements OnDestroy {
 
-  private userMock: User = {
-    id: 'userId',
-    username: 'Joe Mama',
-    firstName: 'Joe',
-    lastName: 'Mama',
-    email: 'user@mail.com',
-    roles: [],
-    createdAt: new Date(),
-    updatedAt: new Date()
+  selectedProjectId = '';
 
-  };
+  sub: Subscription;
+  paramMaps = [];
 
-  constructor(private http: HttpClient) { }
 
-  url = environment.baseUrl + '/ticket/';
-
-  getTickets(params?: object): Observable<{tickets: Ticket[], numAllTickets: number}> {
-    console.log('params', params);
-    return this.http.get<{tickets: Ticket[], numAllTickets: number}>(this.url, { params: params as any });
+  constructor(
+    private http: HttpClient,
+    private paramTrackerService: ParamTrackerService
+  ) {
+    this.selectedProjectId = this.paramTrackerService.getParam('projectId');
+    this.paramTrackerService.param$('projectId').subscribe((id) => {
+      this.selectedProjectId = id;
+    });
   }
-/*  */
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
+  get url() {
+    return environment.baseUrl + '/v2/project/' + this.selectedProjectId + '/ticket/';
+  }
+
+  getTickets(params?: object): Observable<{ tickets: Ticket[], numAllTickets: number }> {
+    console.log('params', params);
+    return this.http.get<{ tickets: Ticket[], numAllTickets: number }>(this.url, { params: params as any });
+  }
+
   getTicketsGroupByStatus(params?: object): Observable<TicketsGroupByStatusRes> {
     console.log('params', params);
-    return this.http.get<TicketsGroupByStatusRes>(this.url, { params: {...params as any, groupByStatus: true} });
+    return this.http.get<TicketsGroupByStatusRes>(this.url, { params: { ...params as any, groupByStatus: true } });
   }
 
   getTicket(ticketId: string): Observable<Ticket> {
@@ -48,10 +61,7 @@ export class TicketService {
   }
 
   postTicket(ticketPayload: Partial<Ticket>): Observable<void> {
-    return this.http.post<void>(this.url, ticketPayload)
-      .pipe(
-        /* catchError(this.handleError<void>('postTicket')) */
-      );
+    return this.http.post<void>(this.url, ticketPayload);
   }
 
   editTicket(payload: any, ticketId: string): Observable<any> {

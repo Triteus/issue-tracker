@@ -24,7 +24,6 @@ import { TicketTableRoutingModule } from './ticket-table-routing.module';
     MaterialModule,
     SharedModule,
     TicketFormModule,
-    TicketTableRoutingModule
   ],
   exports: [
     IssueTableComponent,

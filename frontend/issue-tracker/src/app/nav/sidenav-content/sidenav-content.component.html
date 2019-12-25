@@ -1,58 +1,112 @@
-  <mat-nav-list>
-      <ng-container *ngIf="!(user$ | async)">
-        <a
-          mat-list-item
-          [routerLink]="['/register']"
-          routerLinkActive="router-link-active"
-          >Registrieren</a
-        >
-        <a
-          mat-list-item
-          [routerLink]="['/login']"
-          routerLinkActive="router-link-active"
-          >Anmelden</a
-        >
-      </ng-container>
-      <ng-container *ngIf="user$ | async">
-        <a
-          mat-list-item
-          [routerLink]="['/home']"
-          routerLinkActive="router-link-active"
-        >
-          <div class="nav-item">
-            <mat-icon class="gap">dashboard</mat-icon>
-            <span>Home</span>
-          </div>
-        </a>
-        <a
-          mat-list-item
-          [routerLink]="['/projects']"
-          routerLinkActive="router-link-active"
-        >
-          <div class="nav-item">
-            <mat-icon class="gap">list</mat-icon>
-            <span>Projekte</span>
-          </div>
-        </a>
-        <a
-          mat-list-item
-          [routerLink]="['/tickets-overview']"
-          routerLinkActive="router-link-active"
-        >
-          <div class="nav-item">
-            <mat-icon class="gap">list</mat-icon>
-            <span>Ticket-Katalog</span>
-          </div>
-        </a>
-        <a
-          mat-list-item
-          [routerLink]="['/ticket-board']"
-          routerLinkActive="router-link-active"
-        >
-          <div class="nav-item">
-            <mat-icon class="gap">local_offer</mat-icon>
-            <span>Ticket-Board</span>
-          </div>
-        </a>
-      </ng-container>
-    </mat-nav-list>
+<mat-nav-list>
+  <ng-container *ngIf="!(user$ | async)">
+    <a
+      mat-list-item
+      [routerLink]="['/register']"
+      routerLinkActive="router-link-active"
+      >Registrieren</a
+    >
+    <a
+      mat-list-item
+      [routerLink]="['/login']"
+      routerLinkActive="router-link-active"
+      >Anmelden</a
+    >
+  </ng-container>
+  <ng-container *ngIf="user$ | async">
+    <a
+      mat-list-item
+      [routerLink]="['/home']"
+      routerLinkActive="router-link-active"
+    >
+      <div class="nav-item">
+        <mat-icon class="gap">dashboard</mat-icon>
+        <span>Home</span>
+      </div>
+    </a>
+    <a
+      mat-list-item
+      [routerLink]="['/projects']"
+      routerLinkActive="router-link-active"
+    >
+      <div class="nav-item">
+        <mat-icon class="gap">view_module</mat-icon>
+        <span>Projekte</span>
+      </div>
+    </a>
+
+    <ng-container *ngIf="selectedProjectId">
+      <mat-divider></mat-divider>
+      <h2 class="mat-h2" style="margin-top: 20px">
+        Projekt: {{ selectedProjectName }}
+      </h2>
+      <a
+        mat-list-item
+        (click)="goToProjectPath('overview')"
+        [ngClass]="projectPath === 'overview' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">label</mat-icon>
+          <span>Überblick</span>
+        </div>
+      </a>
+      <a
+        mat-list-item
+        (click)="goToProjectPath('tickets')"
+        [ngClass]="projectPath === 'tickets' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">local_offer</mat-icon>
+          <span>Tickets</span>
+        </div>
+      </a>
+      <a
+        mat-list-item
+        (click)="goToProjectPath('ticket-board')"
+        [ngClass]="projectPath === 'ticket-board' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">view_week</mat-icon>
+          <span>Ticket-Board</span>
+        </div>
+      </a>
+      <a mat-list-item routerLink="projects" routerLinkActive>
+        <div class="nav-item">
+          <mat-icon class="gap">backspace</mat-icon>
+          <span>Zurück</span>
+        </div>
+      </a>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTicketId">
+      <mat-divider></mat-divider>
+      <h2 class="mat-h2" style="margin-top: 20px">Ticket: {{ selectedTicketTitle }}</h2>
+      <a
+        mat-list-item
+        (click)="goToTicketPath('')"
+        [ngClass]="ticketPath !== 'edit' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">label</mat-icon>
+          <span>Ticket-Details</span>
+        </div>
+      </a>
+      <a
+        mat-list-item
+        (click)="goToTicketPath('edit')"
+        [ngClass]="ticketPath === 'edit' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">local_offer</mat-icon>
+          <span>Ticket-Formular</span>
+        </div>
+      </a>
+      <a mat-list-item [routerLink]="['projects', selectedProjectId]" routerLinkActive>
+        <div class="nav-item">
+          <mat-icon class="gap">backspace</mat-icon>
+          <span>Zurück</span>
+        </div>
+      </a>
+    </ng-container>
+  </ng-container>
+</mat-nav-list>

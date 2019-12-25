@@ -1,21 +1,31 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IssueTableComponent } from './issue-table.component';
 import { AuthGuardService } from '../shared/services/auth-guard.service';
 import { TicketFormDialogEntryComponent } from '../ticket-form/ticket-form-dialog-entry/ticket-form-dialog-entry.component';
+import { TicketDetailsComponent } from '../ticket-details/ticket-details.component';
+import { RoleGuardService } from '../shared/services/role-guard.service';
 
 
+// NOTE routes are imported and included in another parent-routing-module.
+// This routing module itself is now being imported anywhere for now.
 
-const ticketTableRoutes: Routes = [
+export const ticketTableRoutes: Routes = [
   {
-    path: 'tickets-overview',
-    component: IssueTableComponent,
+    path: 'tickets/:ticketId',
+    component: TicketDetailsComponent,
     canActivate: [AuthGuardService],
-    data: { pageName: 'Ticket-Übersicht' },
+    data: { pageName: 'Ticket-Details' },
     children: [
-      { path: 'new', component: TicketFormDialogEntryComponent, pathMatch: 'full', canActivate: [AuthGuardService], data: { new: true } },
+      {
+        path: 'edit',
+        component: TicketFormDialogEntryComponent,
+        canActivate: [AuthGuardService, RoleGuardService],
+        data: { expectedRole: 'support' }
+      }
     ]
   },
+  { path: 'tickets-overview/:ticketId', redirectTo: 'tickets/:ticketId', pathMatch: 'full' },
+
 ];
 
 @NgModule({

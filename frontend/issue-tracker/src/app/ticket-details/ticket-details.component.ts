@@ -7,6 +7,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { take } from 'rxjs/operators';
 import {Location} from '@angular/common';
+import { TicketTrackerService } from '../shared/services/ticket-tracker.service';
 
 @Component({
   selector: 'app-ticket-details',
@@ -27,12 +28,14 @@ export class TicketDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackbar: MatSnackBar,
     private delConfirmDialog: MatDialog,
-    private location: Location
+    private location: Location,
+    private ticketTrackerService: TicketTrackerService
 
   ) { }
 
   ngOnInit() {
     this.ticketId = this.route.snapshot.paramMap.get('ticketId');
+
     this.paramSub = this.route.paramMap.subscribe((paramMap) => {
       this.ticketId = paramMap.get('ticketId');
     });
@@ -46,6 +49,9 @@ export class TicketDetailsComponent implements OnInit, OnDestroy {
         });
       }
     });
+
+
+
   }
 
   ngOnDestroy() {

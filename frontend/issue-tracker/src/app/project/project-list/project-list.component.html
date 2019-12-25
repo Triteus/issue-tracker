@@ -1,0 +1,47 @@
+<div
+  *ngIf="projects$ | async as projects"
+  gdColumns="1fr"
+  gdAreas="main"
+  gdColumns.gt-sm="1fr 3fr 1fr"
+  gdAreas.gt-sm="left-area main right-area"
+  fdColumns.gt-md="1fr 2fr 1fr"
+  style="margin: 15px"
+>
+  <div gdArea="left-area"></div>
+  <div
+    gdArea="main"
+    gdColumns="1fr 1fr"
+    gdColumns.gt-sm="1fr 1fr 1fr 1fr"
+    gdColumns.gt-md="1fr 1fr 1fr 1fr 1fr 1fr"
+    gdGap="15px 15px"
+  >
+    <mat-card
+      class="button-card"
+      (click)="openProjectDetails(project.id)"
+      *ngFor="let project of projects"
+      fxLayout="column"
+      fxLayoutGap="20px"
+      fxLayoutAlign="space-around"
+    >
+      <h2 style="text-align: center;" class="mat-h2">{{ project.name }}</h2>
+      <mat-chip-list>
+        <div fxFlexFill fxLayoutAlign="space-around">
+          <mat-chip>{{ project.type | projectType }}</mat-chip>
+          <mat-chip>{{ project.status | projectStatus }}</mat-chip>
+        </div>
+      </mat-chip-list>
+    </mat-card>
+    <button
+      color="primary"
+      gdGridAlign="start center"
+      mat-fab
+      (click)="openProjectDialog()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <div gdArea="right-area"></div>
+</div>
+
+<router-outlet></router-outlet>

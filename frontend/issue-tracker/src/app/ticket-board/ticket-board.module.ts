@@ -23,7 +23,6 @@ import { TicketBoardRoutingModule } from './ticket-board-routing.module';
     SharedModule,
     MaterialModule,
     DragDropModule,
-    TicketBoardRoutingModule
   ],
    exports: [
     TicketBoardComponent,
