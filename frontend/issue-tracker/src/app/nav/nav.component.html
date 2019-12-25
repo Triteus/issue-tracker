@@ -49,6 +49,7 @@
     fixedTopGap="64"
     #drawer
     class="sidenav"
+    opened
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
   >
