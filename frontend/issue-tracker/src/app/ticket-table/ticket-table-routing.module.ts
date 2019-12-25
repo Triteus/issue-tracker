@@ -20,7 +20,7 @@ export const ticketTableRoutes: Routes = [
         path: 'edit',
         component: TicketFormDialogEntryComponent,
         canActivate: [AuthGuardService, RoleGuardService],
-        data: { expectedRole: 'support' }
+        data: { expectedRole: 'support', pageName: 'Ticket-Formular' }
       }
     ]
   },

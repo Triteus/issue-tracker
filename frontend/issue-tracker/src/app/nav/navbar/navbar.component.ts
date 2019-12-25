@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { map, shareReplay, filter } from 'rxjs/operators';
+import { map, shareReplay, filter, ignoreElements } from 'rxjs/operators';
 import { Theme } from 'src/app/models/theme.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -43,19 +43,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.paramSub = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => {
-        let child = this.route.firstChild;
-        while (child) {
-          if (child.firstChild) {
-            child = child.firstChild;
-          } else if (child.snapshot.data && child.snapshot.data.pageName) {
-            return child.snapshot.data.pageName;
-          } else {
-            return null;
+        const pageNames = [];
+        let route = this.route.root;
+        if (!route) { return []; }
+
+        do {
+          if (route.snapshot && route.snapshot.data && route.snapshot.data.pageName) {
+            pageNames.push(route.snapshot.data.pageName);
           }
-        }
-        return null;
-      })).subscribe((pageName: string) => {
-        this.currentPage = pageName;
+          route = route.firstChild;
+        } while (route);
+
+        return pageNames;
+      })).subscribe((pageNames: string[]) => {
+        this.currentPage = pageNames.join(' / ');
       });
   }
 

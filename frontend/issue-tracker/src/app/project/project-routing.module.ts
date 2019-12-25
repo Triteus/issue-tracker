@@ -23,7 +23,7 @@ const routes: Routes = [
         path: 'new',
         component: ProjectFormDialogEntryComponent,
         canActivate: [AuthGuardService],
-        data: { new: true },
+        data: { new: true, pageName: 'Projekt-Formular (neu)' },
         pathMatch: 'full'
       }
     ]
@@ -33,14 +33,18 @@ const routes: Routes = [
     component: ProjectDetailsComponent,
     canActivate: [AuthGuardService],
     data: {
-      pageName: 'Details'
+      pageName: 'Projekt'
     },
     children: [
       { path: 'overview', component: ProjectOverviewComponent, data: { pageName: 'Übersicht' } },
       {
         path: 'tickets', component: IssueTableComponent, data: { pageName: 'Tickets' },
         children: [
-          { path: 'new', component: TicketFormDialogEntryComponent, canActivate: [AuthGuardService], data: { new: true } },
+          {
+            path: 'new',
+            component: TicketFormDialogEntryComponent,
+            canActivate: [AuthGuardService],
+            data: { pageName: 'Ticket-Formular (neu)', new: true } },
         ]
       },
       ...ticketTableRoutes,
