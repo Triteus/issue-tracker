@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
+import { ProjectTrackerService } from '../shared/services/project-tracker.service';
 
 
 interface UserPayload {
@@ -53,11 +54,7 @@ export class ProjectService {
     return this.http.delete<UserPayload>(this.url + '/' + projectId);
   }
 
-  addUser(projectId: string, userId: string): Observable<UserPayload> {
-    return this.http.patch<UserPayload>(this.url + '/' + projectId, userId);
-  }
-
-  removeUser(projectId: string, userId: string): Observable<UserPayload> {
-    return this.http.patch<UserPayload>(this.url + '/' + projectId, userId);
+  patchAssignedUsers(userIds: string[], projectId: string): Observable<UserPayload> {
+    return this.http.patch<UserPayload>(this.url + '/' + projectId + '/assignedUsers', userIds);
   }
 }
