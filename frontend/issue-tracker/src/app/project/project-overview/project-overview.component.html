@@ -1,6 +1,29 @@
 <div class="container" *ngIf="project$ | async as project">
   <h1 class="mat-h1">{{project.name}}</h1>
+  <div class="actions" fxLayout fxLayoutGap="10px">
+    <button mat-mini-fab color="primary" (click)="openUserFormDialog()">
+      <mat-icon matTooltip="Nutzer verwalten">group_add</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary">
+      <mat-icon matTooltip="Nutzer verwalten">edit</mat-icon>
+    </button>
+    <button mat-mini-fab color="warn">
+      <mat-icon matTooltip="Nutzer verwalten">delete</mat-icon>
+    </button>
+  </div>
   <div>{{project.type}}</div>
   <div>{{project.status}}</div>
   <div>{{project.description}}</div>
+  <h2 class="mat-h2">Zugewiesene Nutzer</h2>
+  <mat-list>
+    <mat-list-item *ngFor="let user of project.assignedUsers">
+      <mat-icon>person</mat-icon>
+      <div>
+        {{user.username}}
+      </div>
+    </mat-list-item>
+  </mat-list>
+
 </div>
+
+<router-outlet></router-outlet>

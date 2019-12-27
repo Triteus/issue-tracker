@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
-import { ProjectTrackerService } from '../shared/services/project-tracker.service';
 
 
 interface UserPayload {
@@ -22,24 +21,33 @@ export class ProjectService {
   constructor(private http: HttpClient) { }
 
   getProjects(): Observable<Project[]> {
-    return this.http.get<{projects: Project[]}>(this.url).pipe(
+    return this.http.get<{ projects: Project[] }>(this.url).pipe(
       map(res => res.projects)
     );
   }
 
   getProject(projectId: string): Observable<Project> {
-    return this.http.get<{project: Project, message: string}>(this.url + '/' + projectId).pipe(
+    return this.http.get<{ project: Project, message: string }>(this.url + '/' + projectId).pipe(
       map(res => res.project)
     );
   }
 
   getProjectName(projectId: string): Observable<string> {
-    return this.http.get<{projectName: string}>(this.url + '/' + projectId + '/name')
-    .pipe(
-      map(res => {
-        return res.projectName;
-      })
-    );
+    return this.http.get<{ projectName: string }>(this.url + '/' + projectId + '/name')
+      .pipe(
+        map(res => {
+          return res.projectName;
+        })
+      );
+  }
+
+  getAssignedUsers(projectId: string): Observable<string[]> {
+    return this.http.get<{ assignedUsers: string[] }>(this.url + '/' + projectId + '/assignedUsers')
+      .pipe(
+        map(res => {
+          return res.assignedUsers;
+        })
+      );
   }
 
   postProject(projectPayload: object): Observable<UserPayload> {
@@ -55,6 +63,6 @@ export class ProjectService {
   }
 
   patchAssignedUsers(userIds: string[], projectId: string): Observable<UserPayload> {
-    return this.http.patch<UserPayload>(this.url + '/' + projectId + '/assignedUsers', userIds);
+    return this.http.patch<UserPayload>(this.url + '/' + projectId + '/assignedUsers', {assignedUsers: userIds});
   }
 }

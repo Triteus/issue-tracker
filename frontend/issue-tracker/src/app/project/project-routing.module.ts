@@ -9,6 +9,7 @@ import { IssueTableComponent } from '../ticket-table/issue-table.component';
 import { ticketTableRoutes } from '../ticket-table/ticket-table-routing.module';
 import { TicketFormDialogEntryComponent } from '../ticket-form/ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { ticketBoardRoutes } from '../ticket-board/ticket-board-routing.module';
+import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
 
 const routes: Routes = [
   {
@@ -36,7 +37,26 @@ const routes: Routes = [
       pageName: 'Projekt'
     },
     children: [
-      { path: 'overview', component: ProjectOverviewComponent, data: { pageName: 'Übersicht' } },
+      {
+        path: 'overview', component: ProjectOverviewComponent, data: { pageName: 'Übersicht' }, children: [
+          {
+            path: 'new',
+            component: ProjectFormDialogEntryComponent,
+            canActivate: [AuthGuardService],
+            data: {
+              pageName: 'Projekt-Formular'
+            }
+          },
+          {
+            path: 'assigned-users',
+            component: ProjectUserFormDialogEntryComponent,
+            canActivate: [AuthGuardService],
+            data: {
+              pageName: 'Nutzer'
+            }
+          }
+        ]
+      },
       {
         path: 'tickets', component: IssueTableComponent, data: { pageName: 'Tickets' },
         children: [
@@ -44,7 +64,8 @@ const routes: Routes = [
             path: 'new',
             component: TicketFormDialogEntryComponent,
             canActivate: [AuthGuardService],
-            data: { pageName: 'Ticket-Formular (neu)', new: true } },
+            data: { pageName: 'Ticket-Formular (neu)', new: true }
+          },
         ]
       },
       ...ticketTableRoutes,

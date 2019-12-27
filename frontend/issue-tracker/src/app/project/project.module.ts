@@ -8,12 +8,14 @@ import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectFormDialogEntryComponent } from './project-form-dialog-entry/project-form-dialog-entry.component';
 import { ProjectFormDialogComponent } from './project-form-dialog/project-form-dialog.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { MatTabsModule, MatToolbarModule} from '@angular/material';
 import { ProjectOverviewComponent } from './project-overview/project-overview.component';
 import { TicketTableModule } from '../ticket-table/ticket-table.module';
 import { TicketDetailsModule } from '../ticket-details/ticket-details.module';
+import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
+import { ProjectUserFormDialogComponent } from './project-user-form-dialog/project-user-form-dialog.component';
 
 
 @NgModule({
@@ -23,9 +25,12 @@ import { TicketDetailsModule } from '../ticket-details/ticket-details.module';
     ProjectFormDialogComponent,
     ProjectDetailsComponent,
     ProjectOverviewComponent,
+    ProjectUserFormDialogEntryComponent,
+    ProjectUserFormDialogComponent,
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
     RouterModule,
@@ -38,7 +43,8 @@ import { TicketDetailsModule } from '../ticket-details/ticket-details.module';
   ],
   exports: [],
   entryComponents: [
-    ProjectFormDialogComponent
+    ProjectFormDialogComponent,
+    ProjectUserFormDialogComponent
   ]
 })
 export class ProjectModule { }

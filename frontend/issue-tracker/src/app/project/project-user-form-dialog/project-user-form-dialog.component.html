@@ -1,0 +1,59 @@
+<div>
+  <mat-dialog-content
+    style="max-height: 80vh"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <h1 class="mat-h1">Nutzer</h1>
+    <div
+      style="margin-top: 30px"
+      fxLayout="column"
+      fxLayout.gt-sm="row"
+      fxLayoutGap="20px"
+      fxLayoutAlign="center center"
+      fxLayoutAlign.gt-sm="space-around center"
+    >
+      <mat-form-field>
+        <input #search matInput placeholder="Suche" />
+      </mat-form-field>
+      <mat-checkbox (change)="selectionChanged($event)">
+        Nur zugewiesene Nutzer
+      </mat-checkbox>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-list *ngIf="allUsers$ | async as users; else loading">
+      <mat-list-item *ngFor="let user of users">
+        <div mat-line class="mat-body">{{ user.username }}</div>
+        <div class="actions" fxLayout>
+          <button
+            *ngIf="!isUserAssigned(user.id)"
+            (click)="addAssignedUser(user.id)"
+            mat-icon-button
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            *ngIf="isUserAssigned(user.id)"
+            (click)="deleteAssignedUser(user.id)"
+            color="warn"
+            mat-icon-button
+          >
+            <mat-icon>remove</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-dialog-content>
+  <mat-dialog-actions
+    class="dialog-btns"
+    fxLayoutGap="5px"
+    fxLayoutAlign="center center"
+  >
+  </mat-dialog-actions>
+</div>
+
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>
