@@ -1,9 +1,7 @@
 import mongoose, { Model, Types, Schema as MongooseSchema, Schema } from 'mongoose';
 import { ITicketDocument, ticketSchema } from './Ticket';
 
-
 type ID = String | Types.ObjectId;
-
 
 export enum ProjectType {
     DESIGN = 'design',
@@ -77,8 +75,7 @@ export const projectSchema = new MongooseSchema({
         default: []
     },
     assignedUsers: {
-        type: [MongooseSchema.Types.ObjectId],
-        ref: 'User',
+        type: [{type: MongooseSchema.Types.ObjectId, ref: 'User'}],
         default: []
     },
     projectLeader: {
