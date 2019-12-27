@@ -1,5 +1,4 @@
 import { body } from "express-validator"
-import { ticketStatusArr } from "../../../models/Ticket"
 import { projectStatusArr, projectTypeArr } from "../../../models/Project"
 
 export const basicValidators = [
@@ -18,5 +17,9 @@ export const projectValidators = {
     ],
     putProject: [
         ...basicValidators
+    ],
+    patchAssignedUsers: [
+        body('assignedUsers').isArray(),
+        body('assignedUsers.*').isMongoId()
     ]
 }

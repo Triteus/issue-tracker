@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Put, Children, Middleware } from "@overnightjs/core";
+import { Controller, Post, Get, Delete, Put, Children, Middleware, Patch } from "@overnightjs/core";
 import { ProjectModel } from "../../../models/Project";
 import { Request, Response, NextFunction } from "express";
 import { ResponseError, ErrorTypes } from "../../../middlewares/error";
@@ -32,7 +32,7 @@ export class ProjectController {
         passport.authenticate('jwt', { session: false }),
     ])
     private async getProject(req: Request, res: Response) {
-        const project = await ProjectModel.findById(req.params.projectId);
+        const project = await ProjectModel.findById(req.params.projectId).populate('assignedUsers');
         if(!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }
@@ -88,6 +88,23 @@ export class ProjectController {
         const updatedProject = await project.save();
         
         return res.status(200).send({message: 'Project successfully updated', updatedProject})
+    }
+
+    @Patch(':projectId/assignedUsers')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
+        ...validate('patchAssignedUsers')
+    ])
+    private async patchAssignedUsers(req: Request, res: Response) {
+        const project = await ProjectModel.findById(req.params.projectId);
+        if(!project) {
+            throw new ResponseError('Project not found!', ErrorTypes.NOT_FOUND);
+        }
+
+        project.set({assignedUsers: req.body.assignedUsers});
+        const updatedProject = await project.save();
+
+        return res.status(200).send({message: 'Assigned users successfully changed!', updatedProject});
     }
     
 

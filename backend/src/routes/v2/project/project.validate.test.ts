@@ -1,6 +1,7 @@
 import { validateBody, checkResponse } from "../../../validators/test-util";
 import { projectData } from "../../../test-data/project";
-import { basicValidators } from "./project.validate";
+import { basicValidators, projectValidators } from "./project.validate";
+import { Types } from "mongoose";
 
 describe('Ticket validators', () => {
 
@@ -48,7 +49,33 @@ describe('Ticket validators', () => {
             checkResponse(errors, 'type', 'Invalid value');
         })
 
+        it('passes', async () => {
+            const errors = await validateBody({ ...projectData() }, validators);
+            expect(errors.length).toBe(0);
+        })
     
+    })
+
+    describe('patchAssignedUsers validators', () => {
+        const validators = projectValidators.patchAssignedUsers;
+
+        it('throws (not an array)', async () => {
+            const errors = await validateBody({assignedUsers: 'invalid' }, validators);
+            checkResponse(errors, 'assignedUsers', 'Invalid value');
+        })
+
+        it('throws (includes inavalid objectid)', async () => {
+            const errors = await validateBody({assignedUsers: ['invalidId'] }, validators);
+            checkResponse(errors, 'assignedUsers[0]', 'Invalid value');
+        })
+
+        it('passes', async () => {
+            const errors = await validateBody({assignedUsers: [new Types.ObjectId()] }, validators);
+            console.log(errors);
+            expect(errors.length).toBe(0);
+        })
+
+
     })
 
 
