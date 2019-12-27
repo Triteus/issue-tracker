@@ -98,6 +98,11 @@ export class ProjectController {
         }
 
         project.set(payload);
+        // check if users are populated since only ids are saved in "assignedUsers" path
+        if (payload.assignedUsers && payload.assignedUsers[0] && payload.assignedUsers[0].username) {
+            // map to id of users and assign to project
+            project.assignedUsers = payload.assignedUsers.map(u => u.id);
+        }
         const updatedProject = await project.save();
         
         return res.status(200).send({message: 'Project successfully updated', updatedProject})

@@ -10,6 +10,7 @@ import UserModel, { IUser } from "../../../models/User";
 import { randomUserData, ownerData } from "../../../test-data/user";
 import { projectData, updatedProjectData } from "../../../test-data/project";
 import { authHeaderObject } from "../../../util/test-util";
+import { Types } from "mongoose";
 
 
 describe(('UserController'), () => {
@@ -156,6 +157,19 @@ describe(('UserController'), () => {
                 .set(authHeaderObject(token))
                 .send(updatedProjectData())
             expect(res.status).toBe(403);
+        })
+
+        it('maps assigned users to their ids if they were populated', async () => {
+            project.set({ projectLeader: leader._id });
+            await project.save();
+            const leaderToken = leader.generateToken();
+            
+            const id = new Types.ObjectId();
+            const res = await request.put(url + project._id)
+                .set(authHeaderObject(leaderToken))
+                .send({...updatedProjectData(), assignedUsers: [{username: 'random', id}]})
+            expect(res.status).toBe(200);
+            expect(res.body.updatedProject.assignedUsers[0].toString()).toBe(id.toHexString());
         })
 
         it('returns status 200 and updated ticket', async () => {

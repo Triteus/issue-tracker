@@ -4,7 +4,7 @@ export function projectData() {
     return {
         name: 'sample project',
         description: 'Description of a project',
-        assigendUsers: [],
+        assignedUsers: [],
         projectLeader: mongoose.Types.ObjectId(),
         filenames: ['file 1', 'file 2']
     }
@@ -13,6 +13,7 @@ export function projectData() {
 export function updatedProjectData() {
     return {
         ...projectData(),
+        assignedUsers: [mongoose.Types.ObjectId()],
         name: 'updated project',
         description: 'updated description'
     }
