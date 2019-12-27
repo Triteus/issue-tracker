@@ -286,7 +286,7 @@ describe('TicketController', () => {
                 .set(authHeaderObject(owner.generateToken()));
             expect(res.body.tickets.length).toBe(1);
             expect(res.body.numAllTickets).toBe(1);
-            expect(res.body.tickets[0]._id).toBe(ticket._id.toHexString())
+            expect(res.body.tickets[0].id).toBe(ticket._id.toHexString())
         })
 
         it('returns object with tickets per status', async () => {

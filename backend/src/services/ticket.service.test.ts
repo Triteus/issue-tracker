@@ -1,4 +1,4 @@
-import { TicketService, sort, filter, pagination } from "./ticket.service";
+import { TicketService } from "./ticket.service";
 import { setupDB } from "../startup/testSetup";
 import { ERole, IUser } from "../models/User";
 import TicketModel, { ITicket, ticketSchema, TicketStatus, Priority } from "../models/Ticket";
@@ -8,6 +8,7 @@ import { ownerData, editorData } from "../test-data/user";
 import { ticketData, subTasksData, updatedTicketData } from "../test-data/ticket";
 import { IProject, ProjectModel } from "../models/Project";
 import { projectData } from "../test-data/project";
+import { sort, filter, pagination } from "./ticket.service.util";
 
 describe('TicketService', () => {
 
@@ -41,7 +42,7 @@ describe('TicketService', () => {
         })
 
         it('should get tickets grouped by status', async () => {
-            const ticketsByStatus = await ticketService.groupTicketsByStatus();
+            const ticketsByStatus = await ticketService.groupTicketsByStatus(project);
             expect(ticketsByStatus.openTickets[0]._id).toEqual(openTicket._id);
             expect(ticketsByStatus.activeTickets[0]._id).toEqual(activeTicket._id);
             expect(ticketsByStatus.closedTickets[0]._id).toEqual(closedTicket._id);
