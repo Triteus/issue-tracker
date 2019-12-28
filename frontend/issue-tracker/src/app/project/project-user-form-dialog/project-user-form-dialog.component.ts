@@ -28,18 +28,19 @@ export class ProjectUserFormDialogComponent implements OnInit, OnDestroy, AfterV
   assignedUsersOnly = false;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    private data: { projectId: string },
     public projectDialogRef: MatDialogRef<ProjectFormDialogComponent>,
     private delConfirmDialog: MatDialog,
     private snackbar: MatSnackBar,
     public userDialogRef: MatDialogRef<ProjectUserFormDialogComponent>,
     private userService: UserService,
     private projectService: ProjectService,
-    private projectTrackerService: ProjectTrackerService
   ) { }
 
   ngOnInit() {
     this.allUsers$ = this.userService.getUsers();
-    this.projectId = this.projectTrackerService.getSelectedObjectId();
+    this.projectId = this.data.projectId;
 
     this.subs.push(this.projectService.getAssignedUsers(this.projectId)
       .pipe(take(1))

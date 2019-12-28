@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TicketFormDialogComponent } from 'src/app/ticket-form/ticket-form-dialog/ticket-form-dialog.component';
 import { ProjectFormDialogComponent } from '../project-form-dialog/project-form-dialog.component';
+import { ProjectTrackerService } from 'src/app/shared/services/project-tracker.service';
+import { ParamTrackerService } from 'src/app/param-tracker.service';
 
 @Component({
   selector: 'app-project-form-dialog-entry',
@@ -18,7 +20,8 @@ export class ProjectFormDialogEntryComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private projectTrackerService: ProjectTrackerService,
   ) {
     this.openDialog();
   }
@@ -34,7 +37,7 @@ export class ProjectFormDialogEntryComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.new) {
       projectId = 'new';
     } else {
-      projectId = this.route.parent.snapshot.paramMap.get('projectId');
+      projectId = this.projectTrackerService.getSelectedObjectId();
     }
 
     const dialogRef = this.dialog.open(ProjectFormDialogComponent, {

@@ -48,7 +48,7 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
   }
 
   openProjectFormDialog() {
-    this.router.navigate(['edit', {relativeTo: this.route}]);
+    this.router.navigate(['edit'], {relativeTo: this.route});
   }
 
   deleteProject() {

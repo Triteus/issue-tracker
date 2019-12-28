@@ -4,11 +4,11 @@
     <button mat-mini-fab color="primary" (click)="openUserFormDialog()">
       <mat-icon matTooltip="Nutzer verwalten">group_add</mat-icon>
     </button>
-    <button mat-mini-fab color="primary">
-      <mat-icon matTooltip="Nutzer verwalten">edit</mat-icon>
+    <button (click)="openProjectFormDialog()" mat-mini-fab color="primary">
+      <mat-icon matTooltip="Projekt bearbeiten">edit</mat-icon>
     </button>
     <button mat-mini-fab color="warn">
-      <mat-icon matTooltip="Nutzer verwalten">delete</mat-icon>
+      <mat-icon matTooltip="Projekt löschen!">delete</mat-icon>
     </button>
   </div>
   <div>{{project.type}}</div>

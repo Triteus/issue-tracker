@@ -40,7 +40,7 @@ const routes: Routes = [
       {
         path: 'overview', component: ProjectOverviewComponent, data: { pageName: 'Übersicht' }, children: [
           {
-            path: 'new',
+            path: 'edit',
             component: ProjectFormDialogEntryComponent,
             canActivate: [AuthGuardService],
             data: {
