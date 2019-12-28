@@ -16,13 +16,8 @@ export class ProjectTrackerService implements Tracker, OnDestroy {
   subs: Subscription[] = [];
 
   constructor(private paramService: ParamTrackerService, private projectService: ProjectService) {
-    this.selectedProjectIdSubject.next(this.paramService.getParam('projectId'));
     this.subs.push(this.paramService.param$('projectId')
       .pipe(
-        // inform about new id
-        tap((id) => {
-          this.selectedProjectIdSubject.next(id);
-        }),
         // do not go on if there is no id
         filter((id) => !!id),
         // get name of project
@@ -39,11 +34,11 @@ export class ProjectTrackerService implements Tracker, OnDestroy {
   }
 
   selectedObjectId$() {
-    return this.selectedProjectIdSubject.asObservable();
+    return this.paramService.param$('projectId');
   }
 
   getSelectedObjectId() {
-    return this.selectedProjectIdSubject.getValue();
+    return this.paramService.getParam('projectId');
   }
 
   selectedObjectName$() {

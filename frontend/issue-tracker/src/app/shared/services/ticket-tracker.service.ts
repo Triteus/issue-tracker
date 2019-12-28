@@ -11,18 +11,12 @@ import { TicketService } from 'src/app/ticket.service';
 })
 export class TicketTrackerService implements Tracker, OnDestroy {
 
-  selectedTicketIdSubject = new BehaviorSubject<string | null>(null);
   selectedTicketTitleSubject = new BehaviorSubject<string>('');
   subs: Subscription[] = [];
 
   constructor(private paramService: ParamTrackerService, private ticketService: TicketService) {
-    this.selectedTicketIdSubject.next(this.paramService.getParam('ticketId'));
     this.subs.push(this.paramService.param$('ticketId')
       .pipe(
-        // inform about new id
-        tap((id) => {
-          this.selectedTicketIdSubject.next(id);
-        }),
         // do not go on if there is no id
         filter((id) => !!id),
         // get name of project
@@ -39,11 +33,11 @@ export class TicketTrackerService implements Tracker, OnDestroy {
   }
 
   selectedObjectId$() {
-    return this.selectedTicketIdSubject.asObservable();
+    return this.paramService.param$('ticketId');
   }
 
   getSelectedObjectId() {
-    return this.selectedTicketIdSubject.getValue();
+    return this.paramService.getParam('ticketId');
   }
 
   selectedObjectTitle$() {
