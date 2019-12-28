@@ -1,29 +1,60 @@
-<div class="container" *ngIf="project$ | async as project">
-  <h1 class="mat-h1">{{project.name}}</h1>
-  <div class="actions" fxLayout fxLayoutGap="10px">
-    <button mat-mini-fab color="primary" (click)="openUserFormDialog()">
-      <mat-icon matTooltip="Nutzer verwalten">group_add</mat-icon>
-    </button>
-    <button (click)="openProjectFormDialog()" mat-mini-fab color="primary">
-      <mat-icon matTooltip="Projekt bearbeiten">edit</mat-icon>
-    </button>
-    <button (click)="deleteProject()" mat-mini-fab color="warn">
-      <mat-icon matTooltip="Projekt löschen!">delete</mat-icon>
-    </button>
+<div
+  gdColumns="1fr"
+  gdColumns.gt-sm="1fr 1fr 1fr"
+  gdColumns.gt-md="1fr 1fr 1fr"
+  gdColumn.gt-lg="1fr 2fr 1fr"
+  gdAreas="heading | desc | typeStatus | assignedUsers"
+  gdAreas.gt-sm=". heading . | . desc . | . typeStatus . | . assignedUsers ."
+  gdAlignRows="center center"
+  gdGap="30px 30px"
+  class="container"
+  *ngIf="project$ | async as project"
+>
+  <div gdArea="heading" fxLayoutAlign="center" fxLayout="column">
+    <h1 style="text-align: center;" gdArea="title" class="mat-h1">{{ project.name }}</h1>
+    <div gdArea="actions" class="actions" fxLayoutAlign="center" fxLayoutGap="15px">
+      <button mat-mini-fab color="primary" (click)="openUserFormDialog()">
+        <mat-icon matTooltip="Nutzer verwalten">group_add</mat-icon>
+      </button>
+      <button (click)="openProjectFormDialog()" mat-mini-fab color="primary">
+        <mat-icon matTooltip="Projekt bearbeiten">edit</mat-icon>
+      </button>
+      <button (click)="deleteProject()" mat-mini-fab color="warn">
+        <mat-icon matTooltip="Projekt löschen!">delete</mat-icon>
+      </button>
+    </div>
   </div>
-  <div>{{project.type}}</div>
-  <div>{{project.status}}</div>
-  <div>{{project.description}}</div>
-  <h2 class="mat-h2">Zugewiesene Nutzer</h2>
-  <mat-list>
-    <mat-list-item *ngFor="let user of project.assignedUsers">
-      <mat-icon>person</mat-icon>
-      <div>
-        {{user.username}}
-      </div>
-    </mat-list-item>
-  </mat-list>
-
+  <div gdArea="typeStatus" fxLayout fxLayoutGap="20px">
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <h2 class="mat-h2">Typ</h2>
+      <mat-card>{{ project.type | projectType }}</mat-card>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <h2 class="mat-h2">Status</h2>
+      <mat-card>
+        {{ project.status | projectStatus }}
+      </mat-card>
+    </div>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="center center" gdArea="desc">
+    <h2 class="mat-h2">Beschreibung</h2>
+    <mat-card>
+      {{ project.description }}
+    </mat-card>
+  </div>
+  <div gdArea="assignedUsers">
+    <h2 class="mat-h2">Zugewiesene Nutzer</h2>
+    <mat-card>
+      <mat-list>
+        <mat-list-item *ngFor="let user of project.assignedUsers">
+          <mat-icon>person</mat-icon>
+          <div>
+            {{ user.username }}
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
 </div>
 
 <router-outlet></router-outlet>

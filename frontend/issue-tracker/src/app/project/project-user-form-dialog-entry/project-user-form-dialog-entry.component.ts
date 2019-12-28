@@ -32,7 +32,7 @@ export class ProjectUserFormDialogEntryComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     const projectId = this.projectTrackerService.getSelectedObjectId();
-    
+
     const dialogRef = this.dialog.open(ProjectUserFormDialogComponent, {
       width: '600px',
       maxHeight: '90vh',

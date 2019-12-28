@@ -40,7 +40,7 @@
               <mat-label>Kategorie</mat-label>
               <mat-select formControlName="type" required>
                 <mat-option *ngFor="let type of projectTypeArr" [value]="type">{{
-                  type
+                  type | projectType
                 }}</mat-option>
               </mat-select>
               <mat-error
