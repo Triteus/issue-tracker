@@ -46,7 +46,9 @@ export class ProjectFormDialogEntryComponent implements OnInit, OnDestroy {
       data: { projectId }
     });
     this.dialogSub = dialogRef.afterClosed().subscribe(result => {
-      if (result === 'deleted' || result === 'updated') {
+      if (result === 'deleted') {
+        this.router.navigate(['/projects']);
+      } else if (result === 'updated') {
         this.router.navigate(['../'],
           {
             queryParams: { reset: true },

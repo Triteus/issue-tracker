@@ -38,9 +38,7 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
     this.subs.push(this.route.queryParamMap.subscribe((queryParamMap) => {
       // user deleted or updated ticket in dialog-component
       if (queryParamMap.get('reset')) {
-        this.router.navigate(['projects']).then(() => {
-          this.project$ = this.projectService.getProject(this.projectId);
-        });
+        this.project$ = this.projectService.getProject(this.projectId);
       }
     }));
 

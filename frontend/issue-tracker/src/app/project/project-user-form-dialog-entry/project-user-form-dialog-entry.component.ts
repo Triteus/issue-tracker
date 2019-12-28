@@ -39,7 +39,7 @@ export class ProjectUserFormDialogEntryComponent implements OnInit, OnDestroy {
       data: { projectId }
     });
     this.dialogSub = dialogRef.afterClosed().subscribe(result => {
-      if (result === 'deleted' || result === 'updated') {
+      if (result) {
         this.router.navigate(['../'],
           {
             queryParams: { reset: true },
