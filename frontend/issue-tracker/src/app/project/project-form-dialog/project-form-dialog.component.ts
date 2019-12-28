@@ -128,7 +128,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
           .pipe(take(1))
           .subscribe(() => {
             this.projectDialogRef.close('deleted');
-            this.snackbar.open(`Projekt "${this.name.value}" erfolgreich gelöscht!`);
+            this.snackbar.open(`Projekt "${this.name.value}" erfolgreich gelöscht!`, 'OK');
           }, err => {
             this.snackbar.open(`Ticket "${this.name.value}" konnte nicht gelöscht werden: ${err.message}`, 'OK');
           });

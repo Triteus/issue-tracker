@@ -4,6 +4,8 @@ import { ProjectService } from '../project.service';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-project-overview',
@@ -18,7 +20,13 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
   paramSub: Subscription;
   subs: Subscription[] = [];
 
-  constructor(private projectService: ProjectService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private delConfirmDialog: MatDialog,
+    private snackbar: MatSnackBar
+  ) { }
 
   ngOnInit() {
     this.projectId = this.route.parent.snapshot.paramMap.get('projectId');
@@ -30,7 +38,7 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
     this.subs.push(this.route.queryParamMap.subscribe((queryParamMap) => {
       // user deleted or updated ticket in dialog-component
       if (queryParamMap.get('reset')) {
-        this.router.navigate(['./'], { relativeTo: this.route }).then(() => {
+        this.router.navigate(['projects']).then(() => {
           this.project$ = this.projectService.getProject(this.projectId);
         });
       }
@@ -44,17 +52,28 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
   }
 
   openUserFormDialog() {
-    this.router.navigate(['assigned-users'], {relativeTo: this.route});
+    this.router.navigate(['assigned-users'], { relativeTo: this.route });
   }
 
   openProjectFormDialog() {
-    this.router.navigate(['edit'], {relativeTo: this.route});
+    this.router.navigate(['edit'], { relativeTo: this.route });
   }
 
   deleteProject() {
-    this.subs.push(this.projectService.deleteProject(this.projectId).pipe(take(1)).subscribe(() => {
-      this.router.navigate(['projects']);
-    }));
+    const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
+      width: '500px',
+      id: 'confirm-dialog',
+      data: { message: 'Projekt wirklich löschen?' }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'confirm') {
+        this.subs.push(this.projectService.deleteProject(this.projectId).pipe(take(1)).subscribe(() => {
+          this.router.navigate(['projects']);
+          this.snackbar.open('Projekt erfolgreich gelöscht!', 'OK');
+        }));
+      }
+    });
   }
 
 }
