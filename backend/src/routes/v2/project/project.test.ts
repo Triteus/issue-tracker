@@ -13,16 +13,16 @@ import { authHeaderObject } from "../../../util/test-util";
 import { Types } from "mongoose";
 
 
-describe(('UserController'), () => {
+describe(('ProjectController'), () => {
 
-    const userController = new ProjectController();
+    const projectController = new ProjectController();
     let request: SuperTest<Test>;
 
     setupDB('test-project-controller');
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
-        testServer.setControllers(userController);
+        testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();
     })
@@ -187,7 +187,6 @@ describe(('UserController'), () => {
 
     describe('DELETE /api/v2/project/:projectId', () => {
 
-
         const url = '/api/v2/project/';
         let leader: IUser;
 
@@ -223,5 +222,44 @@ describe(('UserController'), () => {
             expect(res.body.updatedProject.name).toBe(updatedProjectData().name);
         })
 
+    })
+
+    describe('PATCH /api/v2/project', () => {
+        const url = '/api/v2/project/';
+        let leader: IUser;
+
+        beforeEach(async () => {
+            leader = await UserModel.create(ownerData());
+            project = await ProjectModel.create(projectData());
+        })
+
+        it('returns status 401 (not authenticated)', async () => {
+            const res = await request.patch(url + project._id + '/assignedUsers')
+            expect(res.status).toBe(401);
+        })
+
+
+        it('return status 403 (user is not project-leader)', async () => {
+            project.set({ projectLeader: leader._id });
+            await project.save();
+
+            const res = await request.patch(url + project._id + '/assignedUsers')
+                .set(authHeaderObject(token))
+                .send(updatedProjectData());
+            expect(res.status).toBe(403);
+        })
+
+        it('returns status 200 and ticket with updated assigned users', async () => {
+            project.set({ projectLeader: leader._id });
+            await project.save();
+            const leaderToken = leader.generateToken();
+
+            const id = new Types.ObjectId();
+            const res = await request.put(url + project._id)
+                .set(authHeaderObject(leaderToken))
+                .send({...updatedProjectData(), assignedUsers: [id]})
+            expect(res.status).toBe(200);
+            expect(res.body.updatedProject.assignedUsers[0].toString()).toBe(id.toHexString());
+        })
     })
 })

@@ -113,11 +113,16 @@ export class ProjectController {
         passport.authenticate('jwt', { session: false }),
         ...validate('patchAssignedUsers')
     ])
-    private async patchAssignedUsers(req: Request, res: Response) {
+    private async patchAssignedUsers(req: RequestWithUser, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId);
         if(!project) {
             throw new ResponseError('Project not found!', ErrorTypes.NOT_FOUND);
         }
+        
+        if (!project.projectLeader.equals(req.user._id)) {
+            throw new ResponseError('Missing persmission to update project.', ErrorTypes.NOT_AUTHORIZED);
+        }
+
 
         project.set({assignedUsers: req.body.assignedUsers});
         const updatedProject = await project.save();
