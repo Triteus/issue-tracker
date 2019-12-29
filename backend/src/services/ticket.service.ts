@@ -1,9 +1,10 @@
 import { Types } from "mongoose";
-import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSchema } from "../models/Ticket";
+import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSchema, ticketHistorySchema, TicketHistory } from "../models/Ticket";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
 import { IProject, ProjectModel } from "../models/Project";
 import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId } from "./ticket.service.util";
+import { arrayEquals } from "../util/array";
 
 type boolStr = 'true' | 'false';
 
@@ -30,9 +31,51 @@ export interface SortParams {
 
 export type TicketParams = FilterParams & PaginationParams & SortParams;
 
-type ID = Types.ObjectId | String
+type ID = Types.ObjectId | string
 
 export class TicketService {
+
+   
+    async findTicketAndAddHistory(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
+        
+        const ticket = (project.tickets as any).id(ticketId) as ITicket;
+        if(!ticket) {
+            throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
+        }
+        
+        const history = this.createEditorHistory(ticket, editorId, payload);
+        await ticket.addEditorHistoryAndSave(history);
+        
+    }
+
+    addHistory(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
+        const history = this.createEditorHistory(ticket, editorId, payload);
+        ticket.addEditorHistory(history);
+        return ticket;
+    }
+    
+    createEditorHistory(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
+        const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description']
+        const date = new Date();
+        let history: TicketHistory = {editorId, editedAt: date, changedPaths: []};
+
+        for(let path of keys) {
+            if(payload[path] && payload[path] !== ticket[path]) {
+                history.changedPaths.push({path, oldValue: ticket[path], newValue: payload[path]});
+            }
+        }
+        if(payload['affectedSystems'] && !arrayEquals(payload['affectedSystems'], ticket['affectedSystems'])) {
+            history.changedPaths.push({
+                path: 'affectedSystems', 
+                oldValue: ticket['affectedSystems'].join(), 
+                newValue: payload['affectedSystems'].join()
+            })
+        }
+
+        //TODO handle history of subtasks
+
+        return history;
+    }
 
     async findAndUpdateTicket(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
         const ticket = (project.tickets as any).id(ticketId);

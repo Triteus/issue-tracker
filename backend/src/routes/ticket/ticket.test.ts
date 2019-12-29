@@ -109,7 +109,7 @@ describe('TicketController', () => {
             project.addUserToProject(editor._id);
             project.addUserToProject(randomUser._id);
             await project.save();
-            
+
             ticket = new TicketModel({ ...ticketData(), owner: owner._id });
             project.tickets.push(ticket);
             await project.save();
@@ -131,7 +131,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i);
         })
-    
+
         it('returns status 404 (ticket does not exist)', async () => {
             const invalidId = new ObjectID();
             const res = await request.put(url + invalidId)
@@ -145,6 +145,14 @@ describe('TicketController', () => {
                 .set(authHeaderObject(editor.generateToken()))
                 .send(updatedTicketData());
             expect(res.status).toBe(200);
+        })
+
+        it('adds new history entry', async () => {
+            const res = await request.put(url + ticket._id)
+                .set(authHeaderObject(editor.generateToken()))
+                .send({ ...ticketData(), description: 'new description' });
+            expect(res.status).toBe(200);
+            expect(res.body.ticket.editorHistory.length).toBe(ticket.editorHistory.length + 1);
         })
 
         it('returns message and ticket', async () => {
@@ -191,7 +199,7 @@ describe('TicketController', () => {
                 .set(authHeaderObject(owner.generateToken()));
             expect(res.status).toBe(404);
         })
-      
+
         it('returns status 403 (user not assigned to project)', async () => {
             await project.removeUserFromProjectAndSave(randomUser._id)
             const res = await request.delete(url + ticket._id)
@@ -362,6 +370,14 @@ describe('TicketController', () => {
             expect(res.status).toBe(422);
         })
 
+        it('adds new history entry', async () => {
+            const res = await request.patch(url + ticket._id + '/status')
+                .set(authHeaderObject(editor.generateToken()))
+                .send({ ...ticketData(), status: TicketStatus.CLOSED});
+            expect(res.status).toBe(200);
+            expect(res.body.ticket.editorHistory.length).toBe(ticket.editorHistory.length + 1);
+        })
+
         it('returns status 200 (status changed)', async () => {
             const res = await request.patch(url + ticket._id + '/status')
                 .set(authHeaderObject(editor.generateToken()))
@@ -400,7 +416,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i);
         })
-       
+
         it('returns status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + '/sub-task')
                 .set(authHeaderObject(editor.generateToken()))
@@ -452,6 +468,14 @@ describe('TicketController', () => {
                 .set(authHeaderObject(editor.generateToken()))
                 .send({ title: 'iv' }); // invalid title
             expect(res.status).toBe(422);
+        })
+
+        it('adds new history entry', async () => {
+            const res = await request.patch(url + ticket._id + subUrl)
+                .set(authHeaderObject(editor.generateToken()))
+                .send({ ...ticketData(), title: 'updatedTitle'});
+            expect(res.status).toBe(200);
+            expect(res.body.ticket.editorHistory.length).toBe(ticket.editorHistory.length + 1);
         })
 
         it('returns status 200', async () => {

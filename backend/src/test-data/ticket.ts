@@ -15,6 +15,7 @@ export function ticketData() {
     return {
         title: 'Something does not work',
         description: 'A sample ticket',
+        status: TicketStatus.OPEN,
         priority: Priority.HIGH,
         category: TicketCategory.BUG,
         neededAt,

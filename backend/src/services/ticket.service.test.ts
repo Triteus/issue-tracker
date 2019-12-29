@@ -107,6 +107,44 @@ describe('TicketService', () => {
         })
     }),
 
+    describe('create history', () => {
+        beforeEach(async () => {
+            owner = await UserModel.create(ownerData());
+            editor = await UserModel.create(editorData());
+
+            ticket = new TicketModel({...ticketData(), owner: owner._id});
+            project.tickets.push(new TicketModel({...ticketData(), owner: owner._id}));
+            project = await project.save();
+            ticket = project.tickets[0] as ITicket;
+        })
+
+
+        it('creates history', () => {
+            const history = ticketService.createEditorHistory(ticket, owner._id, {status: TicketStatus.CLOSED});
+            expect(history.editorId.toString()).toBe(owner._id.toHexString());
+            const pathObj = history.changedPaths[0];
+            expect(pathObj.path).toBe('status');
+            expect(pathObj.oldValue).toBe(ticket.status);
+            expect(pathObj.newValue).toBe(TicketStatus.CLOSED);
+        })
+
+        it('creates history (affectedSystems)', () => {
+            const history = ticketService.createEditorHistory(ticket, owner._id, {affectedSystems: [...ticket.affectedSystems, 'newSystem']});
+            expect(history.editorId.toString()).toBe(owner._id.toHexString());
+            const pathObj = history.changedPaths[0];
+            expect(pathObj.path).toBe('affectedSystems');
+            expect(pathObj.oldValue).toBe(ticket.affectedSystems.join());
+            expect(pathObj.newValue).toBe([...ticket.affectedSystems, 'newSystem'].join());
+        })
+
+        it('adds history to ticket', () => {
+            const initialLength = ticket.editorHistory.length;
+            ticketService.addHistory(ticket, owner._id, {status: TicketStatus.CLOSED});
+            expect(ticket.editorHistory.length).toBe(initialLength + 1);
+        })
+
+    })
+
     describe('change status', () => {      
         beforeEach(async () => {
             owner = await UserModel.create(ownerData());

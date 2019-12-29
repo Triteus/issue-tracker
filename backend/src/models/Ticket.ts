@@ -32,6 +32,7 @@ export const priorityArr = Object.values(Priority);
 export interface ITicketDocument extends mongoose.Document {
   owner: mongoose.Types.ObjectId,
   editors?: mongoose.Types.ObjectId[],
+  editorHistory: TicketHistory[],
   lastEditor?: mongoose.Types.ObjectId,
   assignedTo?: mongoose.Types.ObjectId,
   priority: Priority,
@@ -49,11 +50,26 @@ export interface ITicket extends ITicketDocument {
   setSubTasks: (subTasks: { description: string, isDone: boolean }[], editorId: Types.ObjectId) => void,
   setEditor: (editorId: mongoose.Types.ObjectId | String) => void
   setEditorAndSave: (editorID: mongoose.Types.ObjectId | String) => Promise<ITicket>,
-  changeStatus: (status: TicketStatus, editorId: Types.ObjectId) => void
+  changeStatus: (status: TicketStatus, editorId: Types.ObjectId) => void,
+  addEditorHistory: (history: TicketHistory) => void
+  addEditorHistoryAndSave: (history: TicketHistory) => Promise<ITicket>
 }
 
 export interface ITicketModel extends Model<ITicket> {
   toJSON: (tickets: ITicket[]) => ITicketDocument[];
+}
+
+export const ticketHistorySchema = new mongoose.Schema({
+  editorId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  editedAt: Date,
+  changedPaths: [{path: String, oldValue: String, newValue: String }]
+
+})
+
+export interface TicketHistory {
+  editorId: Types.ObjectId | string,
+  editedAt: Date,
+  changedPaths: {path: string, oldValue: string, newValue: string}[]
 }
 
 export const ticketSchema = new mongoose.Schema({
@@ -68,6 +84,10 @@ export const ticketSchema = new mongoose.Schema({
     ref: 'User',
     default: []
   }],
+  editorHistory: { 
+    type: [ticketHistorySchema],
+    default: []
+  },
   lastEditor:
   {
     type: mongoose.Schema.Types.ObjectId,
@@ -152,6 +172,15 @@ ticketSchema.methods.changeStatus = function (status: TicketStatus, editorId: mo
     this.assignedTo = mongoose.Types.ObjectId(editorId.toString());
   }
   this.status = status;
+}
+
+ticketSchema.methods.addEditorHistory = function (history: TicketHistory) {
+  this.editorHistory.push(history);
+}
+
+ticketSchema.methods.addEditorHistoryAndSave = async function (history: TicketHistory) {
+  this.addHistory(history);
+  return this.save();
 }
 
 ticketSchema.statics.toJSON = function (tickets: ITicket[]) {
