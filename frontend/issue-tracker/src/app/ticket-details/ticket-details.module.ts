@@ -17,7 +17,6 @@ import { DownloadModule } from '../download/download.module';
     RouterModule,
     MaterialModule,
     DownloadModule,
-    TicketDetailsRoutingModule
   ],
   exports: [
     TicketDetailsComponent

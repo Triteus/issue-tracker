@@ -6,7 +6,7 @@ import { RoleGuardService } from '../shared/services/role-guard.service';
 import { NgModule } from '@angular/core';
 
 
-const ticketDetailsRoutes: Routes = [
+export const ticketDetailsRoutes: Routes = [
   {
     path: 'tickets/:ticketId',
     component: TicketDetailsComponent,
@@ -16,8 +16,8 @@ const ticketDetailsRoutes: Routes = [
       {
         path: 'edit',
         component: TicketFormDialogEntryComponent,
-        canActivate: [AuthGuardService, RoleGuardService],
-        data: { expectedRole: 'support' } }
+        canActivate: [AuthGuardService],
+        data: { pageName: 'Ticket-Formular' } }
     ]
   },
 ];

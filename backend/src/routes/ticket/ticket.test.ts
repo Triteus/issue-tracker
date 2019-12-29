@@ -131,14 +131,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i);
         })
-        
-        it('returns status 403 (user does not have support-role)', async () => {
-            const res = await request.put(url + ticket._id)
-                .set(authHeaderObject(randomUser.generateToken()))
-                .send(updatedTicketData());
-            expect(res.status).toBe(403);
-        })
-
+    
         it('returns status 404 (ticket does not exist)', async () => {
             const invalidId = new ObjectID();
             const res = await request.put(url + invalidId)
@@ -362,18 +355,11 @@ describe('TicketController', () => {
             expect(res.body.error).toMatch(/not assigned to project/i);
         })
 
-        it('returns 403 (user has no "support"-role)', async () => {
-            const res = await request.patch(url + ticket._id + '/status')
-                .set(authHeaderObject(randomUser.generateToken()))
-                .send({ status: TicketStatus.ACTIVE });
-            expect(res.status).toBe(403);
-        })
-
         it('return status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + '/status')
                 .set(authHeaderObject(randomUser.generateToken()))
                 .send({ status: 'invalidStatus' });
-            expect(res.status).toBe(403);
+            expect(res.status).toBe(422);
         })
 
         it('returns status 200 (status changed)', async () => {
@@ -414,13 +400,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i);
         })
-        it('returns status 403 (no support role)', async () => {
-            const res = await request.patch(url + ticket._id + '/sub-task')
-                .set(authHeaderObject(randomUser.generateToken()))
-                .send({ subTasks: subTasksData() });
-            expect(res.status).toBe(403);
-        })
-
+       
         it('returns status 422 (validator)', async () => {
             const res = await request.patch(url + ticket._id + '/sub-task')
                 .set(authHeaderObject(editor.generateToken()))
@@ -465,13 +445,6 @@ describe('TicketController', () => {
                 .send({ title: 'validTitle' });
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i)
-        })
-
-        it('returns status 403 (no support role)', async () => {
-            const res = await request.patch(url + ticket._id + subUrl)
-                .set(authHeaderObject(randomUser.generateToken()))
-                .send({ title: 'validTitle' });
-            expect(res.status).toBe(403);
         })
 
         it('returns status 422 (validator)', async () => {

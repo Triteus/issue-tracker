@@ -50,7 +50,6 @@ export class TicketController {
     @Middleware([
         passport.authenticate('jwt', { session: false }),
         userBelongsToProject,
-        Authorize.hasRoles(ERole.Support),
         ...validate('putTicket')
     ])
     private async editTicket(req: RequestWithUser, res: Response) {
@@ -108,7 +107,6 @@ export class TicketController {
     @Middleware([
         passport.authenticate('jwt', { session: false }),
         userBelongsToProject,
-        Authorize.hasRoles(ERole.Support),
         ...validate('changeStatus')
     ])
     private async changeStatus(req: RequestWithUser, res: Response) {
@@ -129,7 +127,6 @@ export class TicketController {
     @Middleware([
         passport.authenticate('jwt', { session: false }),
         userBelongsToProject,
-        Authorize.hasRoles(ERole.Support),
         ...validate('changeTitle')
     ])
     private async changeTitle(req: RequestWithUser, res: Response) {
@@ -152,7 +149,6 @@ export class TicketController {
     @Middleware([
         passport.authenticate('jwt', { session: false }),
         userBelongsToProject,
-        Authorize.hasRoles(ERole.Support),
         ...validate('changeSubTasks')
     ])
     private async changeSubTasks(req: RequestWithUser, res: Response) {

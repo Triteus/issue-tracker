@@ -5,9 +5,7 @@ import { NgModule } from '@angular/core';
 import { ProjectFormDialogEntryComponent } from './project-form-dialog-entry/project-form-dialog-entry.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { ProjectOverviewComponent } from './project-overview/project-overview.component';
-import { IssueTableComponent } from '../ticket-table/issue-table.component';
 import { ticketTableRoutes } from '../ticket-table/ticket-table-routing.module';
-import { TicketFormDialogEntryComponent } from '../ticket-form/ticket-form-dialog-entry/ticket-form-dialog-entry.component';
 import { ticketBoardRoutes } from '../ticket-board/ticket-board-routing.module';
 import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
 
@@ -55,17 +53,6 @@ const routes: Routes = [
               pageName: 'Nutzer'
             }
           }
-        ]
-      },
-      {
-        path: 'tickets', component: IssueTableComponent, data: { pageName: 'Tickets' },
-        children: [
-          {
-            path: 'new',
-            component: TicketFormDialogEntryComponent,
-            canActivate: [AuthGuardService],
-            data: { pageName: 'Ticket-Formular (neu)', new: true }
-          },
         ]
       },
       ...ticketTableRoutes,
