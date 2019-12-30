@@ -60,7 +60,7 @@ export interface ITicketModel extends Model<ITicket> {
 }
 
 export const ticketHistorySchema = new mongoose.Schema({
-  editorId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  editorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   editedAt: Date,
   changedPaths: [{path: String, oldValue: String, newValue: String }]
 
@@ -136,6 +136,11 @@ export const ticketSchema = new mongoose.Schema({
   toJSON: {
     virtuals: true, versionKey: false, transform: function (doc, ret) {
       delete ret._id;
+      ret.editorHistory = ret.editorHistory.map((hist) => {
+        const editor = hist.editorId;
+        delete hist.editorId;
+        return {...hist, editor};
+      })
       if(ret.neededAt) {
         ret.neededAt = ret.neededAt.toJSON();
       }

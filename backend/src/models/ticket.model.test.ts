@@ -1,4 +1,4 @@
-import TicketModel, { TicketStatus } from './Ticket';
+import TicketModel, { TicketStatus, TicketHistory } from './Ticket';
 import { ticketData, subTasksData } from '../test-data/ticket';
 import { Types } from 'mongoose';
 describe('Ticket model', () => {
@@ -68,15 +68,26 @@ describe('Ticket model', () => {
         })
     })
 
-    it('delete path "__v" and "_id" (to JSON)', async () => {
-        const ticket = new TicketModel(ticketData());
-        const ticketJSON = ticket.toJSON();
-        expect(ticketJSON._id).toBeFalsy();
-        expect(ticketJSON.__v).toBeFalsy();
+    describe('toJSON', () => {
+        
+        it('delete path "__v" and "_id" (to JSON)', () => {
+            const ticket = new TicketModel(ticketData());
+            const ticketJSON = ticket.toJSON();
+            expect(ticketJSON._id).toBeFalsy();
+            expect(ticketJSON.__v).toBeFalsy();  
+        })
 
+        it('maps from editorHistory.editorId to editorHistory.editor', () => {
+            const id = new Types.ObjectId();
+            const history: TicketHistory = {editorId: id, editedAt: new Date(), changedPaths: []};
+            const ticket = new TicketModel({...ticketData(), editorHistory: [history]});
+            const ticketJSON = ticket.toJSON();
+            expect(ticketJSON.editorHistory[0].editorID).toBeFalsy();
+            expect(ticketJSON.editorHistory[0].editor.toString()).toBe(id.toHexString());
+        })
     })
 
-    it('performs tolowercase on all strings in affectedSystems', async () => {
+    it('performs tolowercase on all strings in affectedSystems', () => {
         const data = {...ticketData(), affectedSystems: ['JIRA', 'Confluence', 'OUTLOOK', 'dfdFkldsjfF']}
         const ticket = new TicketModel(data);
         data.affectedSystems.forEach(system => {

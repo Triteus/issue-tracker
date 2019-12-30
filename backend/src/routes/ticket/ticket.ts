@@ -176,6 +176,11 @@ export class TicketController {
         res.status(200).send({ message: 'Subtasks updated!', updatedTicket });
     }
 
+
+/**
+ * NOTE: Tickets are aggregated. Therefore, toJSON() upon sending response does not seem to work automatically, so we need to do that manually. 
+ */
+
     @Get('')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
@@ -207,9 +212,8 @@ export class TicketController {
 
         let project = res.locals.project as IProject;
         project = await project.populate({
-            path: 'tickets.owner tickets.lastEditor',
+            path: 'tickets.owner tickets.lastEditor tickets.editorHistory.editorId',
         }).execPopulate();
-
         const ticket = (project.tickets as any).id(req.params.id) as ITicket;
 
         if (!ticket) {
