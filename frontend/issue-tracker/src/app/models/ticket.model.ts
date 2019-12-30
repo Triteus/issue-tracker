@@ -32,6 +32,7 @@ export class Ticket {
   id: string;
   owner: User;
   editors: string[];
+  editorHistory: History[];
   lastEditor: User;
   assignedTo: User;
   priority: Priority;

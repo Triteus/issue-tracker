@@ -16,6 +16,8 @@ import { MaterialModule } from '../material.module';
 import { CategoryNamePipe } from './pipes/category-name.pipe';
 import { ProjectTypePipe } from './pipes/project-type.pipe';
 import { ProjectStatusPipe } from './pipes/project-status.pipe';
+import { HistoryComponent } from './components/history/history.component';
+import { TicketPathNamePipe } from './pipes/ticket-path-name.pipe';
 
 
 
@@ -36,6 +38,8 @@ import { ProjectStatusPipe } from './pipes/project-status.pipe';
     CategoryNamePipe,
     ProjectTypePipe,
     ProjectStatusPipe,
+    HistoryComponent,
+    TicketPathNamePipe,
   ],
   imports: [
     CommonModule,
@@ -57,6 +61,8 @@ import { ProjectStatusPipe } from './pipes/project-status.pipe';
     CategoryNamePipe,
     ProjectTypePipe,
     ProjectStatusPipe,
+    HistoryComponent,
+    TicketPathNamePipe
 
   ]
 })

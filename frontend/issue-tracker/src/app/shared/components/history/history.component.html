@@ -1,0 +1,52 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let history of histories">
+    <mat-expansion-panel-header>
+      <mat-panel-title fxLayout fxLayoutAlign="start center" fxLayoutGap="5px">
+        <mat-icon matTooltip="Name des Erstellers">person</mat-icon>
+        <div>{{ history.editor.username }}</div>
+      </mat-panel-title>
+      <mat-panel-description fxLayout fxLayoutAlign="start center" fxLayoutGap="5px">
+        <mat-icon matTooltip="Bearbeitet am">date_range</mat-icon>
+        <div>{{ history.editedAt | date }}</div>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-divider></mat-divider>
+    <table mat-table [dataSource]="history.changedPaths">
+      <ng-container matColumnDef="path">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell class="mat-body-strong" *matCellDef="let element">
+          {{ element.path | ticketPathName }}:
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="oldValue">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td [ngSwitch]="element.path" mat-cell *matCellDef="let element">
+          <span *ngSwitchCase="'status'" >{{ element.oldValue | statusName }}</span>
+          <span *ngSwitchCase="'priority'" >{{ element.oldValue | priorityName }}</span>
+          <span *ngSwitchCase="'category'" >{{ element.oldValue | categoryName }}</span>
+          <span *ngSwitchDefault >{{ element.oldValue }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pointingRight">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon>arrow_right</mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="newValue">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td [ngSwitch]="element.path" mat-cell *matCellDef="let element">
+          <span *ngSwitchCase="'status'" >{{ element.newValue | statusName }}</span>
+          <span *ngSwitchCase="'priority'" >{{ element.newValue | priorityName }}</span>
+          <span *ngSwitchCase="'category'" >{{ element.newValue | categoryName }}</span>
+          <span *ngSwitchDefault >{{ element.newValue }}</span>
+        </td>
+      </ng-container>
+
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-expansion-panel>
+</mat-accordion>

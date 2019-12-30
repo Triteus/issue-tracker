@@ -1,16 +1,14 @@
 <div *ngIf="ticket$ | async as ticket; else spinner" class="container">
   <div
     class="container"
-    gdRows="auto 1fr"
-    gdRows.lt-lg="auto 1fr"
-    gdRows.lt-sm="auto 1fr"
+
     gdColumns="1fr 2fr 2fr 1fr"
     gdColumns.lt-lg="1fr 1fr"
     gdColumns.lt-sm="1fr"
     gdGap="30px 50px"
-    gdAreas=". heading heading . | . general-info tasks . | . general-info files ."
-    gdAreas.lt-lg="heading heading | general-info tasks | general-info files"
-    gdAreas.lt-sm="heading | general-info | tasks | files"
+    gdAreas=". heading heading . | . general-info tasks . | . general-info files . | . history history . "
+    gdAreas.lt-lg="heading heading | general-info tasks | general-info files | history history"
+    gdAreas.lt-sm="heading | general-info | tasks | files | history"
   >
     <div gdArea="heading">
       <h1 class="mat-h1">{{ ticket.title }}</h1>
@@ -159,6 +157,14 @@
         </span>
       </ng-template>
     </div>
+
+    <div gdArea="history">
+      <h2 class="mat-h2">Bearbeitungsverlauf</h2>
+      <app-history [histories]="ticket.editorHistory"></app-history>
+
+    </div>
+
+
   </div>
 </div>
 <router-outlet></router-outlet>
