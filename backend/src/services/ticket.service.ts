@@ -3,7 +3,7 @@ import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSc
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
 import { IProject, ProjectModel } from "../models/Project";
-import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId } from "./ticket.service.util";
+import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams } from "./ticket.service.util";
 import { arrayEquals } from "../util/array";
 
 type boolStr = 'true' | 'false';
@@ -151,7 +151,7 @@ export class TicketService {
         return ticket;
     }
 
-    async getTickets(project: IProject, match: object = {}, sort: SortParams = {}, pagination: PaginationParams = {}) {
+    async getTickets(project: IProject, match: object = {}, sort: PreparedSortParams = {}, pagination: PaginationParams = {}) {
         // make sure to only aggregate on specific project
         match = withProjectId(match, project._id);
 
@@ -163,7 +163,7 @@ export class TicketService {
     }
 
 
-    async groupTicketsByStatus(project: IProject, pagination: PaginationParams = { pageIndex: 0, pageSize: Number.MAX_VALUE }, match: object = {}, sort: SortParams = {}) {
+    async groupTicketsByStatus(project: IProject, pagination: PaginationParams = { pageIndex: 0, pageSize: Number.MAX_VALUE }, match: object = {}, sort: PreparedSortParams = {}) {
         // make sure to only aggregate on specific project
         match = withProjectId(match, project._id);
 

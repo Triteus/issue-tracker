@@ -17,6 +17,10 @@ export function pagination(query: PaginationParams) {
     return options;
 }
 
+export interface PreparedSortParams {
+    [key: string]: 1 | -1
+}
+
 export function sort(query: SortParams) {
     const { sortBy, sortDir } = query;
     const sort = {}
@@ -97,7 +101,7 @@ export function isEmpty(obj: object) {
     return Object.entries(obj).length === 0 && obj.constructor === Object;
 }
 
-export function prepareAggregateStages(match: object, sort: SortParams, pagination: PaginationParams) {
+export function prepareAggregateStages(match: object, sort: PreparedSortParams, pagination: PaginationParams) {
 
     // IMPORTANT: Order of adding objects is essential for correct aggregate
     // 1 $sort; 2 $match; 3 $limit; 4 $skip; 5 $unwind; 6 $match; 7 $project
@@ -111,7 +115,7 @@ export function prepareAggregateStages(match: object, sort: SortParams, paginati
     aggregates.push({ $match: match })
 
     const { pageIndex, pageSize } = pagination;
-    if (pageIndex) {
+    if (pageSize) {
         const limit = Number.parseInt(pageSize + '');
         // 3 $limit
         aggregates.push({ $limit: limit });
