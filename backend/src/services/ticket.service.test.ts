@@ -1,14 +1,13 @@
 import { TicketService } from "./ticket.service";
 import { setupDB } from "../startup/testSetup";
 import { ERole, IUser } from "../models/User";
-import TicketModel, { ITicket, ticketSchema, TicketStatus, Priority } from "../models/Ticket";
+import TicketModel, { ITicket, TicketStatus } from "../models/Ticket";
 import UserModel from "../models/User";
 import { ObjectID } from "bson";
 import { ownerData, editorData } from "../test-data/user";
 import { ticketData, subTasksData, updatedTicketData } from "../test-data/ticket";
 import { IProject, ProjectModel } from "../models/Project";
 import { projectData } from "../test-data/project";
-import { sort, filter, pagination } from "./ticket.service.util";
 
 describe('TicketService', () => {
 

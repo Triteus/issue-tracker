@@ -3,33 +3,9 @@ import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSc
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
 import { IProject, ProjectModel } from "../models/Project";
-import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams } from "./ticket.service.util";
+import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams, PaginationParams, TicketParams } from "./ticket.service.util";
 import { arrayEquals } from "../util/array";
 
-type boolStr = 'true' | 'false';
-
-export interface FilterParams {
-    filter?: string;
-    openSelected?: boolStr;
-    closedSelected?: boolStr;
-    progressSelected?: boolStr;
-    priority?: Priority | null;
-    systems?: string[] | string;
-    editedDateStart?: string | null;
-    editedDateEnd?: string | null;
-}
-
-export interface PaginationParams {
-    pageIndex?: string | number;
-    pageSize?: string | number;
-}
-
-export interface SortParams {
-    sortDir?: string;
-    sortBy?: string;
-}
-
-export type TicketParams = FilterParams & PaginationParams & SortParams;
 
 type ID = Types.ObjectId | string
 

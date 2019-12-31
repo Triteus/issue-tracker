@@ -1,7 +1,34 @@
-import { PaginationParams, SortParams, FilterParams } from "./ticket.service";
-
-import { TicketStatus, ticketSchema } from "../models/Ticket";
+import { TicketStatus, ticketSchema, Priority } from "../models/Ticket";
 import { Types } from "mongoose";
+
+
+type boolStr = 'true' | 'false';
+
+export interface FilterParams {
+    filter?: string;
+    openSelected?: boolStr;
+    closedSelected?: boolStr;
+    progressSelected?: boolStr;
+    priority?: Priority | null;
+    systems?: string[] | string;
+    editedDateStart?: string | null;
+    editedDateEnd?: string | null;
+    category?: string;
+    userId?: string;
+}
+
+export interface PaginationParams {
+    pageIndex?: string | number;
+    pageSize?: string | number;
+}
+
+export interface SortParams {
+    sortDir?: string;
+    sortBy?: string;
+}
+
+export type TicketParams = FilterParams & PaginationParams & SortParams;
+
 
 export function pagination(query: PaginationParams) {
     const pageIndex = Number.parseInt(query.pageIndex as string);
@@ -32,9 +59,10 @@ export function sort(query: SortParams) {
 }
 
 export function filter(query: FilterParams) {
-    // filter by category, system, status
     const { openSelected, progressSelected, closedSelected } = query;
     const statusArr: TicketStatus[] = [];
+
+    // handle status
     if (openSelected === 'true' || typeof openSelected === 'undefined') {
         statusArr.push(TicketStatus.OPEN);
     }
@@ -74,7 +102,8 @@ export function filter(query: FilterParams) {
         match['affectedSystems'] = { $in: systems }
     }
 
-    const filters = ['priority', 'status', 'category'];
+    // remaining filters
+    const filters = ['priority', 'category', 'userId'];
     for (let filter of filters) {
         if (query[filter]) {
             match[filter] = query[filter];
