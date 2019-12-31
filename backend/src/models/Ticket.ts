@@ -57,6 +57,7 @@ export interface ITicket extends ITicketDocument {
 
 export interface ITicketModel extends Model<ITicket> {
   toJSON: (tickets: ITicket[]) => ITicketDocument[];
+  populateTickets: (tickets: ITicket[]) => Promise<ITicket[]>;
 }
 
 export const ticketHistorySchema = new mongoose.Schema({
@@ -193,6 +194,11 @@ ticketSchema.statics.toJSON = function (tickets: ITicket[]) {
   return tickets.map((ticket) => {
     return new TicketModel(ticket).toJSON();
   });
+}
+
+ticketSchema.statics.populateTickets = async function (tickets: ITicket[]) {
+  const TicketModel = mongoose.models['Ticket'];
+  return TicketModel.populate(tickets, { path: 'owner assignedto lastEditor' });
 }
 
 ticketSchema.virtual("id").get(function (this: { _id: string}) {

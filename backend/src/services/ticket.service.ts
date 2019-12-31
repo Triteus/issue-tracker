@@ -158,7 +158,7 @@ export class TicketService {
         const stages = prepareAggregateStages(match, sort, pagination);
         const result = await ProjectModel
             .aggregate(stages) as ITicket[];
-        const tickets = await TicketModel.populate(result, { path: 'owner assignedto lastEditor' });
+        const tickets = await TicketModel.populateTickets(result);
         return tickets;
     }
 
@@ -170,9 +170,7 @@ export class TicketService {
         const stages = prepareAggregateStages(match, sort, pagination);
         const result = await ProjectModel.aggregate(stages) as ITicket[];
 
-        //console.log('aggregation result', result);
-        const tickets = await TicketModel.populate(result, { path: 'owner assignedto lastEditor' });
-        //console.log('tickets', tickets);
+        const tickets = await TicketModel.populateTickets(result);
 
         const openTickets = [], activeTickets = [], closedTickets = [];
         for (let ticket of tickets) {
