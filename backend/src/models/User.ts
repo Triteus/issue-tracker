@@ -6,6 +6,7 @@ require('mongoose-type-email');
 import config from 'config';
 
 import { Request } from 'express';
+import { JwtPayload } from './JwtPayload';
 
 export type RequestWithUser = Request & {user: IUser};
 
@@ -73,7 +74,7 @@ userSchema.methods.comparePassword = function (pw: string) {
 }
 
 userSchema.methods.generateToken = function () {
-    const userJSON = { _id: this.id, email: this.email, roles: this.roles, username: this.username };
+    const userJSON: JwtPayload = { id: this.id, email: this.email, roles: this.roles, username: this.username };
     // generate web token
     return jwt.sign(userJSON, config.get('secretKey'));
 }

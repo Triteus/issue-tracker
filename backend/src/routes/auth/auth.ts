@@ -52,8 +52,7 @@ export class AuthController {
                         throw err;
                     }
                 });
-                const userJSON = { _id: user.id, email: user.email, roles: user.roles, username: user.username };
-                return res.json({ user: userJSON, token: user.generateToken() });
+                return res.json({ token: user.generateToken() });
             }
         )(req, res);
     }

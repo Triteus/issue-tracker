@@ -4,6 +4,7 @@ import LocalStrategy from 'passport-local';
 import UserModel from '../models/User';
 import passportJWT from 'passport-jwt';
 import config from "config";
+import { JwtPayload } from '../models/JwtPayload';
 
 
 export default function initPassport() {
@@ -31,8 +32,8 @@ export default function initPassport() {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: config.get('secretKey')
     },
-        function (jwtPayload, cb) {
-            return UserModel.findOne({ _id: jwtPayload._id })
+        function (jwtPayload: JwtPayload, cb) {
+            return UserModel.findOne({ _id: jwtPayload.id })
                 .then(user => {
                     return cb(null, user);
                 })

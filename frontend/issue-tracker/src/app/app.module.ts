@@ -56,7 +56,6 @@ import { NavbarComponent } from './nav/navbar/navbar.component';
     AppRoutingModule, // make sure root routing module is at the bottom
   ],
   providers: [
-    AuthService,
     AuthGuardService,
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
       JwtHelperService,

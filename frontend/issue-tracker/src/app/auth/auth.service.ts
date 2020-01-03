@@ -16,7 +16,9 @@ interface RegisterParams {
   lastName: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
 
   url = environment.baseUrl + '/auth/';
@@ -32,13 +34,8 @@ export class AuthService {
       return;
     }
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      return;
-    }
-    // decode token to get its payload
-    const tokenPayload = decode<User & {iat: number}>(token);
-    this.userSubject.next(tokenPayload);
+    const user = this.getCurrUser();
+    this.userSubject.next(user);
    }
 
   register(payload: RegisterParams): Observable<any> {
@@ -47,12 +44,12 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post(this.url + 'login', { email, password })
+    return this.http.post<{token: string}>(this.url + 'login', { email, password })
       .pipe(
         take(1),
-        map((payload: any) => {
+        map((payload) => {
           localStorage.setItem('token', payload.token);
-          this.userSubject.next(payload.user);
+          this.userSubject.next(decode<User & {iat: number}>(payload.token));
         })
       );
   }
@@ -64,6 +61,22 @@ export class AuthService {
 
   $user() {
     return this.userSubject.asObservable();
+  }
+
+  getCurrUser(): User | null {
+
+    const user = this.userSubject.getValue();
+    // return from subject if user was already assigned
+    if(!!user) {
+      return user;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return null;
+    }
+    // decode token to get its payload
+    return decode<User & {iat: number}>(token);
   }
 
   isAuthenticated() {
