@@ -200,7 +200,8 @@ export class TicketController {
             return res.status(200).send(ticketsJSON);
         } else {
             const tickets = await this.ticketService.getTickets(project, match, sort, pagination);
-            res.status(200).send({ tickets: TicketModel.toJSON(tickets), numAllTickets: project.tickets.length });
+            const numTickets = await this.ticketService.countTickets(project, match);
+            res.status(200).send({ tickets: TicketModel.toJSON(tickets), numAllTickets: numTickets });
         }
     }
 
