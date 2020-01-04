@@ -15,7 +15,7 @@
 
 @mixin custom-router-theme($theme) {
   $background: map-get($theme, background);
-  
+
   .router-link-active {
     background-color: mat-color($background, selected-button);
   }
@@ -48,4 +48,5 @@ html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
