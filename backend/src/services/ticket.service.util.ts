@@ -131,9 +131,8 @@ export function isEmpty(obj: object) {
 }
 
 export function prepareAggregateStages(match: object, sort: PreparedSortParams, pagination: PaginationParams) {
-
     // IMPORTANT: Order of adding objects is essential for correct aggregate
-    // 1 $sort; 2 $match; 3 $limit; 4 $skip; 5 $unwind; 6 $match; 7 $project
+    // 1 $sort; 2 $match; 3 $limit; 4 $skip; 5 $unwind; 6 $match; 7 $sort 8 $project
     const aggregates = [];
 
     if (!isEmpty(sort)) {
@@ -157,16 +156,21 @@ export function prepareAggregateStages(match: object, sort: PreparedSortParams, 
     // 5 $unwind and 6 $match
     aggregates.push({ $unwind: '$tickets' }, { $match: match });
 
+    if (!isEmpty(sort)) {
+        // 7 $sort (items need to be sorted again)
+        aggregates.push({ $sort: sort });
+    }
     const projection = {};
     ticketSchema.eachPath((path) => {
         projection[path] = `$tickets.${path}`;
     })
-    // 7 $project
+    // 8 $project
     aggregates.push({$project: projection});
 
     return aggregates;
 
 }
+
 
 /**
  * Add _id of project to match-object.

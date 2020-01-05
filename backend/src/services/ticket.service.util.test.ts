@@ -159,9 +159,18 @@ describe('ticket-service-utils', () => {
             expect(stages[5].$match).toBeTruthy();
         })
 
-        it('has project as seventh stage', () => {
+        it('has sort as seventh stage', () => {
             const stages = prepareAggregateStages(match, sort, pagination)
-            expect(stages[6].$project).toBeTruthy();
+            expect(stages[6].$sort).toBeTruthy();
+        })
+        it('has no sort as sixth stage (sort stage left out twice)', () => {
+            const stages = prepareAggregateStages(match, {}, pagination)
+            expect(stages[5].$sort).toBeFalsy();
+        })
+
+        it('has project as eighth stage', () => {
+            const stages = prepareAggregateStages(match, sort, pagination)
+            expect(stages[7].$project).toBeTruthy();
         })
     })
 })
