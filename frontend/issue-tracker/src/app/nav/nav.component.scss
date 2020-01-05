@@ -38,4 +38,15 @@ mat-sidenav-content {
   padding: 30px;
 }
 
+@media (max-width: 960px) {
+  .app-content {
+    padding: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .app-content {
+    padding: 5px;
+  }
+}
+
 

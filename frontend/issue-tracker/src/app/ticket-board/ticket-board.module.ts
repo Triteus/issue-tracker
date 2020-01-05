@@ -7,9 +7,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TicketBoardRoutingModule } from './ticket-board-routing.module';
-
-
 
 @NgModule({
   declarations: [

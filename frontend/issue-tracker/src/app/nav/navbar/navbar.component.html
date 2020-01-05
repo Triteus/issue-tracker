@@ -27,8 +27,14 @@
         <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
           <app-theme-slide-toggle></app-theme-slide-toggle>
         </div>
-        <button mat-menu-item>Einstellungen</button>
-        <button mat-menu-item (click)="logout()">Ausloggen</button>
+        <button mat-menu-item>
+          <mat-icon>build</mat-icon>
+          Einstellungen
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>power_settings_new</mat-icon>
+          Ausloggen
+        </button>
       </mat-menu>
     </ng-container>
   </div>
