@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,6 +27,10 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import { ProjectModule } from './project/project.module';
 import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.component';
 import { NavbarComponent } from './nav/navbar/navbar.component';
+import { registerLocaleData } from '@angular/common';
+import localeDE from '@angular/common/locales/de';
+
+registerLocaleData(localeDE);
 
 @NgModule({
   declarations: [
@@ -58,10 +62,11 @@ import { NavbarComponent } from './nav/navbar/navbar.component';
   providers: [
     AuthGuardService,
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-      JwtHelperService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}},
+    JwtHelperService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+    { provide: LOCALE_ID, useValue: 'de' },
   ],
   entryComponents: [
     TicketFormDialogComponent,
