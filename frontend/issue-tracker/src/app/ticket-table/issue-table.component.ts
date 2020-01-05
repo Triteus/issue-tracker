@@ -11,13 +11,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FilterParams } from './ticket-table-filters/issue-table-filters.component';
 
 
-
-export interface PaginationSortParams {
-  sortDir: 'asc' | 'desc' | '';
-  sortBy: string;
+export interface PaginationParams {
   pageIndex: number | '';
   pageSize: number | '';
 }
+
+export interface SortParams {
+  sortDir: 'asc' | 'desc' | '';
+  sortBy: string;
+}
+
+export type PaginationSortParams = PaginationParams & SortParams;
 
 export type TicketParams = FilterParams & PaginationSortParams;
 

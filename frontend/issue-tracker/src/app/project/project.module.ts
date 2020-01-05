@@ -16,6 +16,7 @@ import { TicketTableModule } from '../ticket-table/ticket-table.module';
 import { TicketDetailsModule } from '../ticket-details/ticket-details.module';
 import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
 import { ProjectUserFormDialogComponent } from './project-user-form-dialog/project-user-form-dialog.component';
+import { MyTicketsComponent } from '../my-tickets/my-tickets.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { ProjectUserFormDialogComponent } from './project-user-form-dialog/proje
     ProjectOverviewComponent,
     ProjectUserFormDialogEntryComponent,
     ProjectUserFormDialogComponent,
+    MyTicketsComponent
   ],
   imports: [
     CommonModule,

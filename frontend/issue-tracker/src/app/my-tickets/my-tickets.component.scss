@@ -1,0 +1,16 @@
+
+table {
+  width: 100%;
+}
+
+.table-row:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

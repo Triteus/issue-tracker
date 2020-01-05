@@ -103,11 +103,17 @@ export function filter(query: FilterParams) {
     }
 
     // remaining filters
-    const filters = ['priority', 'category', 'userId'];
+    const filters = ['priority', 'category'];
     for (let filter of filters) {
         if (query[filter]) {
             match[filter] = query[filter];
         }
+    }
+
+    if(query['userId']) {
+        // strings needs to be converted to object-id for aggregation
+        // TODO do this with express-validator
+        match['owner'] = Types.ObjectId(query['userId']);
     }
     return match;
 }

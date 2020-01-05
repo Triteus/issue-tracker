@@ -8,6 +8,7 @@ import { ProjectOverviewComponent } from './project-overview/project-overview.co
 import { ticketTableRoutes } from '../ticket-table/ticket-table-routing.module';
 import { ticketBoardRoutes } from '../ticket-board/ticket-board-routing.module';
 import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
+import { MyTicketsComponent } from '../my-tickets/my-tickets.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,14 @@ const routes: Routes = [
       },
       ...ticketTableRoutes,
       ...ticketBoardRoutes,
+      {
+        path: 'my-tickets',
+      component: MyTicketsComponent,
+      canActivate: [AuthGuardService],
+      data: {
+        pageName: 'Meine Tickets'
+      }
+    },
       { path: '', redirectTo: 'overview', pathMatch: 'full' }
     ]
   },

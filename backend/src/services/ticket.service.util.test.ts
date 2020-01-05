@@ -59,16 +59,22 @@ describe('ticket-service-utils', () => {
         })
 
         it('returns object with remaining filters', () => {
-            const id = new Types.ObjectId();
             const remainingFilters = { 
                 priority: Priority.HIGH, 
-                userId: id.toHexString(), 
                 category: TicketCategory.BUG }
             const res = filter(remainingFilters);
             for(let key of Object.keys(remainingFilters)) {
                 expect(res[key]).toBeTruthy();
                 expect(res[key]).toBe(remainingFilters[key]);
             }
+        })
+
+        it('returns object with id of user (ticket-owner)', () => {
+            const id = new Types.ObjectId();
+            const res = filter({userId: id.toHexString()});
+            expect(res['owner']).toBeTruthy();
+            // id (string) is converted to object-id
+            expect(res['owner']).toEqual(id);
         })
     })
     

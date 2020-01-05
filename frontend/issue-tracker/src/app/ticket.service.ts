@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { ProjectTrackerService } from './shared/services/project-tracker.service';
+import { AuthService } from './auth/auth.service';
 
 
 interface TicketsGroupByStatusRes {
@@ -31,7 +32,8 @@ export class TicketService implements OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private projectTrackerService: ProjectTrackerService
+    private projectTrackerService: ProjectTrackerService,
+    private authService: AuthService
   ) { }
 
   ngOnDestroy() {
@@ -44,6 +46,16 @@ export class TicketService implements OnDestroy {
 
   getTickets(params?: object): Observable<{ tickets: Ticket[], numAllTickets: number }> {
     return this.http.get<{ tickets: Ticket[], numAllTickets: number }>(this.url, { params: params as any });
+  }
+
+  getCurrUserTickets(params?: object) {
+    const id = this.authService.getCurrUser().id;
+    return this.getTickets({...params, userId: id})
+    .pipe(
+      map((res) => {
+        return res.tickets;
+      })
+    );
   }
 
   getTicketsGroupByStatus(params?: object): Observable<TicketsGroupByStatusRes> {

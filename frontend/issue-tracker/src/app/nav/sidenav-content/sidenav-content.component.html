@@ -62,6 +62,16 @@
       </a>
       <a
         mat-list-item
+        (click)="goToProjectPath('my-tickets')"
+        [ngClass]="projectPath === 'my-tickets' ? 'router-link-active' : ''"
+      >
+        <div class="nav-item">
+          <mat-icon class="gap">local_offer</mat-icon>
+          <span>Meine Tickets</span>
+        </div>
+      </a>
+      <a
+        mat-list-item
         (click)="goToProjectPath('ticket-board')"
         [ngClass]="projectPath === 'ticket-board' ? 'router-link-active' : ''"
       >
