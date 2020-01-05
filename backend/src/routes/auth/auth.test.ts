@@ -90,7 +90,6 @@ describe('AuthController', () => {
                 password,
                 email
             })
-            expect(res.body.user).toMatchObject({email});
             expect(res.body.token).toBeTruthy();
         })
     }),
