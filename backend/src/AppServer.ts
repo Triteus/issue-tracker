@@ -9,10 +9,9 @@ import { Server } from "@overnightjs/core";
 import { AuthController } from "./routes/auth/auth";
 import { UserController } from "./routes/user/user";
 import error from "./middlewares/error";
-import { TicketController } from "./routes/ticket/ticket";
-import cors from 'express';
 import { FileController } from "./routes/file/file";
 import { ProjectController } from "./routes/v2/project/project";
+import { HomeController } from "./routes/home/home";
 
 require('express-async-errors');
 
@@ -50,7 +49,8 @@ export class AppServer extends Server {
         const userController = new UserController();
         const uploadController = new FileController();
         const projectController = new ProjectController();
-        super.addControllers([authController, userController, uploadController, projectController]);
+        const homeController = new HomeController();
+        super.addControllers([authController, userController, uploadController, projectController, homeController]);
     }
 
     public start(port: number): void {
