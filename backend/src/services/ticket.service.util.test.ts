@@ -1,4 +1,4 @@
-import { sort, filter, pagination, prepareAggregateStages, PreparedSortParams, PaginationParams } from "./ticket.service.util";
+import { sort, filter, pagination, prepareAggregateStages, PreparedSortParams, PaginationParams, PreparedPaginationParams } from "./ticket.service.util";
 import { Priority, TicketStatus, TicketCategory } from "../models/Ticket";
 import { Types } from "mongoose";
 
@@ -59,11 +59,12 @@ describe('ticket-service-utils', () => {
         })
 
         it('returns object with remaining filters', () => {
-            const remainingFilters = { 
-                priority: Priority.HIGH, 
-                category: TicketCategory.BUG }
+            const remainingFilters = {
+                priority: Priority.HIGH,
+                category: TicketCategory.BUG
+            }
             const res = filter(remainingFilters);
-            for(let key of Object.keys(remainingFilters)) {
+            for (let key of Object.keys(remainingFilters)) {
                 expect(res[key]).toBeTruthy();
                 expect(res[key]).toBe(remainingFilters[key]);
             }
@@ -71,13 +72,13 @@ describe('ticket-service-utils', () => {
 
         it('returns object with id of user (ticket-owner)', () => {
             const id = new Types.ObjectId();
-            const res = filter({userId: id.toHexString()});
+            const res = filter({ userId: id.toHexString() });
             expect(res['owner']).toBeTruthy();
             // id (string) is converted to object-id
             expect(res['owner']).toEqual(id);
         })
     })
-    
+
     describe('pagination', () => {
         it('returns empty object (pageIndex undefined)', () => {
             const res = pagination({ pageSize: 20 });
@@ -121,62 +122,57 @@ describe('ticket-service-utils', () => {
     describe('prepareAggregationStages', () => {
 
         const sort: PreparedSortParams = { status: 1 };
-        const pagination: PaginationParams = { pageIndex: 2, pageSize: 10 };
+        const pagination: PreparedPaginationParams = { skip: 2, limit: 10 };
         const match: object = {};
 
-        it('has sort as first stage', () => {
-            const stages = prepareAggregateStages(match, { status: 1 }, {})
-            expect(stages[0].$sort).toBeTruthy();
-        })
-
-        it('has match as first stage (no sort)', () => {
-            const stages = prepareAggregateStages(match, {}, {})
+        it('has match as first stage', () => {
+            const stages = prepareAggregateStages({}, {}, {})
             expect(stages[0].$match).toBeTruthy();
         })
 
-        it('has limit as third stage (includes pageSize)', () => {
-            const stages = prepareAggregateStages(match, sort, { pageSize: 20 })
-            expect(stages[2].$limit).toBeTruthy();
+        it('has unwind as second stage', () => {
+            const stages = prepareAggregateStages({}, {}, {})
+            expect(stages[1].$unwind).toBeTruthy();
         })
 
-        it('has no limit as third stage (no pageSize)', () => {
-            const stages = prepareAggregateStages(match, sort, {})
-            expect(stages[2].$limit).toBeFalsy();
+        it('has match as third stage', () => {
+            const stages = prepareAggregateStages({}, {}, {})
+            expect(stages[2].$match).toBeTruthy();
         })
 
-        it('has skip as forth stage (pageIndex and pageSize defined)', () => {
+        it('has sort as fourth stage', () => {
             const stages = prepareAggregateStages(match, sort, pagination)
-            expect(stages[3].$skip).toBeTruthy();
+            expect(stages[3].$sort).toBeTruthy();
         })
-
-        it('has no skip as forth stage (no pageIndex)', () => {
-            const stages = prepareAggregateStages(match, sort, { pageSize: 20 })
-            expect(stages[3].$skip).toBeFalsy();
-        })
-
-        it('has no skip as fourth stage (no pageSize) ', () => {
-            const stages = prepareAggregateStages(match, sort, { pageIndex: 2 })
-            expect(stages[3].$skip).toBeFalsy();
-        })
-
-        it('has unwind and match as fifth and sixth stage', () => {
-            const stages = prepareAggregateStages(match, sort, pagination)
-            expect(stages[4].$unwind).toBeTruthy();
-            expect(stages[5].$match).toBeTruthy();
-        })
-
-        it('has sort as seventh stage', () => {
-            const stages = prepareAggregateStages(match, sort, pagination)
-            expect(stages[6].$sort).toBeTruthy();
-        })
-        it('has no sort as sixth stage (sort stage left out twice)', () => {
+        it('has no sort as fourth stage', () => {
             const stages = prepareAggregateStages(match, {}, pagination)
-            expect(stages[5].$sort).toBeFalsy();
+            expect(stages[3].$sort).toBeFalsy();
+        })
+        it('has skip as fifth stage', () => {
+            const stages = prepareAggregateStages(match, sort, pagination)
+            expect(stages[4].$skip).toBeTruthy();
+        })
+        it('has no skip as fifth stage', () => {
+            const stages = prepareAggregateStages(match, sort, { limit: 20 })
+            expect(stages[4].$skip).toBeFalsy();
+        })
+        it('has limit as sixth stage', () => {
+            const stages = prepareAggregateStages(match, sort, pagination)
+            expect(stages[5].$limit).toBeTruthy();
+        })
+        it('has no limit as sixth stage (no limit)', () => {
+            const stages = prepareAggregateStages(match, sort, {skip: 0})
+            expect(stages[5].$limit).toBeFalsy();
         })
 
-        it('has project as eighth stage', () => {
+        it('has project as fifth stage (no pagination)', () => {
+            const stages = prepareAggregateStages(match, sort, {})
+            expect(stages[4].$project).toBeTruthy();
+        })
+
+        it('has project as seventh stage', () => {
             const stages = prepareAggregateStages(match, sort, pagination)
-            expect(stages[7].$project).toBeTruthy();
+            expect(stages[6].$project).toBeTruthy();
         })
     })
 })

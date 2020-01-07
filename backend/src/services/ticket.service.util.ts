@@ -29,8 +29,12 @@ export interface SortParams {
 
 export type TicketParams = FilterParams & PaginationParams & SortParams;
 
+export interface PreparedPaginationParams {
+    skip?: number;
+    limit?: number;
+}
 
-export function pagination(query: PaginationParams) {
+export function pagination(query: PaginationParams): PreparedPaginationParams {
     const pageIndex = Number.parseInt(query.pageIndex as string);
     const pageSize = Number.parseInt(query.pageSize as string);
     let options = {};
@@ -48,7 +52,7 @@ export interface PreparedSortParams {
     [key: string]: 1 | -1
 }
 
-export function sort(query: SortParams) {
+export function sort(query: SortParams): PreparedSortParams {
     const { sortBy, sortDir } = query;
     const sort = {}
 
@@ -136,41 +140,29 @@ export function isEmpty(obj: object) {
     return Object.entries(obj).length === 0 && obj.constructor === Object;
 }
 
-export function prepareAggregateStages(match: object, sort: PreparedSortParams, pagination: PaginationParams) {
+export function prepareAggregateStages(match: object, sort: PreparedSortParams, pagination: PreparedPaginationParams) {
     // IMPORTANT: Order of adding objects is essential for correct aggregate
-    // 1 $sort; 2 $match; 3 $limit; 4 $skip; 5 $unwind; 6 $match; 7 $sort 8 $project
     const aggregates = [];
 
+    aggregates.push({ $match: match }, { $unwind: '$tickets' }, { $match: match });
+
     if (!isEmpty(sort)) {
-        // 1 $sort
         aggregates.push({ $sort: sort });
     }
-    // 2 $match
-    aggregates.push({ $match: match })
 
-    const { pageIndex, pageSize } = pagination;
-    if (pageSize) {
-        const limit = Number.parseInt(pageSize + '');
-        // 3 $limit
-        aggregates.push({ $limit: limit });
-    }
-    if (pageSize && pageIndex) {
-        const skip = Number.parseInt(pageIndex + '') * Number.parseInt(pageSize + '');
-        // 4 $skip
+    const { skip, limit } = pagination;
+    if (!isNaN(skip)) {
         aggregates.push({ $skip: skip });
     }
-    // 5 $unwind and 6 $match
-    aggregates.push({ $unwind: '$tickets' }, { $match: match });
 
-    if (!isEmpty(sort)) {
-        // 7 $sort (items need to be sorted again)
-        aggregates.push({ $sort: sort });
+    if (!isNaN(limit)) {
+        aggregates.push({ $limit: limit });
     }
+
     const projection = {};
     ticketSchema.eachPath((path) => {
         projection[path] = `$tickets.${path}`;
     })
-    // 8 $project
     aggregates.push({$project: projection});
 
     return aggregates;

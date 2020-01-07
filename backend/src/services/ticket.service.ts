@@ -3,7 +3,7 @@ import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSc
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
 import { IProject, ProjectModel } from "../models/Project";
-import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams, PaginationParams, TicketParams } from "./ticket.service.util";
+import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams, PaginationParams, TicketParams, PreparedPaginationParams } from "./ticket.service.util";
 import { arrayEquals } from "../util/array";
 
 
@@ -127,7 +127,7 @@ export class TicketService {
         return ticket;
     }
 
-    async getTickets(project: IProject, match: object = {}, sort: PreparedSortParams = {}, pagination: PaginationParams = {}) {
+    async getTickets(project: IProject, match: object = {}, sort: PreparedSortParams = {}, pagination: PreparedPaginationParams = {}) {
         // make sure to only aggregate on specific project
         match = withProjectId(match, project._id);
 
@@ -139,7 +139,7 @@ export class TicketService {
     }
 
 
-    async groupTicketsByStatus(project: IProject, pagination: PaginationParams = { pageIndex: 0, pageSize: Number.MAX_VALUE }, match: object = {}, sort: PreparedSortParams = {}) {
+    async groupTicketsByStatus(project: IProject, pagination: PreparedPaginationParams = { skip: 0, limit: Number.MAX_SAFE_INTEGER }, match: object = {}, sort: PreparedSortParams = {}) {
         // make sure to only aggregate on specific project
         match = withProjectId(match, project._id);
 
@@ -148,6 +148,7 @@ export class TicketService {
 
         const tickets = await TicketModel.populateTickets(result);
 
+        //TODO do this while aggregating (group)
         const openTickets = [], activeTickets = [], closedTickets = [];
         for (let ticket of tickets) {
             if (ticket.status === TicketStatus.OPEN) {
