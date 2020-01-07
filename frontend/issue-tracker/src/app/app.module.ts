@@ -29,6 +29,7 @@ import { SidenavContentComponent } from './nav/sidenav-content/sidenav-content.c
 import { NavbarComponent } from './nav/navbar/navbar.component';
 import { registerLocaleData } from '@angular/common';
 import localeDE from '@angular/common/locales/de';
+import { StatsCardComponent } from './home/stats-card/stats-card.component';
 
 registerLocaleData(localeDE);
 
@@ -42,6 +43,7 @@ registerLocaleData(localeDE);
     HomeComponent,
     SidenavContentComponent,
     NavbarComponent,
+    StatsCardComponent,
 
   ],
   imports: [

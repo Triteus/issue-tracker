@@ -1,48 +1,78 @@
 <div
-  class="container"
-  fxLayout
-  fxLayoutAlign="center center"
-  fxLayoutGap="20px"
+  gdAreas="statistics | projects | tickets"
+  gdAreas.gt-xs="statistics statistics | projects tickets"
+  gdAreas.gt-md=". statistics statistics . | . projects tickets ."
+  gdColumns="1fr"
+  gdColumns.gt-xs="1fr 1fr"
+  gdColumns.gt-md="1fr 3fr 3fr 1fr"
+  gdRows="1fr auto"
+  gdGap="60px"
 >
-  <button routerLink="/tickets-overview" mat-raised-button>
-    <div class="card" fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="start center">
-        <div fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="center center">
-          <mat-icon>list</mat-icon>
-          <div class="mat-h1">Ticket-Übersicht</div>
-        </div>
-        <mat-list>
-          <mat-list-item>
-            <mat-icon mat-list-icon>check</mat-icon>
-            <div>Tabellarische Darstellung aller verfügbaren Tickets</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon mat-list-icon>check</mat-icon>
-            <div>Filterung, Sortierung, Pagination</div>
-          </mat-list-item>
-        </mat-list>
-      </div>
-    </button>
-    <button routerLink="/ticket-board" mat-raised-button>
-      <div class="card" fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="start center">
-        <div fxLayoutGap="30px" fxLayout="column" fxLayoutAlign="center center">
-          <mat-icon>local_offer</mat-icon>
-          <div class="mat-h1">Ticket-Board</div>
-        </div>
-        <mat-list>
-          <mat-list-item>
-            <mat-icon mat-list-icon>check</mat-icon>
-            <div>Einteilung in Spalten für jeden Status</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon mat-list-icon>check</mat-icon>
-            <div>Einfach Änderung des Status durch Drag and Drop</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon mat-list-icon>check</mat-icon>
-            <div>Zugriff für Nutzer mit Support-Rechten</div>
-          </mat-list-item>
-        </mat-list>
-      </div>
-    </button>
-  </div>
+  <section gdArea="statistics">
+    <h1 ngClass.xs="text-centered" class="mat-display-3">Dashboard</h1>
 
+    <div
+      class="grid"
+      gdGap="20px"
+      gdColumns="1fr"
+      gdColumns.gt-xs="repeat(2, 1fr)"
+      gdColumns.gt-md="repeat(4, 1fr)"
+      *ngIf="homeStats$ | async as stats"
+    >
+      <app-stats-card
+        description="Anzahl der Nutzer"
+        [amount]="stats.numUsers"
+      ></app-stats-card>
+      <app-stats-card
+        description="Anzahl der Projekte"
+        [amount]="stats.numProjects"
+      ></app-stats-card>
+      <app-stats-card
+        description="Anzahl insgesamt ersteller Tickets"
+        [amount]="stats.numTickets"
+      ></app-stats-card>
+      <app-stats-card
+        description="Anzahl ersteller Tickets (dieser Monat)"
+        [amount]="stats.numTicketsCreatedLastMonth"
+      ></app-stats-card>
+      <app-stats-card
+        description="Anzahl ersteller Tickets (diese Woche)"
+        [amount]="stats.numTicketsCreatedLastWeek"
+      ></app-stats-card>
+    </div>
+  </section>
+
+  <section gdArea="projects">
+    <h1 class="mat-h1" ngClass.xs="text-centered">Zugewiesene Projekte</h1>
+    <div
+      *ngIf="assignedProjects$ | async as projects"
+      gdColumns="1fr"
+      gdColumns.gt-sm="1fr 1fr"
+      gdGap="5px"
+    >
+      <button (click)="openProject(project.id)" mat-raised-button *ngFor="let project of projects">
+        {{ project.name }}
+      </button>
+    </div>
+  </section>
+
+  <section gdArea="tickets">
+    <h1 class="mat-h1" ngClass.xs="text-centered">Letzte Tickets</h1>
+
+    <div *ngIf="lastTickets$ | async as tickets" gdColumns="1fr" gdGap="5px">
+      <button (click)="openTicket(ticket.projectId, ticket.id)" mat-raised-button *ngFor="let ticket of tickets">
+        <div
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayout.gt-sm="row"
+        fxLayoutAlign.gt-sm="space-between center"
+        style="padding: 5px"
+        >
+          <mat-icon fxHide fxShow.gt-sm>local_offer</mat-icon>
+          <div fxLayout="row wrap" class="mat-body-strong">{{ ticket.title }}</div>
+          <div>{{ ticket.updatedAt | date }}</div>
+        </div>
+      </button>
+    </div>
+  </section>
+</div>
