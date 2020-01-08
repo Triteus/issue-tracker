@@ -1,56 +1,53 @@
 <div
-  gdAreas="statistics | projects | tickets"
-  gdAreas.gt-xs="statistics statistics | projects tickets"
-  gdAreas.gt-md=". statistics statistics . | . projects tickets ."
+  gdAreas="projects | tickets | left | right"
+  gdAreas.gt-xs="projects tickets | left right"
+  gdAreas.gt-md="left projects tickets right "
   gdColumns="1fr"
   gdColumns.gt-xs="1fr 1fr"
-  gdColumns.gt-md="1fr 3fr 3fr 1fr"
-  gdRows="1fr auto"
+  gdColumns.gt-md="1fr 2fr 2fr 1fr"
   gdGap="60px"
 >
-  <section gdArea="statistics">
-    <h1 ngClass.xs="text-centered" class="mat-display-3">Dashboard</h1>
+  <!-- <h1 ngClass.xs="text-centered" class="mat-display-3">Dashboard</h1> -->
 
-    <div
-      class="grid"
-      gdGap="20px"
-      gdColumns="1fr"
-      gdColumns.gt-xs="repeat(2, 1fr)"
-      gdColumns.gt-md="repeat(4, 1fr)"
-      *ngIf="homeStats$ | async as stats"
-    >
-      <app-stats-card
-        description="Anzahl der Nutzer"
-        [amount]="stats.numUsers"
-      ></app-stats-card>
-      <app-stats-card
-        description="Anzahl der Projekte"
-        [amount]="stats.numProjects"
-      ></app-stats-card>
-      <app-stats-card
-        description="Anzahl insgesamt ersteller Tickets"
-        [amount]="stats.numTickets"
-      ></app-stats-card>
-      <app-stats-card
-        description="Anzahl ersteller Tickets (dieser Monat)"
-        [amount]="stats.numTicketsCreatedLastMonth"
-      ></app-stats-card>
-      <app-stats-card
-        description="Anzahl ersteller Tickets (diese Woche)"
-        [amount]="stats.numTicketsCreatedLastWeek"
-      ></app-stats-card>
-    </div>
-  </section>
+  <div gdArea="left" class="grid" fxLayout="column" fxLayoutGap="20px" *ngIf="homeStats$ | async as stats; else spinner">
+    <app-stats-card
+      description="Anzahl der Nutzer"
+      [amount]="stats.numUsers"
+    ></app-stats-card>
+    <app-stats-card
+      description="Anzahl der Projekte"
+      [amount]="stats.numProjects"
+    ></app-stats-card>
+  </div>
+
+  <div gdArea="right" class="grid" fxLayout="column" fxLayoutGap="20px" *ngIf="homeStats$ | async as stats; else spinner">
+    <app-stats-card
+      description="Anzahl insgesamt ersteller Tickets"
+      [amount]="stats.numTickets"
+    ></app-stats-card>
+    <app-stats-card
+      description="Anzahl ersteller Tickets (dieser Monat)"
+      [amount]="stats.numTicketsCreatedLastMonth"
+    ></app-stats-card>
+    <app-stats-card
+      description="Anzahl ersteller Tickets (diese Woche)"
+      [amount]="stats.numTicketsCreatedLastWeek"
+    ></app-stats-card>
+  </div>
 
   <section gdArea="projects">
     <h1 class="mat-h1" ngClass.xs="text-centered">Zugewiesene Projekte</h1>
     <div
-      *ngIf="assignedProjects$ | async as projects"
+      *ngIf="assignedProjects$ | async as projects; else spinner"
       gdColumns="1fr"
       gdColumns.gt-sm="1fr 1fr"
       gdGap="5px"
     >
-      <button (click)="openProject(project.id)" mat-raised-button *ngFor="let project of projects">
+      <button
+        (click)="openProject(project.id)"
+        mat-raised-button
+        *ngFor="let project of projects"
+      >
         {{ project.name }}
       </button>
     </div>
@@ -59,20 +56,32 @@
   <section gdArea="tickets">
     <h1 class="mat-h1" ngClass.xs="text-centered">Letzte Tickets</h1>
 
-    <div *ngIf="lastTickets$ | async as tickets" gdColumns="1fr" gdGap="5px">
-      <button (click)="openTicket(ticket.projectId, ticket.id)" mat-raised-button *ngFor="let ticket of tickets">
+    <div *ngIf="lastTickets$ | async as tickets; else spinner" gdColumns="1fr" gdGap="5px">
+      <button
+        (click)="openTicket(ticket.projectId, ticket.id)"
+        mat-raised-button
+        *ngFor="let ticket of tickets"
+      >
         <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        fxLayout.gt-sm="row"
-        fxLayoutAlign.gt-sm="space-between center"
-        style="padding: 5px"
+          fxLayout="column"
+          fxLayoutAlign="center center"
+          fxLayout.gt-sm="row"
+          fxLayoutAlign.gt-sm="space-between center"
+          style="padding: 5px"
         >
           <mat-icon fxHide fxShow.gt-sm>local_offer</mat-icon>
-          <div fxLayout="row wrap" class="mat-body-strong">{{ ticket.title }}</div>
+          <div fxLayout="row wrap" class="mat-body-strong">
+            {{ ticket.title }}
+          </div>
           <div>{{ ticket.updatedAt | date }}</div>
         </div>
       </button>
     </div>
   </section>
 </div>
+
+<ng-template #spinner>
+  <div fxLayout FxLayoutAlign="center center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
