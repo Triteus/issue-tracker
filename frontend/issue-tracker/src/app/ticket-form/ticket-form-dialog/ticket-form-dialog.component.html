@@ -147,14 +147,8 @@
             </mat-error>
           </mat-error>
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>Systeme</mat-label>
-          <mat-select formControlName="affectedSystems" multiple>
-            <mat-option *ngFor="let system of systemsArr" [value]="system">{{
-              system | titlecase
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <app-ticket-systems-input [systemsControl]="affectedSystems" >
+        </app-ticket-systems-input>
         <mat-divider></mat-divider>
         <app-task-list [ticketForm]="ticketForm"></app-task-list>
         <mat-divider></mat-divider>

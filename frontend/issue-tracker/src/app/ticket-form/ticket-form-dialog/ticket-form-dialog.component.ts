@@ -19,7 +19,6 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   initialTicket: Ticket;
   ticketStatusArr = Object.values(TicketStatus);
   priorityArr = Object.values(Priority);
-  systemsArr = ['jira', 'outlook', 'confluence'];
   categoryArr = ticketCategoryArr;
 
   backDropSub: Subscription;
@@ -161,13 +160,13 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   }
 
   canSubmit() {
-      return this.ticketForm.valid && !this.isUploadingFiles;
+    return this.ticketForm.valid && !this.isUploadingFiles;
   }
 
   updateTicket() {
 
     // combine newly added filenames with existing filenames
-    const {newFilenames, existingFilenames, ...value} = this.ticketForm.value;
+    const { newFilenames, existingFilenames, ...value } = this.ticketForm.value;
     const valueToSubmit = {
       ...value,
       filenames: [...newFilenames, ...existingFilenames]
@@ -214,12 +213,6 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     this.newFilenames.setValue([]);
     this.patchTicketForm(this.initialTicket);
   }
-
-  updateStatus() {}
-
-
-  updateTasks() {}
-
 
 }
 

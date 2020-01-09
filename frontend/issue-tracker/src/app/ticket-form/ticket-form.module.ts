@@ -8,6 +8,7 @@ import { DownloadModule } from '../download/download.module';
 import { UploadModule } from '../upload/upload.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { TicketSystemsInputComponent } from './ticket-form-dialog/ticket-systems-input/ticket-systems-input.component';
 
 
 
@@ -15,7 +16,8 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     TicketFormDialogComponent,
     TicketFormDialogEntryComponent,
-    TaskListComponent
+    TaskListComponent,
+    TicketSystemsInputComponent
   ],
   imports: [
     CommonModule,
