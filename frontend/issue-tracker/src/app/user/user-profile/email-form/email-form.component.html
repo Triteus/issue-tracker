@@ -1,0 +1,47 @@
+<form #emailForm="ngForm" (ngSubmit)="updateEmail(emailForm)">
+  <div fxLayout="column" fxLayoutGap="10px">
+    <mat-form-field>
+      <input matInput disabled placeholder="Alte E-Mail" [value]="user.email" />
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        type="email"
+        name="newMail"
+        [(ngModel)]="newMail"
+        required
+        email
+        placeholder="Neue E-Mail"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        type="email"
+        name="newMailConfirm"
+        [(ngModel)]="newMailConfirm"
+        required
+        email
+        placeholder="Neue E-Mail bestätigen"
+      />
+    </mat-form-field>
+  </div>
+  <div class="actions" fxLayoutAlign="center" fxLayoutGap="10px">
+    <button
+      [disabled]="emailForm.invalid"
+      class="btn--save"
+      mat-raised-button
+      color="primary"
+    >
+      Aktualisieren
+    </button>
+  </div>
+  <div
+    class="errors"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    style="margin-top: 20px"
+  >
+    <mat-error *ngIf="error">{{error}}</mat-error>
+  </div>
+</form>

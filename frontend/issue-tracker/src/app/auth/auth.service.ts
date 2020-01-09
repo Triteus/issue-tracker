@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User, UserRole } from '../models/user.model';
-import { take, map, tap } from 'rxjs/operators';
+import { take, map, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import decode from 'jwt-decode';
@@ -36,7 +36,7 @@ export class AuthService {
 
     const user = this.getCurrUser();
     this.userSubject.next(user);
-   }
+  }
 
   register(payload: RegisterParams): Observable<any> {
     return this.http.post(this.url + 'register', payload)
@@ -44,12 +44,23 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<{token: string}>(this.url + 'login', { email, password })
+    return this.http.post<{ token: string }>(this.url + 'login', { email, password })
       .pipe(
         take(1),
         map((payload) => {
           localStorage.setItem('token', payload.token);
-          this.userSubject.next(decode<User & {iat: number}>(payload.token));
+          this.userSubject.next(decode<User & { iat: number }>(payload.token));
+        })
+      );
+  }
+  /** Refresh token (e.g. to immediately update curr user) */
+  refresh() {
+    return this.http.get<{ token: string }>(this.url + 'token')
+      .pipe(
+        take(1),
+        map((payload) => {
+          localStorage.setItem('token', payload.token);
+          this.userSubject.next(decode<User & { iat: number }>(payload.token));
         })
       );
   }
@@ -67,7 +78,7 @@ export class AuthService {
 
     const user = this.userSubject.getValue();
     // return from subject if user was already assigned
-    if(!!user) {
+    if (!!user) {
       return user;
     }
 
@@ -76,7 +87,7 @@ export class AuthService {
       return null;
     }
     // decode token to get its payload
-    return decode<User & {iat: number}>(token);
+    return decode<User & { iat: number }>(token);
   }
 
   isAuthenticated() {
@@ -88,4 +99,11 @@ export class AuthService {
     return this.userSubject.getValue().roles.includes(role);
   }
 
+  changePassword(payload: { oldPW: string, newPW: string, newPWConfirm: string }) {
+    const userId = this.getCurrUser().id;
+    return this.http.put(this.url + 'password', payload)
+    .pipe(
+      mergeMap(() => this.refresh())
+    );
+  }
 }

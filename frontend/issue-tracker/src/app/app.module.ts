@@ -30,6 +30,7 @@ import { NavbarComponent } from './nav/navbar/navbar.component';
 import { registerLocaleData } from '@angular/common';
 import localeDE from '@angular/common/locales/de';
 import { StatsCardComponent } from './home/stats-card/stats-card.component';
+import { UserModule } from './user/user.module';
 
 registerLocaleData(localeDE);
 
@@ -59,6 +60,7 @@ registerLocaleData(localeDE);
     DownloadModule,
     TicketBoardModule,
     ProjectModule,
+    UserModule,
     AppRoutingModule, // make sure root routing module is at the bottom
   ],
   providers: [

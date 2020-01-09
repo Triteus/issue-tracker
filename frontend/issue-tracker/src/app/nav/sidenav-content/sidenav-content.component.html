@@ -26,6 +26,16 @@
     </a>
     <a
       mat-list-item
+      [routerLink]="['/user-profile']"
+      routerLinkActive="router-link-active"
+    >
+      <div class="nav-item">
+        <mat-icon class="gap">account_box</mat-icon>
+        <span>Nutzerprofil</span>
+      </div>
+    </a>
+    <a
+      mat-list-item
       [routerLink]="['/projects']"
       routerLinkActive="router-link-active"
     >

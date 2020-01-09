@@ -24,13 +24,19 @@
         {{ user.username }}
       </button>
       <mat-menu #menu="matMenu">
-        <div style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px;">
+        <div mat-menu-item>
           <app-theme-slide-toggle></app-theme-slide-toggle>
         </div>
-        <button mat-menu-item>
-          <mat-icon>build</mat-icon>
-          Einstellungen
+
+        <button
+          routerLink="user-profile"
+          routerLinkActive="router-link-active"
+          mat-menu-item
+        >
+          <mat-icon>account_box</mat-icon>
+          Profil
         </button>
+
         <button mat-menu-item (click)="logout()">
           <mat-icon>power_settings_new</mat-icon>
           Ausloggen

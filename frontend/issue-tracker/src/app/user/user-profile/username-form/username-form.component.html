@@ -1,0 +1,13 @@
+<form #nameForm="ngForm" (ngSubmit)="updateUsername(nameForm)">
+  <div fxLayout="column" fxLayoutGap="10px">
+    <mat-form-field>
+      <input matInput name="firstName" [(ngModel)]="firstName" required min="3" placeholder="Vorname" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput name="lastName" [(ngModel)]="lastName" required min="3" placeholder="Nachname" />
+    </mat-form-field>
+  </div>
+  <div class="actions" fxLayoutAlign="center" fxLayoutGap="10px">
+    <button [disabled]="nameForm.invalid" color="primary" mat-raised-button>Aktualisieren</button>
+  </div>
+</form>

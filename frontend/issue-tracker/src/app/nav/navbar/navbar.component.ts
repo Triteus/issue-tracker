@@ -65,6 +65,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/login');
   }
 
+  goToProfile() {
+    this.router.navigate(['user-profile']);
+  }
+
   ngOnDestroy() {
     this.paramSub.unsubscribe();
   }

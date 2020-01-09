@@ -1,0 +1,39 @@
+<div
+  gdAreas="panels"
+  gdAreas.gt-xs=". panels ."
+  gdAreas.gt-sm=". panels ."
+  gdColumns="1fr"
+  gdColumns.gt-xs="1fr 3fr 1fr"
+  gdColumns.gt-sm="1fr 2fr 1fr"
+  *ngIf="user$ | async as user"
+>
+  <section gdArea="panels">
+    <h1 class="mat-h1">Nutzerprofil bearbeiten</h1>
+    <mat-accordion multi="true">
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> E-Mail </mat-panel-title>
+          <mat-panel-description>{{ user.email }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-email-form [user]="user"></app-email-form>
+      </mat-expansion-panel>
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Nutzername </mat-panel-title>
+          <mat-panel-description>{{ user.username }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-username-form [user]="user"></app-username-form>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Passwort
+          </mat-panel-title>
+          <mat-panel-description> </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-password-form></app-password-form>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
+</div>
