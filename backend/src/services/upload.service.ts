@@ -1,5 +1,6 @@
 import multer from 'multer';
 import path from 'path';
+import { ResponseError, ErrorTypes } from '../middlewares/error';
 
 export class UploadService {
 
@@ -9,9 +10,6 @@ export class UploadService {
                 cb(null, 'uploads')
             },
             filename: function (req, file, cb) {
-                // WARNING: all file-extensions are allowed with this implementation
-                // TODO: restrict allowed extensions
-
                 // extract original filename without extension
                 const filenameArr = file.originalname.split('.');
                 filenameArr.pop();
@@ -19,16 +17,26 @@ export class UploadService {
                 cb(null, filename + '-' + Date.now() + path.extname(file.originalname))
             }
         })
-        return multer({ storage });
+        return multer({
+            storage,
+            fileFilter: function (req, file, callback) {
+                const allowedExts = ['.jpg', '.jpeg', '.png', '.wav', '.mp3', '.gif', '.pdf', '.txt', '.odt', '.doc', '.docx', '.tex', '.rtf'];
+                const ext = path.extname(file.originalname);
+                if (!allowedExts.includes(ext)) {
+                    return callback(new ResponseError(`File with extension ${ext} not allowed!`, ErrorTypes.UNSUPPORTED_EXT), false);
+                }
+                callback(null, true);
+            },
+        });
     }
 
     generatePayload(reqFiles: any) {
         const files = Array.isArray(reqFiles) ? reqFiles : reqFiles['file'];
         const filenames = files.map(f => f.filename);
-        
-        let payload: {message?: string, filenames?: string[], filename?: string} = {};
-        if(filenames.length === 1) {
-            payload = {message: 'File uploaded!', filename: filenames[0]};
+
+        let payload: { message?: string, filenames?: string[], filename?: string } = {};
+        if (filenames.length === 1) {
+            payload = { message: 'File uploaded!', filename: filenames[0] };
         } else {
             payload = {
                 message: 'Files uploaded!',

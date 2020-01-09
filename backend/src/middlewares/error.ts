@@ -5,7 +5,8 @@ export enum ErrorTypes {
     NOT_FOUND = 'NOT_FOUND',
     NOT_AUTHENTICATED = 'NOT_AUTHENTICATED',
     NOT_AUTHORIZED = 'NOT_AUTHORIZED',
-    BAD_REQUEST = 'BAD_REQUEST'
+    BAD_REQUEST = 'BAD_REQUEST',
+    UNSUPPORTED_EXT = 'UNSUPPORTED_EXT'
 }
 
 
@@ -48,6 +49,10 @@ export default (err: Error, req: Request, res: Response, next: NextFunction) => 
 
     if (err.name === ErrorTypes.NOT_AUTHORIZED) {
         return sendError(res, 403, err.message);
+    }
+
+    if(err.name === ErrorTypes.UNSUPPORTED_EXT) {
+        return sendError(res, 400, err.message);
     }
 
     console.error(err);
