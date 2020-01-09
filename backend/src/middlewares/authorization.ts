@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { IUser, ERole } from "../models/User";
+import { IUser, ERole, RequestWithUser } from "../models/User";
 import { isArray } from "util";
 import { ResponseError, ErrorTypes } from "./error";
 
@@ -54,7 +54,7 @@ export default {
         }
     },
     isAccOwner: function () {
-        return function (req: Request & { user: IUser }, res: Response, next: NextFunction) {
+        return function (req: RequestWithUser, res: Response, next: NextFunction) {
             const user = req.user as IUser;
             if (user.roles.includes(ERole.Admin)) {
                 return next();

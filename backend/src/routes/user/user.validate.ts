@@ -12,8 +12,8 @@ export const validateEmailOptional = body('email')
 export const UserValidators = {
     change: [
         validateEmailOptional,
-        body('firstName').trim(),
-        body('lastName').trim(),
+        body('firstName').optional().trim(),
+        body('lastName').optional().trim(),
         body('password').not().exists(),
         body('id').not().exists(),
         body('_id').not().exists(),

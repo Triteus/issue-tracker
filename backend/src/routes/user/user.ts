@@ -66,11 +66,14 @@ export class UserController {
 
         const userId = req.params.id;
         const userPayload = req.body;
-        const updatedUser = await UserModel.findByIdAndUpdate(userId, userPayload, {new: true});
 
-        if(!updatedUser) {
+        const user = await UserModel.findById(userId);
+        if(!user) {
             throw new ResponseError('Cannot alter user: User not found', ErrorTypes.NOT_FOUND);
         }
+        user.set(userPayload);
+        const updatedUser = await user.save();
+
         return res.status(200).send({updatedUser, message: 'User successfully updated!'});
     }
 }

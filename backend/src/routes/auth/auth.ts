@@ -1,6 +1,6 @@
 import UserModel, { RequestWithUser } from '../../models/User';
 import passport from 'passport';
-import { Controller, Middleware, Post, Put } from '@overnightjs/core';
+import { Controller, Middleware, Post, Put, Get } from '@overnightjs/core';
 import User, { IUser } from '../../models/User';
 import { Request, Response, NextFunction } from 'express';
 import Authorize from '../../middlewares/authorization';
@@ -57,16 +57,25 @@ export class AuthController {
         )(req, res);
     }
 
-    @Put('password/:id')
+    @Get('token')
     @Middleware([
         passport.authenticate('jwt', { session: false }),
-        Authorize.isAccOwner(),
+        ...validate('getToken')
+    ])
+    private async getToken(req: RequestWithUser, res: Response) {
+        const user = req.user;
+        return res.json({token: user.generateToken()});
+    }
+
+    @Put('password')
+    @Middleware([
+        passport.authenticate('jwt', { session: false }),
         ...validate('changePassword')
     ])
     private async changePassword(req: RequestWithUser, res: Response) {
 
         const { oldPW, newPW } = req.body;
-        const user = await UserModel.findById(req.params.id).select('+password');
+        const user = await UserModel.findById(req.user._id).select('+password');
 
         if (!user) {
             throw new ResponseError('User not found!', ErrorTypes.NOT_FOUND);
@@ -76,9 +85,9 @@ export class AuthController {
         }
 
         user.password = newPW;
-        await user.save();
+        const updatedUser = await user.save();
 
-        return res.status(200).send({ message: 'Password successfully changed!', user });
+        return res.status(200).send({ message: 'Password successfully changed!', user: updatedUser });
     }
 
     //TODO: Add route to change role
