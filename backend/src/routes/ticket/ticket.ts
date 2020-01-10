@@ -65,7 +65,7 @@ export class TicketController {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
 
-        this.ticketService.addHistory(ticket, editorId, payload);
+        this.ticketService.addHistoryEntry(ticket, editorId, payload);
         this.ticketService.updateTicket(ticket, editorId, payload);
         await project.save();
 
@@ -129,7 +129,7 @@ export class TicketController {
             throw new ResponseError('ticket not found!', ErrorTypes.NOT_FOUND);
         }
 
-        this.ticketService.addHistory(ticket, req.user._id, { status: req.body.status });
+        this.ticketService.addHistoryEntry(ticket, req.user._id, { status: req.body.status });
         this.ticketService.changeStatus(ticket, req.body.status, req.user._id);
 
         await project.save();
@@ -152,7 +152,7 @@ export class TicketController {
             throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
         }
 
-        this.ticketService.addHistory(ticket, req.user._id, { title: req.body.title });
+        this.ticketService.addHistoryEntry(ticket, req.user._id, { title: req.body.title });
         ticket.title = req.body.title;
         await project.save();
 

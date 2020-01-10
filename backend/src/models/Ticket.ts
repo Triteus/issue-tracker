@@ -43,7 +43,8 @@ export interface ITicketDocument extends mongoose.Document {
   subTasks?: ISubTask[],
   affectedSystems?: string[],
   createdAt?: Date,
-  updatedAt?: Date
+  updatedAt?: Date,
+  filenames?: string[]
 }
 
 export interface ITicket extends ITicketDocument {

@@ -11,31 +11,31 @@ type ID = Types.ObjectId | string
 
 export class TicketService {
 
-
-  async findTicketAndAddHistory(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
+  async findTicketAndAddHistoryEntry(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
 
     const ticket = (project.tickets as any).id(ticketId) as ITicket;
     if (!ticket) {
       throw new ResponseError('Ticket not found!', ErrorTypes.NOT_FOUND);
     }
 
-    const history = this.createEditorHistory(ticket, editorId, payload);
+    const history = this.createEditorHistoryEntry(ticket, editorId, payload);
     if (history.changedPaths.length > 0) {
       return ticket.addEditorHistoryAndSave(history);
     }
     return ticket;
   }
 
-  addHistory(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
-    const history = this.createEditorHistory(ticket, editorId, payload);
+  addHistoryEntry(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
+    const history = this.createEditorHistoryEntry(ticket, editorId, payload);
     if (history.changedPaths.length > 0) {
       ticket.addEditorHistory(history);
     }
     return ticket;
   }
 
-  createEditorHistory(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
-    const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description']
+  createEditorHistoryEntry(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
+    const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description'];
+    const arrayKeys = ['affectedSystems', 'filenames'];
     const date = new Date();
     let history: TicketHistory = { editorId, editedAt: date, changedPaths: [] };
 
@@ -44,12 +44,15 @@ export class TicketService {
         history.changedPaths.push({ path, oldValue: ticket[path], newValue: payload[path] });
       }
     }
-    if (payload['affectedSystems'] && !arrayEquals(payload['affectedSystems'], ticket['affectedSystems'])) {
-      history.changedPaths.push({
-        path: 'affectedSystems',
-        oldValue: ticket['affectedSystems'].join(),
-        newValue: payload['affectedSystems'].join()
-      })
+
+    for(let path of arrayKeys) {
+      if (payload[path] && !arrayEquals(payload[path], ticket[path])) {
+        history.changedPaths.push({
+          path: path,
+          oldValue: ticket[path].join(', '),
+          newValue: payload[path].join(', ')
+        })
+      }
     }
 
     //TODO handle history of subtasks

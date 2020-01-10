@@ -119,7 +119,7 @@ describe('TicketService', () => {
 
 
         it('creates history', () => {
-            const history = ticketService.createEditorHistory(ticket, owner._id, {status: TicketStatus.CLOSED});
+            const history = ticketService.createEditorHistoryEntry(ticket, owner._id, {status: TicketStatus.CLOSED});
             expect(history.editorId.toString()).toBe(owner._id.toHexString());
             const pathObj = history.changedPaths[0];
             expect(pathObj.path).toBe('status');
@@ -128,23 +128,32 @@ describe('TicketService', () => {
         })
 
         it('creates history (affectedSystems)', () => {
-            const history = ticketService.createEditorHistory(ticket, owner._id, {affectedSystems: [...ticket.affectedSystems, 'newSystem']});
+            const history = ticketService.createEditorHistoryEntry(ticket, owner._id, {affectedSystems: [...ticket.affectedSystems, 'newSystem']});
             expect(history.editorId.toString()).toBe(owner._id.toHexString());
             const pathObj = history.changedPaths[0];
             expect(pathObj.path).toBe('affectedSystems');
-            expect(pathObj.oldValue).toBe(ticket.affectedSystems.join());
-            expect(pathObj.newValue).toBe([...ticket.affectedSystems, 'newSystem'].join());
+            expect(pathObj.oldValue).toBe(ticket.affectedSystems.join(', '));
+            expect(pathObj.newValue).toBe([...ticket.affectedSystems, 'newSystem'].join(', '));
+        })
+
+        it('creates history (filenames)', () => {
+            const history = ticketService.createEditorHistoryEntry(ticket, owner._id, {filenames: [...ticket.filenames, 'newFilename']});
+            expect(history.editorId.toString()).toBe(owner._id.toHexString());
+            const pathObj = history.changedPaths[0];
+            expect(pathObj.path).toBe('filenames');
+            expect(pathObj.oldValue).toBe(ticket.filenames.join(', '));
+            expect(pathObj.newValue).toBe([...ticket.filenames, 'newFilename'].join(', '));
         })
 
         it('adds history to ticket', () => {
             const initialLength = ticket.editorHistory.length;
-            ticketService.addHistory(ticket, owner._id, {status: TicketStatus.CLOSED});
+            ticketService.addHistoryEntry(ticket, owner._id, {status: TicketStatus.CLOSED});
             expect(ticket.editorHistory.length).toBe(initialLength + 1);
         })
 
         it('does not add history to ticket (no changes)', () => {
             const initialLength = ticket.editorHistory.length;
-            ticketService.addHistory(ticket, owner._id, {});
+            ticketService.addHistoryEntry(ticket, owner._id, {});
             expect(ticket.editorHistory.length).toBe(initialLength);
         })
 
