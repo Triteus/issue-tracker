@@ -142,6 +142,12 @@ describe('TicketService', () => {
             expect(ticket.editorHistory.length).toBe(initialLength + 1);
         })
 
+        it('does not add history to ticket (no changes)', () => {
+            const initialLength = ticket.editorHistory.length;
+            ticketService.addHistory(ticket, owner._id, {});
+            expect(ticket.editorHistory.length).toBe(initialLength);
+        })
+
     })
 
     describe('change status', () => {      
