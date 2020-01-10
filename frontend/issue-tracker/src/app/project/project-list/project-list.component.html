@@ -1,15 +1,17 @@
 <div
   *ngIf="projects$ | async as projects"
   gdColumns="1fr"
-  gdAreas="main"
-  gdColumns.gt-sm="1fr 3fr 1fr"
-  gdAreas.gt-sm="left-area main right-area"
-  fdColumns.gt-md="1fr 2fr 1fr"
+  gdAreas="main | add-project-btn"
+  gdColumns.gt-xs="1fr 3fr 1fr"
+  gdAreas.gt-xs="left-area main right-area | left-area add-project-btn right-area"
+  gdColumns.gt-md="1fr 2fr 1fr"
+  gdGap="30px 0px"
 >
   <div gdArea="left-area"></div>
   <div
     gdArea="main"
-    gdColumns="1fr 1fr"
+    gdColumns="1fr"
+    gdColumns.gt-xs="1fr 1fr"
     gdColumns.gt-sm="1fr 1fr 1fr 1fr"
     gdColumns.gt-md="1fr 1fr 1fr 1fr 1fr 1fr"
     gdGap="15px 15px"
@@ -30,15 +32,18 @@
         </div>
       </mat-chip-list>
     </mat-card>
-    <button
-      color="primary"
-      gdGridAlign="start center"
-      mat-fab
-      (click)="openProjectDialog()"
-    >
-      <mat-icon>add</mat-icon>
-    </button>
+
   </div>
+
+  <button
+  gdGridAlign="center center"
+  gdArea="add-project-btn"
+  color="primary"
+  mat-fab
+  (click)="openProjectDialog()"
+>
+  <mat-icon>add</mat-icon>
+</button>
 
   <div gdArea="right-area"></div>
 </div>

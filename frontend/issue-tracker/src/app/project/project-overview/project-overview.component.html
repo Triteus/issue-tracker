@@ -11,7 +11,7 @@
   *ngIf="project$ | async as project"
 >
   <div gdArea="heading" fxLayoutAlign="center" fxLayout="column">
-    <h1 style="text-align: center;" gdArea="title" class="mat-h1">{{ project.name }}</h1>
+    <h1 gdArea="title" class="mat-h1 centered-text">{{ project.name }}</h1>
     <div gdArea="actions" class="actions" fxLayoutAlign="center" fxLayoutGap="15px">
       <button mat-mini-fab color="primary" (click)="openUserFormDialog()">
         <mat-icon matTooltip="Nutzer verwalten">group_add</mat-icon>
@@ -43,7 +43,7 @@
     </mat-card>
   </div>
   <div gdArea="assignedUsers">
-    <h2 class="mat-h2">Zugewiesene Nutzer</h2>
+    <h2 class="mat-h2 centered-text">Zugewiesene Nutzer</h2>
     <mat-card>
       <mat-list>
         <mat-list-item *ngFor="let user of project.assignedUsers">
