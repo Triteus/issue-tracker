@@ -1,5 +1,5 @@
 import mongoose, { Model, Types, Schema as MongooseSchema, Schema } from 'mongoose';
-import { ITicketDocument, ticketSchema } from './Ticket';
+import { ITicketDocument, ticketSchema, ITicket } from './Ticket';
 
 type ID = String | Types.ObjectId;
 
@@ -29,7 +29,7 @@ export const projectStatusArr = Object.values(ProjectStatus);
 export interface IProjectDocument extends mongoose.Document {
     id: Types.ObjectId,
     name: string,
-    tickets: [ITicketDocument],
+    tickets: [ITicket],
     assignedUsers: [Types.ObjectId],
     projectLeader: Types.ObjectId,
     filenames: string[],

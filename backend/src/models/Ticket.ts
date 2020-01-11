@@ -1,5 +1,6 @@
 import mongoose, { Model, Types, Mongoose } from 'mongoose';
 import { subTaskSchema, ISubTask } from './SubTask';
+import { commentSchema, ICommentDocument, IComment } from './Comment';
 
 
 export enum TicketStatus {
@@ -44,7 +45,8 @@ export interface ITicketDocument extends mongoose.Document {
   affectedSystems?: string[],
   createdAt?: Date,
   updatedAt?: Date,
-  filenames?: string[]
+  filenames?: string[],
+  comments: IComment[]
 }
 
 export interface ITicket extends ITicketDocument {
@@ -132,6 +134,10 @@ export const ticketSchema = new mongoose.Schema({
   },
   filenames: {
     type: [String],
+    default: []
+  },
+  comments: {
+    type: [commentSchema],
     default: []
   }
 }, {

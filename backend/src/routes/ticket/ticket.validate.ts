@@ -13,7 +13,8 @@ export const basicValidators = [
     body('lastEditor').not().exists(),
     body('owner').not().exists(),
     body('editors').not().exists(),
-    body('filenames').optional().isArray()
+    body('filenames').optional().isArray(),
+    body('comments').not().exists() // comments are handled by comment-controller
 ]
 
 export const TicketValidators = {

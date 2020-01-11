@@ -1,7 +1,16 @@
 import { RequestWithUser } from "../models/User";
 import { Response, NextFunction } from "express";
-import { ProjectModel } from "../models/Project";
+import { ProjectModel, IProject } from "../models/Project";
 import { ResponseError, ErrorTypes } from "./error";
+
+
+export interface ResponseWithProject extends Response {
+    locals: {
+        project: IProject,
+        [key: string]: any
+    }
+}
+
 
 export async function findProject(req: RequestWithUser, res: Response, next: NextFunction) {
     const projectId = req.params.projectId;
@@ -11,6 +20,6 @@ export async function findProject(req: RequestWithUser, res: Response, next: Nex
         next(new ResponseError('Project not found!', ErrorTypes.NOT_FOUND));
     }
 
-    res.locals = {project};
+    res.locals = {...res.locals, project};
     next();
 };

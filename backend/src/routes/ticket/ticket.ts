@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware, ClassOptions } from "@overnightjs/core";
+import { Controller, Get, Post, Put, Patch, Delete, Middleware, ClassMiddleware, ClassOptions, Children } from "@overnightjs/core";
 import { Request, Response, NextFunction, request } from "express";
 import TicketModel, { ticketSchema, TicketStatus, ITicket, Priority } from '../../models/Ticket';
 import { IUser, ERole, IUserDocument, RequestWithUser } from "../../models/User";
@@ -11,10 +11,14 @@ import { TicketValidators } from "./ticket.validate";
 import { ProjectModel, IProject } from "../../models/Project";
 import { findProject } from "../../middlewares/project";
 import { userBelongsToProject } from "../../middlewares/ticket";
+import { CommentController } from "../v2/comment/comment";
 
 const validate = validation(TicketValidators);
 
 @Controller(':projectId/ticket')
+@Children([
+    new CommentController()
+])
 @ClassMiddleware([
     findProject
 ])
