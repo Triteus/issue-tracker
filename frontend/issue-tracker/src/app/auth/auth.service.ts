@@ -95,6 +95,10 @@ export class AuthService {
     return !this.jwtHelper.isTokenExpired(token);
   }
 
+  isAuthenticatedUser(userId: string) {
+    return userId === this.getCurrUser().id;
+  }
+
   hasRole(role: UserRole) {
     return this.userSubject.getValue().roles.includes(role);
   }

@@ -1,0 +1,57 @@
+<div fxLayout="column" fxLayoutGap="30px">
+  <mat-card fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="10px">
+    <mat-form-field>
+      <textarea
+        cdkTextareaAutosize
+        #messageInput
+        matInput
+        placeholder="Neuen Kommentar verfassen..."
+      ></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addComment()">
+      Absenden
+    </button>
+  </mat-card>
+  <mat-divider></mat-divider>
+
+  <div
+    fxLayout="column"
+    fxLayoutAlign="center stretch"
+    fxLayout.gt-xs
+    fxLayoutAlign.gt-xs="center center"
+    fxLayoutGap="20px"
+  >
+    <mat-form-field fxFlex="1 1 0">
+      <mat-label>Sortieren nach Datum</mat-label>
+      <mat-select #sortSelect value="asc">
+        <mat-option value="asc">
+          Alte Kommentare zuerst
+        </mat-option>
+        <mat-option value="desc">
+          Neue Kommentare zuerst
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-paginator
+      fxFlex="4 1 0"
+      #paginator
+      [length]="dataLength$ | async"
+      [pageIndex]="0"
+      [pageSize]="25"
+      [pageSizeOptions]="[5, 25, 50, 100, 250]"
+    >
+    </mat-paginator>
+  </div>
+
+  <app-comments-list
+    *ngIf="comments$ | async as comments; else spinner"
+    (commentDeleted)="getComments()"
+    [comments]="comments"
+  ></app-comments-list>
+</div>
+
+<ng-template #spinner>
+  <div fxLayout fxLayoutAlign="center center">
+    <mat-spinner> </mat-spinner>
+  </div>
+</ng-template>

@@ -1,0 +1,28 @@
+@import "~@angular/material/theming";
+
+
+@mixin dark-comment-component-theme($theme) {
+  $background: map-get($theme, background);
+  $grey: mat-palette($mat-grey);
+
+  app-comment {
+    .message-container {
+      background-color: mat-color($grey, 600);
+      border-color: mat-color($grey, 700)
+    }
+  }
+
+}
+
+@mixin light-comment-component-theme($theme) {
+  $background: map-get($theme, background);
+  $grey: mat-palette($mat-grey);
+
+  app-comment {
+    .message-container {
+      background-color: mat-color($grey, 100);
+      border-color: mat-color($grey, 300);
+    }
+  }
+
+}

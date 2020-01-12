@@ -12,6 +12,8 @@
 @import './app/ticket-board/ticket-board.component.scss-theme.scss';
 @import './app/download/download-list-item/download-list-item.component.scss-theme.scss';
 @import "./app/ticket-details/ticket-details.component.scss-theme.scss";
+@import './app/ticket-details/comments-container/comment/comment.component.scss-theme.scss';
+
 
 @mixin custom-router-theme($theme) {
   $background: map-get($theme, background);
@@ -32,6 +34,7 @@
   @include custom-components-theme($custom-light-theme);
   @include light-ticket-board-component-theme($custom-light-theme);
   @include light-download-list-item-component-theme($custom-light-theme);
+  @include light-comment-component-theme($custom-light-theme);
 }
 
 .dark-theme {
@@ -39,6 +42,7 @@
   @include custom-components-theme($custom-dark-theme);
   @include dark-ticket-board-component-theme($custom-dark-theme);
   @include dark-download-list-item-component-theme($custom-dark-theme);
+  @include dark-comment-component-theme($custom-dark-theme);
 }
 
 

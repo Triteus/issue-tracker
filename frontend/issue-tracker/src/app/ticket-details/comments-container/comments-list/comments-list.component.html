@@ -1,0 +1,5 @@
+
+<div fxLayout="column" fxLayoutGap="20px">
+  <app-comment (commentDeleted)="update()" *ngFor="let comment of comments" [comment]="comment"></app-comment>
+</div>
+
