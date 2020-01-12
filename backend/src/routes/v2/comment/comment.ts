@@ -10,6 +10,7 @@ import Auth from "../../../middlewares/authorization";
 import passport from "passport";
 import { validation } from "../../../middlewares/validation";
 import { CommentValidators } from "./comment.validate";
+import { CommentService } from "../../../services/comment.service";
 
 
 type ResWithProjectAndTicket = ResponseWithProject & ResponseWithTicket;
@@ -28,22 +29,30 @@ const validate = validation(CommentValidators);
 @ClassOptions({ mergeParams: true })
 export class CommentController {
 
+    commentService = new CommentService();
+
     @Get()
     private async getComments(req: Request, res: ResponseWithTicket) {
-        const ticket = res.locals.ticket;
-        return res.status(200).send({ comments: ticket.comments })
+
+        const projectId = Types.ObjectId(req.params.projectId);
+        const ticketId = Types.ObjectId(req.params.ticketId);
+        const result = await this.commentService.getCommentsUpdatedAsc(projectId, ticketId, req.query);
+
+        const comments = await CommentModel.populateComments(result);
+        return res.status(200).send({ comments: CommentModel.toJSON(comments), numComments: res.locals.ticket.comments.length })
     }
 
     @Get(':commentId')
     private async getComment(req: Request, res: Response) {
         const ticket = res.locals.ticket;
         const commentId = req.params.commentId;
-        const comment = (ticket.comments as any).id(commentId);
+        const comment = (ticket.comments as any).id(commentId) as IComment;
+        
 
         if (!comment) {
             throw new ResponseError('Comment not found!', ErrorTypes.NOT_FOUND);
         }
-        return res.status(200).send({ comment });
+        return res.status(200).send({ comment: await CommentModel.populateComment(comment) });
     }
 
     @Post()
@@ -79,7 +88,7 @@ export class CommentController {
         }
         const comment = (ticket.comments as any).id(commentId) as IComment;
 
-        if(!comment) {
+        if (!comment) {
             throw new ResponseError('Comment not found!', ErrorTypes.NOT_FOUND);
         }
 
@@ -105,7 +114,7 @@ export class CommentController {
         }
         const comment = (ticket.comments as any).id(commentId) as IComment;
 
-        if(!comment) {
+        if (!comment) {
             throw new ResponseError('Comment not found!', ErrorTypes.NOT_FOUND);
         }
 
