@@ -1,5 +1,7 @@
 import { TicketStatus, ticketSchema, Priority } from "../models/Ticket";
 import { Types } from "mongoose";
+import { PaginationParams, PreparedPaginationParams } from "./pagination.service";
+import { SortParams, PreparedSortParams } from "./sort.service";
 
 
 type boolStr = 'true' | 'false';
@@ -17,50 +19,9 @@ export interface FilterParams {
     userId?: string;
 }
 
-export interface PaginationParams {
-    pageIndex?: string | number;
-    pageSize?: string | number;
-}
-
-export interface SortParams {
-    sortDir?: string;
-    sortBy?: string;
-}
 
 export type TicketParams = FilterParams & PaginationParams & SortParams;
 
-export interface PreparedPaginationParams {
-    skip?: number;
-    limit?: number;
-}
-
-export function pagination(query: PaginationParams): PreparedPaginationParams {
-    const pageIndex = Number.parseInt(query.pageIndex as string);
-    const pageSize = Number.parseInt(query.pageSize as string);
-    let options = {};
-    if (Number.isInteger(pageIndex) && Number.isInteger(pageSize)
-        && pageIndex >= 0 && pageSize >= 0) {
-        options = {
-            skip: pageIndex * pageSize,
-            limit: pageSize
-        }
-    }
-    return options;
-}
-
-export interface PreparedSortParams {
-    [key: string]: 1 | -1
-}
-
-export function sort(query: SortParams): PreparedSortParams {
-    const { sortBy, sortDir } = query;
-    const sort = {}
-
-    if (sortBy && sortDir && ['asc', 'desc'].includes(sortDir)) {
-        sort[sortBy] = ((sortDir === 'asc') ? 1 : -1);
-    }
-    return sort;
-}
 
 export function filter(query: FilterParams) {
     const { openSelected, progressSelected, closedSelected } = query;

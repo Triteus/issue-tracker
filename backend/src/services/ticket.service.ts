@@ -3,8 +3,10 @@ import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSc
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
 import { IProject, ProjectModel } from "../models/Project";
-import { prepareAggregateStages, pagination, remapObject, sort, filter, withProjectId, PreparedSortParams, PaginationParams, TicketParams, PreparedPaginationParams } from "./ticket.service.util";
+import { prepareAggregateStages, remapObject, filter, withProjectId, TicketParams } from "./ticket.service.util";
 import { arrayEquals } from "../util/array";
+import { PreparedPaginationParams, PaginationService } from "./pagination.service";
+import { PreparedSortParams, SortService } from "./sort.service";
 
 
 type ID = Types.ObjectId | string
@@ -171,8 +173,8 @@ export class TicketService {
 
   generateQueryObjects(query: TicketParams) {
     return {
-      options: pagination(query),
-      sort: remapObject(sort(query), 'tickets'),
+      options: PaginationService.preparePagination(query),
+      sort: remapObject(SortService.prepareSort(query), 'tickets'),
       match: remapObject(filter(query), 'tickets')
     }
   }

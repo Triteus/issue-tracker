@@ -1,38 +1,11 @@
-import { sort, filter, pagination, prepareAggregateStages, PreparedSortParams, PaginationParams, PreparedPaginationParams } from "./ticket.service.util";
+import { filter, prepareAggregateStages } from "./ticket.service.util";
 import { Priority, TicketStatus, TicketCategory } from "../models/Ticket";
 import { Types } from "mongoose";
+import { SortService, PreparedSortParams } from "./sort.service";
+import { PaginationService, PreparedPaginationParams } from "./pagination.service";
 
 describe('ticket-service-utils', () => {
 
-    describe('sorting', () => {
-        it('returns empty object if sortBy is undefined', () => {
-            const res = sort({ sortDir: 'asc' });
-            expect(res['sortDir']).toBeFalsy();
-            expect(res['sortBy']).toBeFalsy();
-        })
-        it('returns empty object if sortBy or sortDir is undefined', () => {
-            const res = sort({ sortBy: 'status' });
-            expect(res['sortDir']).toBeFalsy();
-            expect(res['sortBy']).toBeFalsy();
-        })
-        it('returns empty object if sortDir is invalid', () => {
-            const res = sort({ sortBy: 'status', sortDir: 'sdfsdfsd' });
-            expect(res['sortDir']).toBeFalsy();
-            expect(res['sortBy']).toBeFalsy();
-        })
-
-        it('returns object [sortBy]: -1', () => {
-            const res = sort({ sortBy: 'status', sortDir: 'desc' });
-            expect(res['status']).toBeTruthy();
-            expect(res['status']).toBe(-1);
-
-        })
-        it('returns object [sortBy]: 1', () => {
-            const res = sort({ sortBy: 'status', sortDir: 'asc' });
-            expect(res['status']).toBeTruthy();
-            expect(res['status']).toBe(1);
-        })
-    })
     describe('filtering', () => {
         it('returns object with status (selectors undefined)', () => {
             const res = filter({});
@@ -78,47 +51,7 @@ describe('ticket-service-utils', () => {
             expect(res['owner']).toEqual(id);
         })
     })
-
-    describe('pagination', () => {
-        it('returns empty object (pageIndex undefined)', () => {
-            const res = pagination({ pageSize: 20 });
-            expect(res['skip']).toBeFalsy();
-            expect(res['limit']).toBeFalsy();
-        })
-        it('returns empty object (pageIndex < 0)', () => {
-            const res = pagination({ pageIndex: -1, pageSize: 20 });
-            expect(res['skip']).toBeFalsy();
-            expect(res['limit']).toBeFalsy();
-        })
-
-        it('return empty object (pageSize undefined)', () => {
-            const res = pagination({ pageIndex: 20 });
-            expect(res['skip']).toBeFalsy();
-            expect(res['limit']).toBeFalsy();
-        })
-        it('return empty object (pageSize < 0)', () => {
-            const res = pagination({ pageSize: -1, pageIndex: 2 });
-            expect(res['skip']).toBeFalsy();
-            expect(res['limit']).toBeFalsy();
-        })
-
-        it('returns pageIndex + pageSize', () => {
-            const res = pagination({ pageSize: 30, pageIndex: 2 });
-            expect(res['skip']).toBe(60);
-            expect(res['limit']).toBe(30);
-        })
-        it('returns pageIndex + pageSize', () => {
-            const res = pagination({ pageSize: 30, pageIndex: 0 });
-            expect(res['skip']).toBe(0);
-            expect(res['limit']).toBe(30);
-        })
-        it('returns pageIndex + pageSize', () => {
-            const res = pagination({ pageSize: 0, pageIndex: 2 });
-            expect(res['skip']).toBe(0);
-            expect(res['limit']).toBe(0);
-        })
-    })
-
+    
     describe('prepareAggregationStages', () => {
 
         const sort: PreparedSortParams = { status: 1 };
