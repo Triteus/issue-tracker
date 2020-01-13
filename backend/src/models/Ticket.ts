@@ -158,8 +158,6 @@ export const ticketSchema = new mongoose.Schema({
   timestamps: true
 });
 
-ticketSchema.index({title: 'text'});
-
 ticketSchema.methods.setSubTasks = function (subTasks: { description: string, isDone: boolean }[], editorId: mongoose.Types.ObjectId) {
   if(!subTasks) return;
   this.subTasks = subTasks;

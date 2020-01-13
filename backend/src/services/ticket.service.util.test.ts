@@ -16,19 +16,22 @@ describe('ticket-service-utils', () => {
             const date = new Date();
             const res = filter({ editedDateStart: date.toJSON() });
             expect(res['updatedAt']).toBeTruthy();
-            expect(res['updatedAt'].$gte).toBe(date.toJSON());
+            expect(res['updatedAt'].$gte).toEqual(date);
         })
 
         it('returns object with updatedAt: {$lte: xxx}', () => {
             const date = new Date();
             const res = filter({ editedDateEnd: date.toJSON() });
             expect(res['updatedAt']).toBeTruthy();
-            expect(res['updatedAt'].$lte).toBe(date.toJSON());
+            expect(res['updatedAt'].$lte).toEqual(date);
         })
 
-        it('returns systems array (all values lowercase)', () => {
-            const res = filter({ systems: ['JIRA', 'CONFLUENCE', 'OUTLOOK'] });
-            expect(res['affectedSystems']).toEqual({ $in: ['jira', 'confluence', 'outlook'] });
+        it('returns $or (textsearch) including affectedSystems and title', async () => {
+            const res = filter({});
+            expect(res['$or']).toBeTruthy();
+            for(let obj of res['$or']) {
+                expect(['title', 'affectedSystems']).toContain(Object.keys(obj)[0]);
+            }
         })
 
         it('returns object with remaining filters', () => {

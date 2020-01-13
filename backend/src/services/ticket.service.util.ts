@@ -41,31 +41,23 @@ export function filter(query: FilterParams) {
         status: { $in: statusArr },
     };
 
-    if(query.editedDateStart || query.editedDateEnd) {
+    if (query.editedDateStart || query.editedDateEnd) {
         const obj = {};
-        if(query.editedDateStart) {
-            obj['$gte'] = query.editedDateStart;
+        if (query.editedDateStart) {
+            obj['$gte'] = new Date(query.editedDateStart);
         }
-        if(query.editedDateEnd) {
-            obj['$lte'] = query.editedDateEnd;            
+        if (query.editedDateEnd) {
+            obj['$lte'] = new Date(query.editedDateEnd);
         }
         match['updatedAt'] = obj;
     }
-
-    if (query.filter) {
-        match['title'] = { $regex: `.*${query.filter}.*`, $options: 'i' };
-    }
-
-    if (query.systems) {
-        // make sure value is an array for query
-        let systems = query.systems;
-        if (Array.isArray(systems)) {
-            systems = systems.map((s: string) => s.toLowerCase());
-        } else {
-            systems = [systems.toLowerCase()];
-        }
-        match['affectedSystems'] = { $in: systems }
-    }
+    
+    // text search
+    const regexTextSearch = new RegExp(`.*${query.filter || ""}.*`, "i");
+    match['$or'] = [ 
+        { affectedSystems: { $in: [regexTextSearch] } },
+        { title: regexTextSearch },
+    ];
 
     // remaining filters
     const filters = ['priority', 'category'];
@@ -75,7 +67,7 @@ export function filter(query: FilterParams) {
         }
     }
 
-    if(query['userId']) {
+    if (query['userId']) {
         // strings needs to be converted to object-id for aggregation
         // TODO do this with express-validator
         match['owner'] = Types.ObjectId(query['userId']);
@@ -92,7 +84,12 @@ export function filter(query: FilterParams) {
 export function remapObject(obj: object, fieldname: string) {
     const mappedObj = {};
     for (let key of Object.keys(obj)) {
-        mappedObj[fieldname + '.' + key] = obj[key];
+        // handle operators $or, $and
+        if(key === '$or' || key === '$and') {
+            mappedObj[key] = obj[key].map((subObj) => remapObject(subObj, fieldname) );
+        } else {
+            mappedObj[fieldname + '.' + key] = obj[key];
+        }
     }
     return mappedObj;
 }
@@ -124,7 +121,7 @@ export function prepareAggregateStages(match: object, sort: PreparedSortParams, 
     ticketSchema.eachPath((path) => {
         projection[path] = `$tickets.${path}`;
     })
-    aggregates.push({$project: projection});
+    aggregates.push({ $project: projection });
 
     return aggregates;
 
