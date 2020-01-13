@@ -43,11 +43,16 @@
     </mat-paginator>
   </div>
 
-  <app-comments-list
-    *ngIf="comments$ | async as comments; else spinner"
-    (commentDeleted)="getComments()"
-    [comments]="comments"
-  ></app-comments-list>
+  <ng-container *ngIf="comments$ | async as comments; else spinner">
+    <app-comments-list
+      *ngIf="comments.length > 0"
+      (commentDeleted)="getComments()"
+      [comments]="comments"
+    ></app-comments-list>
+    <div fxLayoutAlign="center" class="mat-body" *ngIf="comments.length === 0">
+      <span>Keine Kommentare vorhanden</span>
+    </div>
+  </ng-container>
 </div>
 
 <ng-template #spinner>
