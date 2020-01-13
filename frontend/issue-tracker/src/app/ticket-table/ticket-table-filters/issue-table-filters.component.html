@@ -40,18 +40,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Betroffenes System</mat-label>
-        <mat-select #systemsSelect (valueChange)="filterChanged()" multiple>
-          <mat-option
-            *ngFor="let system of systems"
-            [value]="system.toLowerCase()"
-          >
-            {{ system }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
     <div class="" fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="20px">
       <mat-form-field>
@@ -110,7 +98,7 @@
 
   <div fxFlexFill fxLayout fxLayoutAlign="center end">
     <mat-form-field style="width: 300px">
-      <input matInput placeholder="Suche..." #input />
+      <input matInput placeholder="Suche nach Titel oder System..." #input />
       <button (click)="filterChanged()" matSuffix mat-icon-button>
         <mat-icon>search</mat-icon>
       </button>

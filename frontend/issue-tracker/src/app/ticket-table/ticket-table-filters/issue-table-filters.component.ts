@@ -14,7 +14,6 @@ export interface FilterParams {
   progressSelected: boolean;
   priority: Priority | '';
   category: TicketCategory | '';
-  systems: string[];
   editedDateStart: string | '';
   editedDateEnd: string | '';
 }
@@ -30,7 +29,6 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
 
   @ViewChild('input', { static: false }) input: ElementRef;
   @ViewChild('prioSelect', { static: false }) prioSelect: MatSelect;
-  @ViewChild('systemsSelect', {static: false}) systemsSelect: MatSelect;
   @ViewChild('categorySelect', {static: false}) categorySelect: MatSelect;
 
   @ViewChild('openCB', { static: false }) openCb: MatCheckbox;
@@ -39,7 +37,6 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
   @ViewChild('startDate', { static: false }) startDate: ElementRef;
   @ViewChild('endDate', { static: false }) endDate: ElementRef;
 
-  systems = environment.systems;
   priorityArr = priorityArr;
   categoryArr = ticketCategoryArr;
 
@@ -76,7 +73,6 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
       closedSelected: this.closedCb.checked,
       priority: this.prioSelect.value || '',
       category: this.categorySelect.value || '',
-      systems: this.systemsSelect.value || '',
       // Note: toJSON() does not preserve timezone!
       editedDateStart: this.localeDEStringToJSONDate(this.startDate.nativeElement.value) || '',
       editedDateEnd: this.localeDEStringToJSONDate(this.endDate.nativeElement.value) || ''

@@ -46,7 +46,6 @@ export class IssueTableComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private filterParams: FilterParams = {
     filter: '',
-    systems: [],
     openSelected: true,
     closedSelected: true,
     progressSelected: true,
