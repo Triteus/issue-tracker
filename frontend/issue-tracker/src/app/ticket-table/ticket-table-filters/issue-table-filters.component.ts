@@ -78,10 +78,15 @@ export class IssueTableFiltersComponent implements OnInit, AfterViewInit {
       category: this.categorySelect.value || '',
       systems: this.systemsSelect.value || '',
       // Note: toJSON() does not preserve timezone!
-      editedDateStart: new Date(this.startDate.nativeElement.value).toJSON() || '',
-      editedDateEnd: new Date(this.endDate.nativeElement.value).toJSON() || ''
+      editedDateStart: this.localeDEStringToJSONDate(this.startDate.nativeElement.value) || '',
+      editedDateEnd: this.localeDEStringToJSONDate(this.endDate.nativeElement.value) || ''
     };
     this.paramsChanged.emit(params);
+  }
+
+  private localeDEStringToJSONDate(value: string) {
+    const [day, month , year] = value.split('.').map(str => Number.parseInt(str, 10));
+    return new Date(year, month - 1, day, 1).toJSON();
   }
 
   openTicketDialog() {
