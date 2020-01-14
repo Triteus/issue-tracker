@@ -12,7 +12,8 @@ export type RequestWithUser = Request & {user: IUser};
 
 export enum ERole {
     Admin = 'admin',
-    Support = 'support'
+    Support = 'support',
+    Visitor = 'visitor'
 }
 
 export interface IUserDocument extends mongoose.Document {

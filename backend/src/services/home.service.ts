@@ -34,7 +34,6 @@ export class HomeService {
 
     async countTicketsCreatedLastMonth() {
         const timeLastMonth = moment().subtract(1, 'months').toDate();
-        console.log('last month', timeLastMonth);
         const result = await ProjectModel.aggregate([
             { $unwind: '$tickets' },
             { $match: { 'tickets.createdAt': { $gte: timeLastMonth } } },

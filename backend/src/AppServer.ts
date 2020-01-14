@@ -8,10 +8,14 @@ import initLogging from './startup/logging';
 import { Server } from "@overnightjs/core";
 import { AuthController } from "./routes/auth/auth";
 import { UserController } from "./routes/user/user";
-import error from "./middlewares/error";
+import error, { ResponseError, ErrorTypes } from "./middlewares/error";
 import { FileController } from "./routes/file/file";
 import { ProjectController } from "./routes/v2/project/project";
 import { HomeController } from "./routes/home/home";
+import { Request, Response, NextFunction } from "express";
+import { RequestWithUser, ERole } from "./models/User";
+import { GlobalController } from "./routes/global/global";
+import { createVisitorIfNotExists } from "./startup/visitor";
 
 require('express-async-errors');
 
@@ -35,6 +39,7 @@ export class AppServer extends Server {
         }); 
 
         initDB();
+        createVisitorIfNotExists();
         initLogging();
         initPassport();
 
@@ -45,12 +50,13 @@ export class AppServer extends Server {
 
     /** Add new controllers here */
     private setupControllers(): void {
+        const globalController = new GlobalController();
         const authController = new AuthController();
         const userController = new UserController();
         const uploadController = new FileController();
         const projectController = new ProjectController();
         const homeController = new HomeController();
-        super.addControllers([authController, userController, uploadController, projectController, homeController]);
+        super.addControllers([globalController, authController, userController, uploadController, projectController, homeController]);
     }
 
     public start(port: number): void {
