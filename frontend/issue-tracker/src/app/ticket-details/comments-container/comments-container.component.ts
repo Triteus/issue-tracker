@@ -54,7 +54,7 @@ export class CommentsContainerComponent implements OnInit, AfterViewInit, OnDest
     const params: PaginationSortParams = {
       pageIndex: this.paginator.pageIndex || 0,
       pageSize: this.paginator.pageSize || 5,
-      sortBy: 'updatedAt',
+      sortBy: 'createdAt',
       sortDir: this.sortSelect.value
     }
     this.comments$ = this.commentService.getCommentsAndCount(params)

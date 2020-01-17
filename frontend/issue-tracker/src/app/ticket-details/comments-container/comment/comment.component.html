@@ -13,9 +13,15 @@
           </strong>
         </div>
       </div>
-      <div fxLayout fxLayoutGap="5px" fxLayoutAlign="center center">
-        <mat-icon>date_range</mat-icon>
-        <div>{{ comment.updatedAt | date : 'short' }}</div>
+      <div fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
+        <div matTooltipPosition="left" matTooltip="Erstellt am" fxLayout fxLayoutGap="5px" fxLayoutAlign="center center">
+          <mat-icon>date_range</mat-icon>
+          <div>{{ comment.createdAt | date : 'short' }}</div>
+        </div>
+        <div *ngIf="wasUpdated()" matTooltipPosition="left" matTooltip="Aktualisiert am" fxLayout fxLayoutGap="5px" fxLayoutAlign="center center">
+          <mat-icon>update</mat-icon>
+          <div>{{ comment.updatedAt | date : 'short' }}</div>
+        </div>
       </div>
     </div>
 

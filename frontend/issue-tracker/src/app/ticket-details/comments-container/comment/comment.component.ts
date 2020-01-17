@@ -57,4 +57,8 @@ export class CommentComponent implements OnInit {
         this.snackbar.open(`Kommentar konnte nicht gelöscht werden: ${err.message}`, 'OK');
       });
   }
+
+  wasUpdated() {
+    return this.comment.createdAt !== this.comment.updatedAt;
+  }
 }
