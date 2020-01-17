@@ -24,7 +24,7 @@
 
     <mat-list *ngIf="allUsers$ | async as users; else loading">
       <mat-list-item *ngFor="let user of users">
-        <div mat-line class="mat-body">{{ user.username }}</div>
+        <div mat-line class="mat-body">{{ user.username }} ({{user.email}})</div>
         <div class="actions" fxLayout>
           <button
             *ngIf="!isUserAssigned(user.id)"

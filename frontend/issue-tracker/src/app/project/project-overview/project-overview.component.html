@@ -53,9 +53,11 @@
     <mat-card>
       <mat-list>
         <mat-list-item *ngFor="let user of project.assignedUsers">
-          <mat-icon>person</mat-icon>
-          <div>
-            {{ user.username }}
+          <div fxLayout fxLayoutAlign="center center" fxLayoutGap="10px">
+            <mat-icon>person</mat-icon>
+            <div>
+              {{ user.username }} ({{user.email}})
+            </div>
           </div>
         </mat-list-item>
       </mat-list>
