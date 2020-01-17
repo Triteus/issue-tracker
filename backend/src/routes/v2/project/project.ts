@@ -32,7 +32,7 @@ export class ProjectController {
         passport.authenticate('jwt', { session: false }),
     ])
     private async getProject(req: Request, res: Response) {
-        const project = await ProjectModel.findById(req.params.projectId).populate('assignedUsers');
+        const project = await ProjectModel.findById(req.params.projectId).populate('assignedUsers projectLeader');
         if(!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }

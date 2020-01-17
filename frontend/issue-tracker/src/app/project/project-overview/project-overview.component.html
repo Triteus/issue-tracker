@@ -26,6 +26,10 @@
   </div>
   <div gdArea="typeStatus" fxLayout fxLayoutGap="20px">
     <div fxLayout="column" fxLayoutAlign="center center">
+      <h2 class="mat-h2">Ersteller</h2>
+      <mat-card>{{ project.projectLeader?.username }}</mat-card>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="center center">
       <h2 class="mat-h2">Typ</h2>
       <mat-card>{{ project.type | projectType }}</mat-card>
     </div>
