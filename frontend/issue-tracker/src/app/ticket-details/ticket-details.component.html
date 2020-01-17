@@ -51,7 +51,7 @@
             </div>
           </mat-card>
         </div>
-        <div>
+        <div *ngIf="ticket.lastEditor">
           <h2 class="mat-h2">Bearbeiter</h2>
           <mat-card>
             <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
