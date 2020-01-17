@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { UserRole } from 'src/app/models/user.model';
 
 interface ErrorPayload {
   msg: string;
@@ -17,7 +18,12 @@ interface ErrorPayload {
 @Injectable()
 export class ErrorInterceptor {
 
-  constructor(private authService: AuthService, private errorService: ErrorService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private errorService: ErrorService,
+    private router: Router,
+    private snackbar: MatSnackBar
+    ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -38,6 +44,10 @@ export class ErrorInterceptor {
           errMsg = err.error.errors.map((errPayload: ErrorPayload) => errPayload.param + ': ' + errPayload.msg).join();
         } else if (err.status === 403) {
           // user is missing role to access resource
+          const user = this.authService.getCurrUser();
+          if(user.roles.includes(UserRole.Visitor)) {
+            this.snackbar.open('Fehlende Berechtigung, Testuser hat ausschließlich lesenden Zugriff', 'OK')
+          }
           errMsg = 'Fehlende Berechtigung!';
         } else if (err.status === 401) {
           this.authService.logout();
