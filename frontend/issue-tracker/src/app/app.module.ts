@@ -31,6 +31,7 @@ import { registerLocaleData } from '@angular/common';
 import localeDE from '@angular/common/locales/de';
 import { StatsCardComponent } from './home/stats-card/stats-card.component';
 import { UserModule } from './user/user.module';
+import { AboutComponent } from './about/about.component';
 
 registerLocaleData(localeDE);
 
@@ -45,7 +46,7 @@ registerLocaleData(localeDE);
     SidenavContentComponent,
     NavbarComponent,
     StatsCardComponent,
-
+    AboutComponent
   ],
   imports: [
     BrowserModule,
