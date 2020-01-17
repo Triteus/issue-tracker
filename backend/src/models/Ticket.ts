@@ -1,4 +1,4 @@
-import mongoose, { Model, Types, Mongoose } from 'mongoose';
+import mongoose, { Model, Types, Mongoose, Schema } from 'mongoose';
 import { subTaskSchema, ISubTask } from './SubTask';
 import { commentSchema, ICommentDocument, IComment } from './Comment';
 
@@ -66,14 +66,14 @@ export interface ITicketModel extends Model<ITicket> {
 export const ticketHistorySchema = new mongoose.Schema({
   editorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   editedAt: Date,
-  changedPaths: [{path: String, oldValue: String, newValue: String }]
+  changedPaths: [{path: String, oldValue: Schema.Types.Mixed, newValue: Schema.Types.Mixed }]
 
 })
 
 export interface TicketHistory {
   editorId: Types.ObjectId | string,
   editedAt: Date,
-  changedPaths: {path: string, oldValue: string, newValue: string}[]
+  changedPaths: {path: string, oldValue: string | [], newValue: string | []}[]
 }
 
 export const ticketSchema = new mongoose.Schema({

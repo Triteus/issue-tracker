@@ -25,6 +25,16 @@
           <span *ngSwitchCase="'status'" >{{ element.oldValue | statusName }}</span>
           <span *ngSwitchCase="'priority'" >{{ element.oldValue | priorityName }}</span>
           <span *ngSwitchCase="'category'" >{{ element.oldValue | categoryName }}</span>
+          <span *ngSwitchCase="'affectedSystems'" >
+            <div *ngFor="let system of element.oldValue">
+              {{ system }}
+            </div>
+          </span>
+          <span *ngSwitchCase="'filenames'" >
+            <div *ngFor="let filename of element.oldValue">
+              {{ filename }}
+            </div>
+          </span>
           <span style="word-break: break-all;" *ngSwitchDefault >{{ element.oldValue }}</span>
         </td>
       </ng-container>
@@ -42,6 +52,16 @@
           <span *ngSwitchCase="'status'" >{{ element.newValue | statusName }}</span>
           <span *ngSwitchCase="'priority'" >{{ element.newValue | priorityName }}</span>
           <span *ngSwitchCase="'category'" >{{ element.newValue | categoryName }}</span>
+          <span *ngSwitchCase="'affectedSystems'" >
+            <div *ngFor="let system of element.newValue">
+              {{ system }}
+            </div>
+          </span>
+          <span *ngSwitchCase="'filenames'" >
+            <div *ngFor="let filename of element.newValue">
+              {{ filename }}
+            </div>
+          </span>
           <span style="word-break: break-all;" *ngSwitchDefault >{{ element.newValue }}</span>
         </td>
       </ng-container>

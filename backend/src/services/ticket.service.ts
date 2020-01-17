@@ -51,8 +51,8 @@ export class TicketService {
       if (payload[path] && !arrayEquals(payload[path], ticket[path])) {
         history.changedPaths.push({
           path: path,
-          oldValue: ticket[path].join(', '),
-          newValue: payload[path].join(', ')
+          oldValue: ticket[path],
+          newValue: payload[path]
         })
       }
     }

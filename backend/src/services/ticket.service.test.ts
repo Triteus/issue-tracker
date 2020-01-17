@@ -8,6 +8,7 @@ import { ownerData, editorData } from "../test-data/user";
 import { ticketData, subTasksData, updatedTicketData } from "../test-data/ticket";
 import { IProject, ProjectModel } from "../models/Project";
 import { projectData } from "../test-data/project";
+import { SortService } from "./sort.service";
 
 describe('TicketService', () => {
 
@@ -132,8 +133,8 @@ describe('TicketService', () => {
             expect(history.editorId.toString()).toBe(owner._id.toHexString());
             const pathObj = history.changedPaths[0];
             expect(pathObj.path).toBe('affectedSystems');
-            expect(pathObj.oldValue).toBe(ticket.affectedSystems.join(', '));
-            expect(pathObj.newValue).toBe([...ticket.affectedSystems, 'newSystem'].join(', '));
+            expect((pathObj.oldValue as string[]).sort().join()).toBe(ticket.affectedSystems.sort().join());
+            expect((pathObj.newValue as string[]).sort().join()).toBe([...ticket.affectedSystems, 'newSystem'].sort().join());
         })
 
         it('creates history (filenames)', () => {
@@ -141,8 +142,8 @@ describe('TicketService', () => {
             expect(history.editorId.toString()).toBe(owner._id.toHexString());
             const pathObj = history.changedPaths[0];
             expect(pathObj.path).toBe('filenames');
-            expect(pathObj.oldValue).toBe(ticket.filenames.join(', '));
-            expect(pathObj.newValue).toBe([...ticket.filenames, 'newFilename'].join(', '));
+            expect((pathObj.oldValue as string[]).sort().join()).toBe(ticket.filenames.sort().join());
+            expect((pathObj.newValue as string[]).sort().join()).toBe([...ticket.filenames, 'newFilename'].sort().join());
         })
 
         it('adds history to ticket', () => {
