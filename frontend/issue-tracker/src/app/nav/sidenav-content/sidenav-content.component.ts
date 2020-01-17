@@ -5,12 +5,25 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { ProjectTrackerService } from 'src/app/shared/services/project-tracker.service';
 import { TicketTrackerService } from 'src/app/shared/services/ticket-tracker.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 
 @Component({
   selector: 'app-sidenav-content',
   templateUrl: './sidenav-content.component.html',
-  styleUrls: ['./sidenav-content.component.scss']
+  styleUrls: ['./sidenav-content.component.scss'],
+  animations: [
+    trigger('flyInOut', [
+      state('in', style({ transform: 'translateX(0)' })),
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('200ms')
+      ]),
+      transition(':leave', [
+        animate('200ms', style({ transform: 'translateX(-100%)' }))
+      ])
+    ])
+  ]
 })
 export class SidenavContentComponent implements OnInit, OnDestroy {
 
