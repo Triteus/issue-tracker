@@ -17,6 +17,8 @@ import { TicketDetailsModule } from '../ticket-details/ticket-details.module';
 import { ProjectUserFormDialogEntryComponent } from './project-user-form-dialog-entry/project-user-form-dialog-entry.component';
 import { ProjectUserFormDialogComponent } from './project-user-form-dialog/project-user-form-dialog.component';
 import { MyTicketsComponent } from '../my-tickets/my-tickets.component';
+import { UploadModule } from '../upload/upload.module';
+import { DownloadModule } from '../download/download.module';
 
 
 @NgModule({
@@ -42,6 +44,8 @@ import { MyTicketsComponent } from '../my-tickets/my-tickets.component';
     TicketTableModule,
     ProjectRoutingModule,
     TicketDetailsModule,
+    UploadModule,
+    DownloadModule
   ],
   exports: [],
   entryComponents: [

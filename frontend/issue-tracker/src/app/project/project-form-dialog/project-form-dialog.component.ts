@@ -21,6 +21,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   backDropSub: Subscription;
 
+  isUploadingFiles = false;
   editMode = true;
 
   projectForm = new FormGroup({
@@ -29,6 +30,8 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     type: new FormControl(ProjectType.DEV, [Validators.required]),
     status: new FormControl(ProjectStatus.OPEN, [Validators.required]),
     assignedUsers: new FormControl([]),
+    newFilenames: new FormControl([]),
+    existingFilenames: new FormControl([])
   });
 
   constructor(
@@ -49,7 +52,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
       this.project$ = this.projectService.getProject(this.data.projectId).
         pipe(
           tap((project) => {
-            this.projectForm.patchValue(project);
+            this.patchProjectForm(project);
             this.initialProject = project;
           })
         );
@@ -80,6 +83,11 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     this.backDropSub.unsubscribe();
   }
 
+  patchProjectForm(project: Project) {
+    this.projectForm.patchValue(project);
+    this.existingFilenames.setValue(project.filenames);
+  }
+
   get name() {
     return this.projectForm.get('name') as FormControl;
   }
@@ -100,11 +108,25 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     return this.projectForm.get('assignedUsers') as FormControl;
   }
 
+  get newFilenames() {
+    return this.projectForm.get('newFilenames') as FormControl;
+  }
+
+  get existingFilenames() {
+    return this.projectForm.get('existingFilenames') as FormControl;
+  }
+
   updateProject() {
-    const value = this.projectForm.value;
+    // combine newly added filenames with existing filenames
+    const { newFilenames, existingFilenames, ...value } = this.projectForm.value;
+    const valueToSubmit = {
+      ...value,
+      filenames: [...newFilenames, ...existingFilenames]
+    };
+
     const request = this.editMode ?
-      this.projectService.putProject(value, this.data.projectId) :
-      this.projectService.postProject(value);
+      this.projectService.putProject(valueToSubmit, this.data.projectId) :
+      this.projectService.postProject(valueToSubmit);
 
     request.pipe(take(1))
       .subscribe(() => {
@@ -138,7 +160,22 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   resetProject() {
     this.projectForm.reset();
-    this.projectForm.patchValue(this.initialProject);
+    this.newFilenames.setValue([]);
+    this.patchProjectForm(this.initialProject);
+  }
+
+
+  isUploading(val: boolean) {
+    // use setTimeout to fix ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.isUploadingFiles = val;
+    }, 0);
+  }
+
+  addNewFileNames(filenames: string[]) {
+    setTimeout(() => {
+      this.newFilenames.setValue(filenames);
+    }, 0);
   }
 
 }

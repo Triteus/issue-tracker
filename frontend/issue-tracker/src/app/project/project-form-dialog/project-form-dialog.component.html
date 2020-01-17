@@ -107,6 +107,15 @@
           </mat-error>
         </mat-form-field>
         <mat-divider></mat-divider>
+        <app-upload
+          (isUploading)="isUploading($event)"
+          (uploadedFilenames)="addNewFileNames($event)"
+        ></app-upload>
+        <mat-divider></mat-divider>
+        <h2 class="mat-h2">Herunterladbare Dateien</h2>
+        <app-download [filenamesControl]="existingFilenames">
+        </app-download>
+        <mat-divider></mat-divider>
 
       </mat-dialog-content>
       <mat-dialog-actions

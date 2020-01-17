@@ -1,10 +1,10 @@
 <div
   gdColumns="1fr"
-  gdColumns.gt-sm="1fr 1fr 1fr"
-  gdColumns.gt-md="1fr 1fr 1fr"
-  gdColumn.gt-lg="1fr 2fr 1fr"
-  gdAreas="heading | desc | typeStatus | assignedUsers"
-  gdAreas.gt-sm=". heading . | . desc . | . typeStatus . | . assignedUsers ."
+  gdColumns.gt-sm="1fr 1fr 1fr 1fr"
+  gdColumns.gt-md="1fr 1fr 1fr 1fr"
+  gdColumn.gt-lg="1fr 2fr 2fr 1fr"
+  gdAreas="heading | desc | typeStatus | assignedUsers | files"
+  gdAreas.gt-sm=". heading heading . | . desc desc . | . typeStatus typeStatus . | . assignedUsers files ."
   gdAlignRows="center center"
   gdGap="30px 30px"
   class="container"
@@ -54,6 +54,17 @@
         </mat-list-item>
       </mat-list>
     </mat-card>
+  </div>
+  <div gdArea="files" fxLayout="column" fxLayoutAlign="start center">
+    <h2 class="mat-h2">Herunterladbare Dateien</h2>
+      <mat-card *ngIf="project.filenames.length > 0; else filesPlaceholder">
+        <app-download [readOnlyFilenames]="project.filenames"></app-download>
+      </mat-card>
+    <ng-template #filesPlaceholder>
+      <span class="mat-body">
+        Keine Dateien hinzugefügt
+      </span>
+    </ng-template>
   </div>
 </div>
 
