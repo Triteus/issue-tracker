@@ -41,7 +41,7 @@ Application to track and work on issues, features, ... within a project.
 
 
 ## TODO
-### DONE V 0.2 (DONE)
+### V 0.2 (DONE)
 - <del>implement project domain: Every ticket is assigned to a specific project</del>
 - <del>add dashboard showing general info about all projects, users, tickets (tables, graphs)</del>
 - <del>add details page for project: project name, assigned users, tickets, ... </del>
@@ -49,12 +49,12 @@ Application to track and work on issues, features, ... within a project.
 - <del>add section showing who edited ticket and what they changed</del>
 - <del>add comment-section for ticket </del>
 
-### V 2.5 (TODO)
+### V 0.25 (TODO)
 - prepare application for deployment (config, rate-limiter, ...)
 - add script that creates and saves random data (users, projects, tickets, ...) upon execution
 - deploy application
 
-### TODO V 0.3 (TODO)
+### V 0.3 (TODO)
 - integrate html-editor for description of tickets and projects (and maybe comments)
 - use 0Auth
 - improve styling, layout and responsiveness
