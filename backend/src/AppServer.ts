@@ -12,10 +12,10 @@ import error, { ResponseError, ErrorTypes } from "./middlewares/error";
 import { FileController } from "./routes/file/file";
 import { ProjectController } from "./routes/v2/project/project";
 import { HomeController } from "./routes/home/home";
-import { Request, Response, NextFunction } from "express";
-import { RequestWithUser, ERole } from "./models/User";
 import { GlobalController } from "./routes/global/global";
 import { createVisitorIfNotExists } from "./startup/visitor";
+import express from 'express';
+import path from 'path';
 
 require('express-async-errors');
 
@@ -37,6 +37,12 @@ export class AppServer extends Server {
             
             next();
         }); 
+
+        // Create link to Angular build directory
+        const distDir = "../../frontend/issue-tracker/dist/issue-tracker/";
+        const test = path.join(__dirname, distDir);
+        console.log('disDir', test);
+        this.app.use(express.static(test));
 
         initDB();
         createVisitorIfNotExists();

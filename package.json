@@ -1,0 +1,22 @@
+{
+  "name": "issue-tracker",
+  "version": "1.0.0",
+  "description": "Application to track and work on issues, features, ... within a project.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd backend && ts-node src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Triteus/issue-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Triteus/issue-tracker/issues"
+  },
+  "homepage": "https://github.com/Triteus/issue-tracker#readme"
+}
