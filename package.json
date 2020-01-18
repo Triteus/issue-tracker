@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Application to track and work on issues, features, ... within a project.",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "ts-node": "^8.6.2"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
