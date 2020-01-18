@@ -2,6 +2,5 @@
     "serverPort": 3000,
     "mongoDbUrl": "mongodb://localhost:27017/issue_tracker",
     "dbName": "issue_tracker",
-    "minPwLength": 6,
-    "secretKey": "test"
+    "minPwLength": 6
 }
