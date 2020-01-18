@@ -31,7 +31,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd backend && ts-node src/app.ts"
+    "start": "cd backend && node dist/app.js"
   },
   "repository": {
     "type": "git",
