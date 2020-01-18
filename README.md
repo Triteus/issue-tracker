@@ -1,5 +1,5 @@
 # IssueTracker
-Application to manage tickets.
+Application to track and work on issues, features, ... within a project.
 
 ## Technologies
 ### Frontend
@@ -30,13 +30,38 @@ Application to manage tickets.
 - **Ticket-Details:** Show all available data for a given ticket.
 - **Ticket-Form:** Users can create a new ticket or edit an existing one. Supports file upload and -download.
 
+### Version 0.2
+- **Project-Domain:** Tickets are assigned to one project, users are assigned by project-creator to work with tickets on this project
+- **Ticket-Comments:** User can create comments on tickets, filter (asc, desc) by creation-date, pagination
+- **Ticket-History:** User can see all ticket-changes (who, when, what)
+- **Dynamic sidenav:** User gets available navigation-paths based on whether ticket or project was selected
+- **User profile:** Users can change username, password, email
+- **Guest-Account:** User can user guest account to be granted read access to all recources
+- **Dashboard:** Page showing current stats, assigned projects and most recently created tickets
+
 
 ## TODO
-- implement project domain: Every ticket is assigned to a specific project
-- add dashboard showing general info about all projects, users, tickets (tables, graphs)
-- add details page for project: project name, assigned users, tickets, ...
-- add user profile and settings
-- add section showing who edited ticket and what they changed
+### DONE V 0.2 (DONE)
+- <del>implement project domain: Every ticket is assigned to a specific project</del>
+- <del>add dashboard showing general info about all projects, users, tickets (tables, graphs)</del>
+- <del>add details page for project: project name, assigned users, tickets, ... </del>
+- <del>dd user profile and settings</del>
+- <del>add section showing who edited ticket and what they changed</del>
+- <del>add comment-section for ticket </del>
+
+### V 2.5 (TODO)
+- prepare application for deployment (config, rate-limiter, ...)
+- add script that creates and saves random data (users, projects, tickets, ...) upon execution
+- deploy application
+
+### TODO V 0.3 (TODO)
+- integrate html-editor for description of tickets and projects (and maybe comments)
+- use 0Auth
+- improve styling, layout and responsiveness
+- refactoring
+- add proper animations
+- manage profile-img of user accounts
+- improve performance: indexing, use in-memory db for tests, decrease size of responses, ...
 - add notifications when ticket was updated
-- add comment-section for ticket 
-- integrate html-editor for description
+- ...
+
