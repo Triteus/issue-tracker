@@ -4,7 +4,7 @@
   "description": "",
   "main": "/src/app.ts",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && Xcopy config dist\\config",
     "start": "nodemon --exec ts-node src/app.ts",
     "test": "jest",
     "test:watch": "jest --watch",
