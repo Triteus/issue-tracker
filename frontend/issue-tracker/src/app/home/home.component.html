@@ -7,9 +7,13 @@
   gdColumns.gt-md="1fr 2fr 2fr 1fr"
   gdGap="60px"
 >
-  <!-- <h1 ngClass.xs="text-centered" class="mat-display-3">Dashboard</h1> -->
-
-  <div gdArea="left" class="grid" fxLayout="column" fxLayoutGap="20px" *ngIf="homeStats$ | async as stats; else spinner">
+  <div
+    gdArea="left"
+    class="grid"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    *ngIf="homeStats$ | async as stats; else spinner"
+  >
     <app-stats-card
       description="Anzahl der Nutzer"
       [amount]="stats.numUsers"
@@ -20,7 +24,13 @@
     ></app-stats-card>
   </div>
 
-  <div gdArea="right" class="grid" fxLayout="column" fxLayoutGap="20px" *ngIf="homeStats$ | async as stats; else spinner">
+  <div
+    gdArea="right"
+    class="grid"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    *ngIf="homeStats$ | async as stats; else spinner"
+  >
     <app-stats-card
       description="Anzahl insgesamt ersteller Tickets"
       [amount]="stats.numTickets"
@@ -37,45 +47,71 @@
 
   <section gdArea="projects">
     <h1 class="mat-h1" ngClass.xs="text-centered">Zugewiesene Projekte</h1>
-    <div
-      *ngIf="assignedProjects$ | async as projects; else spinner"
-      gdColumns="1fr"
-      gdColumns.gt-sm="1fr 1fr"
-      gdGap="5px"
-    >
-      <button
-        (click)="openProject(project.id)"
-        mat-raised-button
-        *ngFor="let project of projects"
+    <div *ngIf="assignedProjects$ | async as projects; else spinner">
+      <div
+        *ngIf="projects.length > 0; else placeholder"
+        gdColumns="1fr"
+        gdColumns.gt-sm="1fr 1fr"
+        gdGap="5px"
       >
-        {{ project.name }}
-      </button>
+        <button
+          (click)="openProject(project.id)"
+          mat-raised-button
+          *ngFor="let project of projects"
+        >
+          {{ project.name }}
+        </button>
+      </div>
+      <ng-template #placeholder>
+        <div
+          class="mat-body"
+          fxLayoutAlign="center"
+          fxLayoutAlign.gt-xs="start"
+        >
+          Zu keinen Projekten zugewiesen
+        </div>
+      </ng-template>
     </div>
   </section>
 
   <section gdArea="tickets">
-    <h1 class="mat-h1" ngClass.xs="text-centered">Letzte Tickets</h1>
+    <h1 class="mat-h1" ngClass.xs="text-centered">Deine letzten Tickets</h1>
 
-    <div *ngIf="lastTickets$ | async as tickets; else spinner" gdColumns="1fr" gdGap="5px">
-      <button
-        (click)="openTicket(ticket.projectId, ticket.id)"
-        mat-raised-button
-        *ngFor="let ticket of tickets"
+    <div *ngIf="lastTickets$ | async as tickets; else spinner">
+      <div
+        *ngIf="tickets.length > 0; else noTickets"
+        gdColumns="1fr"
+        gdGap="5px"
       >
-        <div
-          fxLayout="column"
-          fxLayoutAlign="center center"
-          fxLayout.gt-sm="row"
-          fxLayoutAlign.gt-sm="space-between center"
-          style="padding: 5px"
+        <button
+          (click)="openTicket(ticket.projectId, ticket.id)"
+          mat-raised-button
+          *ngFor="let ticket of tickets"
         >
-          <mat-icon fxHide fxShow.gt-sm>local_offer</mat-icon>
-          <div fxLayout="row wrap" class="mat-body-strong">
-            {{ ticket.title }}
+          <div
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            fxLayout.gt-sm="row"
+            fxLayoutAlign.gt-sm="space-between center"
+            style="padding: 5px"
+          >
+            <mat-icon fxHide fxShow.gt-sm>local_offer</mat-icon>
+            <div fxLayout="row wrap" class="mat-body-strong">
+              {{ ticket.title }}
+            </div>
+            <div>{{ ticket.updatedAt | date }}</div>
           </div>
-          <div>{{ ticket.updatedAt | date }}</div>
+        </button>
+      </div>
+      <ng-template #noTickets>
+        <div
+          fxLayoutAlign="center"
+          fxLayoutAlign.gt-xs="start"
+          class="mat-body"
+        >
+          Noch keine Tickets erstellt/bearbeitet
         </div>
-      </button>
+      </ng-template>
     </div>
   </section>
 </div>

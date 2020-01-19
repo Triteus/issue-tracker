@@ -1,4 +1,4 @@
-<ng-container *ngIf="ownerTickets$ | async as tickets">
+<ng-container *ngIf="ownerTickets$ | async as tickets; else spinner">
 <table *ngIf="tickets.length > 0; else placeholder" mat-table [dataSource]="tickets" class="mat-elevation-z8">
 
   <ng-container matColumnDef="title">
@@ -42,5 +42,11 @@
 <ng-template #placeholder>
   <div class="placeholder">
     <h1 class="mat-h1">Noch keine Tickets erstellt.</h1>
+  </div>
+</ng-template>
+
+<ng-template #spinner>
+  <div fxLayoutAlign="center center">
+    <mat-spinner></mat-spinner>
   </div>
 </ng-template>
