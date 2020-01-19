@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = __importDefault(require("winston"));
+const config_1 = __importDefault(require("config"));
 const { MongoDB } = require("winston-mongodb");
 function default_1() {
     //Exceptions outside of api-calls
@@ -17,7 +18,7 @@ function default_1() {
     });
     winston_1.default.add(new winston_1.default.transports.File({ filename: "logfile.log" }));
     winston_1.default.add(new MongoDB({
-        db: "mongodb://localhost/legends",
+        db: config_1.default.get('mongoDbUrl'),
         level: "error"
     }));
 }

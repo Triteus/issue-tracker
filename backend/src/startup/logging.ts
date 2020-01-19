@@ -1,6 +1,7 @@
 import winston from "winston";
 
 import { MongoDBTransportInstance } from "winston-mongodb";
+import config from 'config';
 
 const { MongoDB }: { MongoDB: MongoDBTransportInstance } = require("winston-mongodb");
 
@@ -26,7 +27,7 @@ export default function() {
   winston.add(new winston.transports.File({ filename: "logfile.log" }));
   winston.add(
     new MongoDB({
-      db: "mongodb://localhost/legends",
+      db: config.get('mongoDbUrl'),
       level: "error"
     })
   );
