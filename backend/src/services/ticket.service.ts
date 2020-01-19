@@ -36,7 +36,7 @@ export class TicketService {
   }
 
   createEditorHistoryEntry(ticket: ITicket, editorId: ID, payload: Partial<ITicketDocument>) {
-    const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description'];
+    const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description', 'category'];
     const arrayKeys = ['affectedSystems', 'filenames'];
     const date = new Date();
     let history: TicketHistory = { editorId, editedAt: date, changedPaths: [] };
