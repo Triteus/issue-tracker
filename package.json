@@ -4,13 +4,35 @@
   "description": "Application to track and work on issues, features, ... within a project.",
   "main": "index.js",
   "dependencies": {
+    "@overnightjs/core": "^1.6.9",
+    "@types/config": "0.0.36",
+    "@types/node": "^13.1.8",
+    "bcrypt": "^3.0.6",
+    "config": "^3.2.4",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^6.2.0",
+    "faker": "^4.1.0",
+    "formidable": "^1.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "mongo-seeding": "^3.4.0-alpha.1",
+    "mongoose": "^5.7.5",
+    "mongoose-type-email": "^1.0.11",
+    "multer": "^1.4.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "rimraf": "^3.0.0",
     "ts-node": "^8.6.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd backend && ts-node src/app.ts"
+    "start": "cd backend/dist && node app.js"
   },
   "repository": {
     "type": "git",

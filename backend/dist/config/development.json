@@ -1,0 +1,4 @@
+{
+    "secretKey": "devKey",
+    "mongoDbUrl": "mongodb://localhost:27017/issue_tracker"
+}
