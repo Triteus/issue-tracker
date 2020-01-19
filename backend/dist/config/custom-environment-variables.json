@@ -1,4 +1,5 @@
 {
     "secretKey": "JWT_SECRET_KEY",
-    "mongoDbUrl": "MONGO_DB_URL"
+    "mongoDbUrl": "MONGO_DB_URL",
+    "port" : "PORT"
 }
