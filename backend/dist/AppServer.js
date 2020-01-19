@@ -37,14 +37,21 @@ class AppServer extends core_1.Server {
         });
         // Create link to Angular build directory
         const distDir = "../../frontend/issue-tracker/dist/issue-tracker/";
-        const test = path_1.default.join(__dirname, distDir);
-        console.log('disDir', test);
-        this.app.use(express_1.default.static(test));
+        const finalPath = path_1.default.join(__dirname, distDir);
+        this.app.use(express_1.default.static(finalPath));
         db_1.default();
         visitor_1.createVisitorIfNotExists();
         logging_1.default();
         passport_1.default();
         this.setupControllers();
+        // needed to avoid returning index.html
+        this.app.get('/api/*', (req, res, next) => {
+            res.status(404).send({ error: `Cannot GET ${req.url} . API has no such route!` });
+        });
+        /* final catch-all route to index.html defined last */
+        this.app.get('/*', (req, res) => {
+            res.sendFile(path_1.default.join(finalPath, '/index.html'));
+        });
         //setup error middleware
         this.app.use(error_1.default);
     }

@@ -1,6 +1,8 @@
 # IssueTracker
 Application to track and work on issues, features, ... within a project.
 
+Deployed version: https://vast-peak-43691.herokuapp.com/
+
 ## Technologies
 ### Frontend
 - Angular 8
@@ -50,9 +52,9 @@ Application to track and work on issues, features, ... within a project.
 - <del>add comment-section for ticket </del>
 
 ### V 0.25 (TODO)
-- prepare application for deployment (config, rate-limiter, ...)
+- <del>prepare application for deployment (config, rate-limiter, ...)</del>
+- <del>deploy application</del>
 - add script that creates and saves random data (users, projects, tickets, ...) upon execution
-- deploy application
 
 ### V 0.3 (TODO)
 - integrate html-editor for description of tickets and projects (and maybe comments)

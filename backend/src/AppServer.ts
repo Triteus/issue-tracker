@@ -24,25 +24,25 @@ export class AppServer extends Server {
         super(process.env.NODE_ENV === 'development');
 
         // Body Parser Middleware
-        this.app.use(bodyParser.json({limit: '50mb'}));
-        this.app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+        this.app.use(bodyParser.json({ limit: '50mb' }));
+        this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
         //CORS Middleware
 
-         this.app.use(function (req, res, next) {
+        this.app.use(function (req, res, next) {
             //Enabling CORS 
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType, Content-Type, Accept, Authorization");
             res.header("Access-Control-Expose-Headers", "*")
-            
+
             next();
-        }); 
+        });
 
         // Create link to Angular build directory
         const distDir = "../../frontend/issue-tracker/dist/issue-tracker/";
-        const test = path.join(__dirname, distDir);
-        console.log('disDir', test);
-        this.app.use(express.static(test));
+        const finalPath = path.join(__dirname, distDir);
+
+        this.app.use(express.static(finalPath));
 
         initDB();
         createVisitorIfNotExists();
@@ -50,6 +50,19 @@ export class AppServer extends Server {
         initPassport();
 
         this.setupControllers();
+
+        // needed to avoid returning index.html
+        this.app.get('/api/*', (req, res, next) => {
+            res.status(404).send(
+                { error: `Cannot GET ${req.url} . API has no such route!` }
+            );
+        })
+
+        /* final catch-all route to index.html defined last */
+        this.app.get('/*', (req, res) => {
+            res.sendFile(path.join(finalPath, '/index.html'));
+        })
+
         //setup error middleware
         this.app.use(error);
     }
@@ -67,7 +80,7 @@ export class AppServer extends Server {
 
     public start(port: number): void {
         //Setting up server
-        this.app.listen(port || 8080, function () {
+        this.app.listen(port, function () {
             winston.log('info', `Server running on ${port}`);
         });
     }
