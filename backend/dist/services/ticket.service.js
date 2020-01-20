@@ -39,7 +39,7 @@ class TicketService {
         return ticket;
     }
     createEditorHistoryEntry(ticket, editorId, payload) {
-        const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description'];
+        const keys = ['status', 'type', 'assignedTo', 'priority', 'title', 'description', 'category'];
         const arrayKeys = ['affectedSystems', 'filenames'];
         const date = new Date();
         let history = { editorId, editedAt: date, changedPaths: [] };

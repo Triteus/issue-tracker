@@ -5,12 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const error_1 = require("../middlewares/error");
 class UploadService {
     initUploadMiddleware() {
         var storage = multer_1.default.diskStorage({
             destination: function (req, file, cb) {
-                cb(null, 'uploads');
+                const filePath = 'uploads';
+                fs_1.default.mkdir(filePath, { recursive: true }, (err) => {
+                    if (err)
+                        throw err;
+                });
+                cb(null, filePath);
             },
             filename: function (req, file, cb) {
                 // extract original filename without extension

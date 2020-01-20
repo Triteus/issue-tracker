@@ -1,5 +1,6 @@
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { ResponseError, ErrorTypes } from '../middlewares/error';
 
 export class UploadService {
@@ -7,7 +8,11 @@ export class UploadService {
     initUploadMiddleware() {
         var storage = multer.diskStorage({
             destination: function (req, file, cb) {
-                cb(null, 'uploads')
+                const filePath = 'uploads';
+                fs.mkdir(filePath, { recursive: true }, (err) => {
+                    if (err) throw err;
+                  });
+                cb(null, filePath)
             },
             filename: function (req, file, cb) {
                 // extract original filename without extension

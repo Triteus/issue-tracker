@@ -67,7 +67,7 @@ class AppServer extends core_1.Server {
     }
     start(port) {
         //Setting up server
-        this.app.listen(port || 8080, function () {
+        this.app.listen(port, function () {
             winston_1.default.log('info', `Server running on ${port}`);
         });
     }

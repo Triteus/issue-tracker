@@ -15,16 +15,8 @@ const passport_1 = __importDefault(require("passport"));
 const path_1 = __importDefault(require("path"));
 const uploadService = new upload_service_1.UploadService();
 const upload = uploadService.initUploadMiddleware();
-const delay = () => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve('lul');
-        }, 2000);
-    });
-};
 let FileController = class FileController {
     async uploadFiles(req, res) {
-        await delay();
         if (!req.files) {
             return res.status(400).send({ message: 'No files sent!' });
         }
@@ -32,8 +24,8 @@ let FileController = class FileController {
     }
     async downloadFile(req, res) {
         const filename = req.params.filename;
-        const file = path_1.default.join(__dirname, '../../../uploads/') + filename;
-        res.download(file, (err) => {
+        const filePath = path_1.default.join(__dirname, '../../../uploads/') + filename;
+        res.download(filePath, (err) => {
             if (res.headersSent)
                 return;
             if (err.status === 404)
