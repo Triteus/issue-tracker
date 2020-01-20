@@ -8,10 +8,10 @@ export class UploadService {
     initUploadMiddleware() {
         var storage = multer.diskStorage({
             destination: function (req, file, cb) {
-                const filePath = 'uploads';
+                const filePath = path.join(__dirname, '../../uploads');
                 fs.mkdir(filePath, { recursive: true }, (err) => {
                     if (err) throw err;
-                  });
+                });
                 cb(null, filePath)
             },
             filename: function (req, file, cb) {

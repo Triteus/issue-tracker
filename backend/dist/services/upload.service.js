@@ -11,7 +11,7 @@ class UploadService {
     initUploadMiddleware() {
         var storage = multer_1.default.diskStorage({
             destination: function (req, file, cb) {
-                const filePath = 'uploads';
+                const filePath = path_1.default.join(__dirname, '../../uploads');
                 fs_1.default.mkdir(filePath, { recursive: true }, (err) => {
                     if (err)
                         throw err;
