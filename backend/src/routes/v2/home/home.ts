@@ -1,13 +1,13 @@
 import { Controller, Get, Middleware } from "@overnightjs/core";
 import { Request, Response } from "express";
-import TicketModel from '../../models/Ticket';
-import { ProjectModel } from "../../models/Project";
-import UserModel, { RequestWithUser } from "../../models/User";
-import { TicketService } from "../../services/ticket.service";
+import TicketModel from '../../../models/Ticket';
+import { ProjectModel } from "../../../models/Project";
+import UserModel, { RequestWithUser } from "../../../models/User";
+import { TicketService } from "../../../services/ticket.service";
 import passport from "passport";
 import { Types } from "mongoose";
-import { ProjectService } from "../../services/project.service";
-import { HomeService } from "../../services/home.service";
+import { ProjectService } from "../../../services/project.service";
+import { HomeService } from "../../../services/home.service";
 
 @Controller('api/v2/home')
 export class HomeController {

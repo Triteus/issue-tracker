@@ -11,7 +11,7 @@ import { UserController } from "./routes/user/user";
 import error, { ResponseError, ErrorTypes } from "./middlewares/error";
 import { FileController } from "./routes/file/file";
 import { ProjectController } from "./routes/v2/project/project";
-import { HomeController } from "./routes/home/home";
+import { HomeController } from "./routes/v2/home/home";
 import { GlobalController } from "./routes/global/global";
 import { createVisitorIfNotExists } from "./startup/visitor";
 import express from 'express';
