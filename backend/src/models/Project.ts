@@ -47,7 +47,7 @@ export interface IProject extends IProjectDocument {
 }
 
 export interface IProjectModel extends Model<IProject> {
-
+    toMinimizedJSON: (projects: IProject[]) => IProjectDocument & {numTickets: number}
 }
 
 
@@ -125,5 +125,14 @@ projectSchema.methods.addProjectLeaderAndSave = async function (leaderId: ID) {
     await this.save();
 }
 
+/** exclude unused subdocs to decrease response size */
+projectSchema.statics.toMinimizedJSON = function(projects: IProject[]) {
+    return projects.map((p) => {
+        const numTickets = p.tickets.length;
+        // exclude tickets
+        p.set('tickets', []);
+        return {...p.toJSON(), numTickets};
+    });
+}
 
 export const ProjectModel =  mongoose.model<IProject, IProjectModel>('Project', projectSchema);

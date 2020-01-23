@@ -23,8 +23,8 @@ export class ProjectController {
         passport.authenticate('jwt', { session: false }),
     ])
     private async getProjects(req: Request, res: Response) {
-        const projects = await ProjectModel.find({});
-        return res.status(200).send({projects});
+        let projects = await ProjectModel.find({});
+        return res.status(200).send({projects: ProjectModel.toMinimizedJSON(projects)});
     }
 
     @Get(':projectId')
