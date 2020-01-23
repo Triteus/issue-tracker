@@ -8,7 +8,7 @@ require('express-async-errors');
 
 export class TestServer extends Server {
     constructor() {
-        super(process.env.NODE_ENV === 'development');
+        super(process.env.NODE_ENV === 'test');
         // Body Parser Middleware
         this.app.use(bodyParser.json());
 
