@@ -7,11 +7,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TicketBoardColumnComponent } from './ticket-board-column/ticket-board-column.component';
 
 @NgModule({
   declarations: [
     TicketBoardComponent,
     TicketBoardItemComponent,
+    TicketBoardColumnComponent,
   ],
   imports: [
     CommonModule,

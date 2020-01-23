@@ -1,0 +1,30 @@
+<div fxLayout="column" fxLayoutGap="10px">
+  <mat-card
+    class="list-heading"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+  >
+    <h2 class="mat-h2">{{colName}}<span *ngIf="tickets.length !== 0">({{tickets.length}})</span></h2>
+    <mat-spinner
+      fxLayout="row"
+      diameter="30"
+      *ngIf="dragDisabled"
+    ></mat-spinner>
+  </mat-card>
+  <mat-card
+    fxLayout="column"
+    fxLayoutGap="16px"
+    cdkDropList
+    [attr.data-status]="status"
+    [cdkDropListData]="tickets"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <app-ticket-board-item
+      [pendingStatus]="dragDisabled"
+      cdkDragBoundary=".ticket-board"
+      [ticket]="ticket"
+      *ngFor="let ticket of tickets"
+      cdkDrag
+    ></app-ticket-board-item>
+  </mat-card>
+</div>

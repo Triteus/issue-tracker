@@ -27,8 +27,6 @@ export class TicketBoardComponent implements OnInit, OnDestroy {
 
   constructor(
     private ticketService: TicketService,
-    private ticketBoardService: TicketBoardService,
-    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -66,37 +64,7 @@ export class TicketBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  drop(event: CdkDragDrop<Ticket[]>) {
-
-    const { previousContainer, container, previousIndex, currentIndex } = event;
-    if (previousContainer === container) {
-      moveItemInArray(container.data, previousIndex, currentIndex);
-      // TODO locally save position of item within list
-    } else {
-      const ticketId = previousContainer.data[previousIndex].id;
-      transferArrayItem(previousContainer.data,
-        container.data,
-        previousIndex,
-        currentIndex);
-
-      this.dragDisabled = true;
-      // status can be grabbed from HTML-element as data-attribute
-      const status = container.element.nativeElement.dataset.status as TicketStatus;
-      this.ticketBoardService.changeStatus(status, ticketId)
-        .subscribe(
-          res => {
-            this.dragDisabled = false;
-          },
-          err => {
-            // move item back
-            transferArrayItem(container.data,
-              previousContainer.data,
-              currentIndex,
-              previousIndex);
-
-            this.dragDisabled = false;
-            this.snackBar.open('Status konnte nicht aktualisiert werden!', 'OK', { duration: 3000 });
-          });
-    }
+  setDragDisabled(val: boolean) {
+    this.dragDisabled = val;
   }
 }
