@@ -21,8 +21,6 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   projectStatusArr = projectStatusArr;
   projectTypeArr = projectTypeArr;
 
-  backDropSub: Subscription;
-
   isUploadingFiles = false;
   editMode = true;
 
