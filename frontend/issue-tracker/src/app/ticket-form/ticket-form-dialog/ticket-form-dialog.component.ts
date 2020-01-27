@@ -6,12 +6,14 @@ import { tap, take, map } from 'rxjs/operators';
 import { Ticket, TicketStatus, Priority, ticketCategoryArr, TicketCategory } from 'src/app/models/ticket.model';
 import { TicketService } from 'src/app/ticket.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogService } from 'src/app/shared/services/form-dialog.service';
 
 
 @Component({
   selector: 'app-ticket-form-dialog',
   templateUrl: './ticket-form-dialog.component.html',
-  styleUrls: ['./ticket-form-dialog.component.scss']
+  styleUrls: ['./ticket-form-dialog.component.scss'],
+  providers: [FormDialogService]
 })
 export class TicketFormDialogComponent implements OnInit, OnDestroy {
 
@@ -20,8 +22,6 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
   ticketStatusArr = Object.values(TicketStatus);
   priorityArr = Object.values(Priority);
   categoryArr = ticketCategoryArr;
-
-  backDropSub: Subscription;
 
   editMode = true;
 
@@ -46,6 +46,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     public ticketDialogRef: MatDialogRef<TicketFormDialogComponent>,
     private delConfirmDialog: MatDialog,
     private snackbar: MatSnackBar,
+    private formDialogService: FormDialogService
   ) { }
 
 
@@ -66,31 +67,10 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
           })
         );
     }
-
-    this.ticketDialogRef.disableClose = true;
-    this.backDropSub = this.ticketDialogRef.backdropClick().subscribe(() => {
-
-      if (this.ticketForm.dirty) {
-        const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
-          width: '500px',
-          id: 'confirm-dialog',
-          data: { message: 'Ticket wirklich schließen? Ungespeicherte Änderungen gehen verloren!' }
-        });
-
-        return dialogRef.afterClosed().pipe(
-          tap((res: string) => {
-            if (res === 'confirm') {
-              this.ticketDialogRef.close();
-            }
-          })
-        ).subscribe();
-      }
-      this.ticketDialogRef.close();
-    });
+    this.formDialogService.registerForm(this.ticketDialogRef, this.ticketForm);
   }
 
   ngOnDestroy() {
-    this.backDropSub.unsubscribe();
   }
 
   private patchTicketForm(ticket: Ticket) {
