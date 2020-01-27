@@ -60,7 +60,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
     this.projectDialogRef.disableClose = true;
     this.backDropSub = this.projectDialogRef.backdropClick().subscribe(() => {
-      if (this.editMode && this.projectForm.dirty) {
+      if (this.projectForm.dirty) {
         const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
           width: '500px',
           id: 'confirm-dialog',

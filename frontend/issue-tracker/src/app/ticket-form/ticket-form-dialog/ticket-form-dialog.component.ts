@@ -70,7 +70,7 @@ export class TicketFormDialogComponent implements OnInit, OnDestroy {
     this.ticketDialogRef.disableClose = true;
     this.backDropSub = this.ticketDialogRef.backdropClick().subscribe(() => {
 
-      if (this.editMode && this.ticketForm.dirty) {
+      if (this.ticketForm.dirty) {
         const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
           width: '500px',
           id: 'confirm-dialog',
