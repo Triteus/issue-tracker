@@ -6,11 +6,13 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatSnackBar } from '@angular/
 import { ProjectService } from '../project.service';
 import { tap, take } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogService } from 'src/app/shared/services/form-dialog.service';
 
 @Component({
   selector: 'app-project-form-dialog',
   templateUrl: './project-form-dialog.component.html',
-  styleUrls: ['./project-form-dialog.component.scss']
+  styleUrls: ['./project-form-dialog.component.scss'],
+  providers: [FormDialogService]
 })
 export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
@@ -40,7 +42,8 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     public projectDialogRef: MatDialogRef<ProjectFormDialogComponent>,
     private delConfirmDialog: MatDialog,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private formDialogService: FormDialogService
   ) { }
 
   ngOnInit() {
@@ -57,30 +60,10 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
           })
         );
     }
-
-    this.projectDialogRef.disableClose = true;
-    this.backDropSub = this.projectDialogRef.backdropClick().subscribe(() => {
-      if (this.projectForm.dirty) {
-        const dialogRef = this.delConfirmDialog.open(ConfirmationDialogComponent, {
-          width: '500px',
-          id: 'confirm-dialog',
-          data: { message: 'Projekt-Formular wirklich schließen? Ungespeicherte Änderungen gehen verloren!' }
-        });
-
-        return dialogRef.afterClosed().pipe(
-          tap((res: string) => {
-            if (res === 'confirm') {
-              this.projectDialogRef.close();
-            }
-          })
-        ).subscribe();
-      }
-      this.projectDialogRef.close();
-    });
+    this.formDialogService.registerForm(this.projectDialogRef, this.projectForm);
   }
 
   ngOnDestroy() {
-    this.backDropSub.unsubscribe();
   }
 
   patchProjectForm(project: Project) {
