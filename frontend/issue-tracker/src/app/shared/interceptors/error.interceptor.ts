@@ -45,7 +45,7 @@ export class ErrorInterceptor {
         } else if (err.status === 403) {
           // user is missing role to access resource
           const user = this.authService.getCurrUser();
-          if(user.roles.includes(UserRole.Visitor)) {
+          if(user && user.roles && user.roles.includes(UserRole.Visitor)) {
             this.snackbar.open('Fehlende Berechtigung, Testuser hat ausschließlich lesenden Zugriff', 'OK')
           }
           errMsg = 'Fehlende Berechtigung!';
