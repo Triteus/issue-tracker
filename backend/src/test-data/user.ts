@@ -1,4 +1,4 @@
-import { ERole } from "../models/User"
+import { ERole } from "../models/user.model"
 
 export function ownerData() {
     return {

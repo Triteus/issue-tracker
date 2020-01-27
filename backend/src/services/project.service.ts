@@ -1,4 +1,4 @@
-import { ProjectModel } from "../models/Project";
+import { ProjectModel } from "../models/project.model";
 import { Types } from "mongoose";
 
 export class ProjectService {

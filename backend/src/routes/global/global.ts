@@ -1,5 +1,5 @@
 import { Controller, Post, Put, Delete, Patch, Middleware } from "@overnightjs/core";
-import { RequestWithUser, ERole } from "../../models/User";
+import { RequestWithUser, ERole } from "../../models/user.model";
 import { NextFunction, Response, request, Request } from "express";
 import { ResponseError, ErrorTypes } from "../../middlewares/error";
 import passport from "passport";

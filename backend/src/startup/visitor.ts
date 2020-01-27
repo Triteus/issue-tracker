@@ -1,5 +1,5 @@
 
-import UserModel, { IUserDocument, ERole } from '../models/User';
+import UserModel, { IUserDocument, ERole } from '../models/user.model';
 
 
 const visitorData: Partial<IUserDocument> = {

@@ -1,6 +1,6 @@
 import { TicketValidators, basicValidators } from "./ticket.validate";
 import { validateBody, checkResponse, validateBodyAndParams, checkResponses } from "../../validators/test-util";
-import { ticketSchema, TicketStatus, Priority } from "../../models/Ticket";
+import { ticketSchema, TicketStatus, Priority } from "../../models/ticket.model";
 import { ObjectID } from "bson";
 import { ticketData } from "../../test-data/ticket";
 

@@ -1,6 +1,6 @@
-import { RequestWithUser } from "../models/User";
+import { RequestWithUser } from "../models/user.model";
 import { Response, NextFunction } from "express";
-import { ProjectModel, IProject } from "../models/Project";
+import { ProjectModel, IProject } from "../models/project.model";
 import { ResponseError, ErrorTypes } from "./error";
 
 

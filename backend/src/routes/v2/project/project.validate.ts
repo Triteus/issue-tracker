@@ -1,5 +1,5 @@
 import { body } from "express-validator"
-import { projectStatusArr, projectTypeArr } from "../../../models/Project"
+import { projectStatusArr, projectTypeArr } from "../../../models/project.model"
 
 export const basicValidators = [
     body('name').isLength({min: 4, max: 100}),

@@ -6,7 +6,7 @@ require('mongoose-type-email');
 import config from 'config';
 
 import { Request } from 'express';
-import { JwtPayload } from './JwtPayload';
+import { JwtPayload } from './jwtPayload.model';
 
 export type RequestWithUser = Request & {user: IUser};
 

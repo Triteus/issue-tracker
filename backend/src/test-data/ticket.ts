@@ -1,4 +1,4 @@
-import { Priority, TicketStatus, TicketCategory } from "../models/Ticket";
+import { Priority, TicketStatus, TicketCategory } from "../models/ticket.model";
 
 
 export function subTasksData() {

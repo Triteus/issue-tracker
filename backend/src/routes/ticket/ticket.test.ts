@@ -3,14 +3,14 @@ import { SuperTest, Test } from "supertest";
 import { setupDB } from "../../startup/testSetup";
 import { TestServer } from "../../TestServer";
 import supertest from "supertest";
-import { IUser, ERole } from "../../models/User";
-import UserModel from "../../models/User";
-import TicketModel, { ITicket, TicketStatus, Priority, ITicketDocument } from "../../models/Ticket";
+import { IUser, ERole } from "../../models/user.model";
+import UserModel from "../../models/user.model";
+import TicketModel, { ITicket, TicketStatus, Priority, ITicketDocument } from "../../models/ticket.model";
 import { ObjectID } from "bson";
 import { ticketData, updatedTicketData, subTasksData } from "../../test-data/ticket"
 import { ownerData, editorData, randomUserData } from "../../test-data/user";
 import { ProjectController } from "../v2/project/project";
-import { IProject, ProjectModel } from "../../models/Project";
+import { IProject, ProjectModel } from "../../models/project.model";
 import { projectData } from "../../test-data/project";
 import { authHeaderObject } from "../../util/test-util";
 

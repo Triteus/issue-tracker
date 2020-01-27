@@ -1,5 +1,5 @@
 import mongoose, { Model, Types, Schema as MongooseSchema, Schema } from 'mongoose';
-import { ITicketDocument, ticketSchema, ITicket } from './Ticket';
+import { ITicketDocument, ticketSchema, ITicket } from './ticket.model';
 
 type ID = String | Types.ObjectId;
 

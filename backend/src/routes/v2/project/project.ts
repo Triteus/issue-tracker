@@ -1,12 +1,12 @@
 import { Controller, Post, Get, Delete, Put, Children, Middleware, Patch } from "@overnightjs/core";
-import { ProjectModel } from "../../../models/Project";
+import { ProjectModel } from "../../../models/project.model";
 import { Request, Response, NextFunction } from "express";
 import { ResponseError, ErrorTypes } from "../../../middlewares/error";
 import { TicketController } from "../../ticket/ticket";
 import passport from "passport";
 import { projectValidators } from "./project.validate";
 import { validation } from "../../../middlewares/validation";
-import { IUser, RequestWithUser } from "../../../models/User";
+import { IUser, RequestWithUser } from "../../../models/user.model";
 import { Types } from "mongoose";
 
 

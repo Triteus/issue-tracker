@@ -1,4 +1,4 @@
-import { TicketStatus, ticketSchema, Priority } from "../models/Ticket";
+import { TicketStatus, ticketSchema, Priority } from "../models/ticket.model";
 import { Types } from "mongoose";
 import { PaginationParams, PreparedPaginationParams } from "./pagination.service";
 import { SortParams, PreparedSortParams } from "./sort.service";

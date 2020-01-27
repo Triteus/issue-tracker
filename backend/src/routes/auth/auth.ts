@@ -1,7 +1,7 @@
-import UserModel, { RequestWithUser } from '../../models/User';
+import UserModel, { RequestWithUser } from '../../models/user.model';
 import passport from 'passport';
 import { Controller, Middleware, Post, Put, Get } from '@overnightjs/core';
-import User, { IUser } from '../../models/User';
+import User, { IUser } from '../../models/user.model';
 import { Request, Response, NextFunction } from 'express';
 import Authorize from '../../middlewares/authorization';
 import { AuthValidators } from './auth.validate';

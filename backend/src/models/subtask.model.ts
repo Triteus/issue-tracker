@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { userSchema } from "./User";
+import { userSchema } from "./user.model";
 
 export interface ISubTask {
     description: string,

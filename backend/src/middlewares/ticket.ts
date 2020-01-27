@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { RequestWithUser, ERole } from "../models/User";
-import { IProject } from "../models/Project";
+import { RequestWithUser, ERole } from "../models/user.model";
+import { IProject } from "../models/project.model";
 import { ResponseError, ErrorTypes } from "./error";
-import { ITicket } from "../models/Ticket";
+import { ITicket } from "../models/ticket.model";
 import { ResponseWithProject } from "./project";
 
 

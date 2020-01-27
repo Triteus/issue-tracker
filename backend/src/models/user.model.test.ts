@@ -1,4 +1,4 @@
-import UserModel from './User';
+import UserModel from './user.model';
 
 describe('UserModel', () => {
     const user = new UserModel({email: 'test@mail.com', password: 'password', firstName: 'Max', lastName: 'Mustermann'});

@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { CommentModel, commentSchema, ICommentDocument } from "../models/Comment";
-import { ProjectModel } from "../models/Project";
+import { CommentModel, commentSchema, ICommentDocument } from "../models/comment.model";
+import { ProjectModel } from "../models/project.model";
 import { PaginationService } from "./pagination.service";
 import { SortService } from "./sort.service";
 import { isEmpty } from "./ticket.service.util";

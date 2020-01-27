@@ -4,7 +4,7 @@ import { setupDB } from "../../startup/testSetup";
 import { TestServer } from "../../TestServer";
 import supertest = require("supertest");
 import { Request, Response, NextFunction} from "express";
-import UserModel, { IUser } from "../../models/User";
+import UserModel, { IUser } from "../../models/user.model";
 import { ownerData } from "../../test-data/user";
 import fs from 'fs';
 

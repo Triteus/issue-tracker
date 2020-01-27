@@ -1,10 +1,10 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 
-import UserModel from '../models/User';
+import UserModel from '../models/user.model';
 import passportJWT from 'passport-jwt';
 import config from "config";
-import { JwtPayload } from '../models/JwtPayload';
+import { JwtPayload } from '../models/jwtPayload.model';
 
 
 export default function initPassport() {

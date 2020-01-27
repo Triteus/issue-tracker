@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { IUser, ERole, RequestWithUser } from "../models/User";
+import { IUser, ERole, RequestWithUser } from "../models/user.model";
 import { isArray } from "util";
 import { ResponseError, ErrorTypes } from "./error";
 

@@ -1,4 +1,4 @@
-import TicketModel, { TicketStatus, TicketHistory } from './Ticket';
+import TicketModel, { TicketStatus, TicketHistory } from './ticket.model';
 import { ticketData, subTasksData } from '../test-data/ticket';
 import { Types } from 'mongoose';
 describe('Ticket model', () => {

@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSchema, ticketHistorySchema, TicketHistory } from "../models/Ticket";
+import TicketModel, { ITicketDocument, ITicket, TicketStatus, Priority, ticketSchema, ticketHistorySchema, TicketHistory } from "../models/ticket.model";
 import { ResponseError, ErrorTypes } from "../middlewares/error";
 import mongoose from 'mongoose';
-import { IProject, ProjectModel } from "../models/Project";
+import { IProject, ProjectModel } from "../models/project.model";
 import { prepareAggregateStages, remapObject, filter, withProjectId, TicketParams } from "./ticket.service.util";
 import { arrayEquals } from "../util/array";
 import { PreparedPaginationParams, PaginationService } from "./pagination.service";

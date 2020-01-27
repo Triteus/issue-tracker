@@ -1,5 +1,5 @@
 
-import User, {IUserDocument, userSchema} from "../../models/User";
+import User, {IUserDocument, userSchema} from "../../models/user.model";
 import faker from 'faker';
 import bcrypt from 'bcrypt';
 import { ObjectId } from "bson";

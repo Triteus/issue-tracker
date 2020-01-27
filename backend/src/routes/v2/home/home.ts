@@ -1,8 +1,8 @@
 import { Controller, Get, Middleware } from "@overnightjs/core";
 import { Request, Response } from "express";
-import TicketModel from '../../../models/Ticket';
-import { ProjectModel } from "../../../models/Project";
-import UserModel, { RequestWithUser } from "../../../models/User";
+import TicketModel from '../../../models/ticket.model';
+import { ProjectModel } from "../../../models/project.model";
+import UserModel, { RequestWithUser } from "../../../models/user.model";
 import { TicketService } from "../../../services/ticket.service";
 import passport from "passport";
 import { Types } from "mongoose";

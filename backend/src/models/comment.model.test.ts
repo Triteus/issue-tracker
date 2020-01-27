@@ -1,4 +1,4 @@
-import { CommentModel } from "./Comment";
+import { CommentModel } from "./comment.model";
 import { commentData } from "../test-data/comment";
 
 describe('CommentModel', () => {

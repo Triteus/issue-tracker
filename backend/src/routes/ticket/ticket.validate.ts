@@ -1,5 +1,5 @@
 import { body, param } from "express-validator"
-import { TicketStatus, ticketStatusArr, priorityArr, ticketCategoryArr } from "../../models/Ticket"
+import { TicketStatus, ticketStatusArr, priorityArr, ticketCategoryArr } from "../../models/ticket.model"
 
 
 

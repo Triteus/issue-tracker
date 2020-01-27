@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import UserModel from '../../models/User';
+import UserModel from '../../models/user.model';
 
 export const validatePW = body('password')
     .trim()

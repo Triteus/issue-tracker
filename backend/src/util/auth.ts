@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { IUserDocument, ERole } from "../models/User";
+import { IUserDocument, ERole } from "../models/user.model";
 import { Types } from "mongoose";
 
 export function isAccOwner(userId: Types.ObjectId | String, ownerId: Types.ObjectId | String) {

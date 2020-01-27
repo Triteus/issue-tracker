@@ -1,4 +1,4 @@
-import {ITicketDocument, TicketStatus, Priority} from "../../models/Ticket";
+import {ITicketDocument, TicketStatus, Priority} from "../../models/ticket.model";
 import faker from 'faker';
 import users from '../users/users';
 

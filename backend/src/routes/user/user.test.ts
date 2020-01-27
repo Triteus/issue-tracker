@@ -3,7 +3,7 @@ import { SuperTest, Test } from "supertest";
 import supertest = require("supertest");
 import { TestServer } from "../../TestServer";
 import { UserController } from "./user";
-import UserModel, { IUser, ERole } from "../../models/User";
+import UserModel, { IUser, ERole } from "../../models/user.model";
 import { ObjectID } from "bson";
 import { ownerData, randomUserData } from "../../test-data/user";
 

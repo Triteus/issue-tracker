@@ -3,7 +3,7 @@ import { AuthController } from './auth';
 import supertest, { SuperTest, Test } from 'supertest';
 import { setupDB } from '../../startup/testSetup';
 import { Response } from 'superagent';
-import UserModel, { IUser } from '../../models/User';
+import UserModel, { IUser } from '../../models/user.model';
 import { ownerData as userMock } from '../../test-data/user'
 
 function checkResponse(res: Response, expectedParam: String, expectedMsg: String) {

@@ -3,7 +3,7 @@ import { SuperTest, Test } from "supertest";
 import supertest from "supertest";
 import { setupDB } from "../../startup/testSetup";
 import { TestServer } from "../../TestServer";
-import UserModel, { ERole } from "../../models/User";
+import UserModel, { ERole } from "../../models/user.model";
 import { ownerData } from "../../test-data/user";
 import { AuthController } from "../auth/auth";
 import { GlobalController } from "./global";

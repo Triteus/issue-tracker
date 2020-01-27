@@ -1,7 +1,7 @@
 import { Controller, Get, Middleware, Delete, Patch, Put } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import passport = require('passport');
-import UserModel, { IUser, ERole, RequestWithUser } from '../../models/User';
+import UserModel, { IUser, ERole, RequestWithUser } from '../../models/user.model';
 
 import Authorize from '../../middlewares/authorization';
 import { validationResult } from 'express-validator';

@@ -1,6 +1,6 @@
 import mongoose, { Model, Types, Mongoose, Schema } from 'mongoose';
-import { subTaskSchema, ISubTask } from './SubTask';
-import { commentSchema, ICommentDocument, IComment } from './Comment';
+import { subTaskSchema, ISubTask } from './subtask.model';
+import { commentSchema, ICommentDocument, IComment } from './comment.model';
 
 
 export enum TicketStatus {

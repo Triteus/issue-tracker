@@ -1,7 +1,7 @@
-import { ProjectModel } from "./Project"
+import { ProjectModel } from "./project.model"
 import { projectData } from "../test-data/project"
 import { ticketData } from "../test-data/ticket"
-import TicketModel from "./Ticket";
+import TicketModel from "./ticket.model";
 
 describe('ProjectModel', () => {
 

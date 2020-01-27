@@ -1,5 +1,5 @@
 import { filter, prepareAggregateStages } from "./ticket.service.util";
-import { Priority, TicketStatus, TicketCategory } from "../models/Ticket";
+import { Priority, TicketStatus, TicketCategory } from "../models/ticket.model";
 import { Types } from "mongoose";
 import { SortService, PreparedSortParams } from "./sort.service";
 import { PaginationService, PreparedPaginationParams } from "./pagination.service";

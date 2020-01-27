@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { ProjectModel } from "../models/Project";
-import { ticketSchema, ITicket, ITicketDocument } from "../models/Ticket";
+import { ProjectModel } from "../models/project.model";
+import { ticketSchema, ITicket, ITicketDocument } from "../models/ticket.model";
 import moment from "moment";
 
 
