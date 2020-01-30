@@ -11,6 +11,8 @@ interface UserPayload {
   message: string;
 }
 
+export type MinimizedProject = Project & {numTickets: number};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,8 +22,8 @@ export class ProjectService {
 
   constructor(private http: HttpClient) { }
 
-  getProjects(): Observable<Project[]> {
-    return this.http.get<{ projects: Project[] }>(this.url).pipe(
+  getProjects(): Observable<MinimizedProject[]> {
+    return this.http.get<{ projects: MinimizedProject[] }>(this.url).pipe(
       map(res => res.projects)
     );
   }

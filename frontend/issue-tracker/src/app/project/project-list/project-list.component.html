@@ -17,7 +17,7 @@
     gdGap="15px 15px"
   >
     <app-project-card
-    (cardClick)="openProjectDialog()"
+      (cardClick)="openProjectDialog()"
       matTooltip="Neues Projekt hinzufügen"
     >
       <div fxLayout fxLayoutAlign="center center">
@@ -31,7 +31,10 @@
       [project]="project"
       (cardClick)="openProjectDetails(project.id)"
     >
-      <h2 style="text-align: center;" class="mat-h2">{{ project.name }}</h2>
+      <h2 style="text-align: center;" class="mat-h2">
+        {{ project.name }}
+        <span matTooltip="Anzahl der Tickets">({{ project.numTickets }})</span>
+      </h2>
       <mat-chip-list>
         <div fxFlexFill fxLayoutAlign="space-around">
           <mat-chip>{{ project.type | projectType }}</mat-chip>

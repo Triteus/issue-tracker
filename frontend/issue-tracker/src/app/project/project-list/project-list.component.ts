@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { Project } from 'src/app/models/project.model';
-import { ProjectService } from '../project.service';
+import { ProjectService, MinimizedProject } from '../project.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -11,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
 
-  projects$: Observable<Project[]>;
+  projects$: Observable<MinimizedProject[]>;
 
   querySub: Subscription;
 
