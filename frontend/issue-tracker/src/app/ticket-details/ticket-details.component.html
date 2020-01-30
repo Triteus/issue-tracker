@@ -9,8 +9,8 @@
     gdAreas.lt-sm="heading | general-info | tasks | files | history | comments"
   >
     <div gdArea="heading">
-      <h1 class="mat-h1">{{ ticket.title }}</h1>
-      <div class="ticket-actions" fxLayoutGap="15px">
+      <h1 class="mat-h1" ngClass.xs="text-centered">{{ ticket.title }}</h1>
+      <div class="ticket-actions" fxLayoutAlign="center" fxLayoutAlign.gt-xs="start" fxLayoutGap="15px">
         <button
           (click)="openTicketForm()"
           matTooltip="Ticket bearbeiten"
@@ -33,7 +33,7 @@
     <div gdArea="general-info" fxLayout="column" fxLayoutGap="30px">
       <div fxLayout fxLayoutGap="30px" fxLayoutAlign.lt-sm="space-around">
         <div>
-          <h2 class="mat-h2">Ersteller</h2>
+          <h2 class="mat-h2" ngClass.xs="text-centered">Ersteller</h2>
           <mat-card>
             <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
               <mat-icon
@@ -52,7 +52,7 @@
           </mat-card>
         </div>
         <div *ngIf="ticket.lastEditor">
-          <h2 class="mat-h2">Bearbeiter</h2>
+          <h2 class="mat-h2" ngClass.xs="text-centered">Bearbeiter</h2>
           <mat-card>
             <div fxLayout fxLayoutAlign="start center" fxLayoutGap="10px">
               <mat-icon
@@ -75,7 +75,7 @@
       </div>
 
       <div>
-        <h2 class="mat-h2">Beschreibung</h2>
+        <h2 class="mat-h2" ngClass.xs="text-centered">Beschreibung</h2>
         <mat-card class="mat-body">{{ ticket.description }}</mat-card>
       </div>
 
@@ -87,13 +87,13 @@
           </mat-card>
         </div>
         <div fxLayout="column" fxLayoutAlign="start center">
-          <h2 class="mat-h2">Priorität</h2>
+          <h2 class="mat-h2" ngClass.xs="text-centered">Priorität</h2>
           <mat-card>
             <app-priority-icon [priority]="ticket.priority"></app-priority-icon>
           </mat-card>
         </div>
         <div fxLayout="column" fxLayoutAlign="start center">
-          <h2 class="mat-h2">Kategorie</h2>
+          <h2 class="mat-h2" ngClass.xs="text-centered">Kategorie</h2>
           <mat-card>
             {{ ticket.category | categoryName }}
           </mat-card>
@@ -101,7 +101,7 @@
       </div>
 
       <div fxLayout="column">
-        <h2 class="mat-h2">Betroffene Systeme</h2>
+        <h2 class="mat-h2" ngClass.xs="text-centered">Betroffene Systeme</h2>
         <mat-card
           *ngIf="ticket.affectedSystems.length > 0; else systemsPlaceholder"
           fxLayoutAlign.lt-sm="center"
@@ -120,27 +120,29 @@
       </div>
     </div>
     <div gdArea="tasks">
-      <h2 class="mat-h2">Aufgaben</h2>
+      <h2 class="mat-h2" ngClass.xs="text-centered">Aufgaben</h2>
       <mat-list
         *ngIf="ticket.subTasks.length > 0; else tasksPlaceholder"
         class="elevation mat-elevation-z1"
       >
         <ng-container *ngFor="let task of ticket.subTasks">
           <mat-list-item>
-            <span matLine>{{ task.description }}</span>
-            <mat-icon *ngIf="task.isDone">check_box</mat-icon>
-            <mat-icon *ngIf="!task.isDone">check_box_outline_blank</mat-icon>
+            <div fxFlexFill fxLayout fxLayoutAlign="space-between center" fxLayoutGap="20px">
+              <div>{{ task.description }}</div>
+              <mat-icon *ngIf="task.isDone">check_box</mat-icon>
+              <mat-icon *ngIf="!task.isDone">check_box_outline_blank</mat-icon>
+            </div>
           </mat-list-item>
         </ng-container>
       </mat-list>
       <ng-template #tasksPlaceholder>
-        <span class="mat-body">
+        <div class="mat-body" ngClass.xs="text-centered">
           Keine Aufgaben hinzugefügt
-        </span>
+        </div>
       </ng-template>
     </div>
     <div gdArea="files">
-      <h2 class="mat-h2">Herunterladbare Dateien</h2>
+      <h2 class="mat-h2" ngClass.xs="text-centered">Herunterladbare Dateien</h2>
       <div
         class="elevation mat-elevation-z1"
         *ngIf="ticket.filenames.length > 0; else filesPlaceholder"
@@ -148,27 +150,27 @@
         <app-download [readOnlyFilenames]="ticket.filenames"></app-download>
       </div>
       <ng-template #filesPlaceholder>
-        <span class="mat-body">
+        <div class="mat-body" ngClass.xs="text-centered">
           Keine Dateien verfügbar
-        </span>
+        </div>
       </ng-template>
     </div>
 
     <div gdArea="history">
-      <h2 class="mat-h2">Bearbeitungsverlauf</h2>
+      <h2 class="mat-h2" ngClass.xs="text-centered">Bearbeitungsverlauf</h2>
       <ng-container
         *ngIf="ticket.editorHistory.length > 0; else historyEntriesPlaceholder"
       >
         <app-history [histories]="ticket.editorHistory"></app-history>
       </ng-container>
       <ng-template #historyEntriesPlaceholder>
-        <span class="mat-body">
+        <div class="mat-body" ngClass.xs="text-centered">
           Ticket noch nicht bearbeitet
-        </span>
+        </div>
       </ng-template>
     </div>
     <div gdArea="comments">
-      <h2 class="mat-h2">Kommentare</h2>
+      <h2 class="mat-h2" ngClass.xs="text-centered">Kommentare</h2>
       <app-comments-container></app-comments-container>
     </div>
   </div>
