@@ -1,0 +1,12 @@
+<mat-card
+  tabindex="0"
+  role="button"
+  class="button-card"
+  fxLayout="column"
+  fxLayoutGap="20px"
+  fxLayoutAlign="space-around"
+  (click)="onClick($event)"
+  (keydown)="onKeyDown($event)"
+>
+  <ng-content></ng-content>
+</mat-card>

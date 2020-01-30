@@ -19,6 +19,7 @@ import { ProjectUserFormDialogComponent } from './project-user-form-dialog/proje
 import { MyTicketsComponent } from '../my-tickets/my-tickets.component';
 import { UploadModule } from '../upload/upload.module';
 import { DownloadModule } from '../download/download.module';
+import { ProjectCardComponent } from './project-card/project-card.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { DownloadModule } from '../download/download.module';
     ProjectOverviewComponent,
     ProjectUserFormDialogEntryComponent,
     ProjectUserFormDialogComponent,
-    MyTicketsComponent
+    MyTicketsComponent,
+    ProjectCardComponent
   ],
   imports: [
     CommonModule,

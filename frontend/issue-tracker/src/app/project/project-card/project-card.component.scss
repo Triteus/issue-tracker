@@ -1,0 +1,11 @@
+@import "~@angular/material/theming";
+
+$grey: mat-palette($mat-grey);
+
+.button-card {
+  &:hover {
+    background-color: mat-color($grey, 400);
+  }
+  cursor: pointer;
+  height: 100%;
+}
