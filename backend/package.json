@@ -16,10 +16,12 @@
   "dependencies": {
     "@overnightjs/core": "^1.6.9",
     "@types/config": "0.0.36",
+    "@types/express-rate-limit": "^3.3.3",
     "bcrypt": "^3.0.6",
     "config": "^3.2.4",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^5.0.0",
     "express-validator": "^6.2.0",
     "faker": "^4.1.0",
     "formidable": "^1.2.1",

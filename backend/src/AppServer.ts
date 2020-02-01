@@ -22,13 +22,15 @@ import { HomeService } from "./services/home.service";
 import { UploadService } from "./services/upload.service";
 import { CommentService } from "./services/comment.service";
 import { ServiceInjector } from "./ServiceInjector";
-
+import rateLimiter from "./startup/rate-limiter";
 
 require('express-async-errors');
 
 export class AppServer extends Server {
     constructor() {
         super(process.env.NODE_ENV === 'development');
+
+        rateLimiter(this.app);
 
         // Body Parser Middleware
         this.app.use(bodyParser.json({ limit: '50mb' }));

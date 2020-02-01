@@ -14,6 +14,7 @@ Deployed version: https://vast-peak-43691.herokuapp.com/
 ### Backend
 - Express
 - Express-validator
+- DB: MongoDB, Mongoose (ODM)
 - TypeScript
 - OvernightJS
 - File-Upload: Multer
@@ -54,6 +55,7 @@ Deployed version: https://vast-peak-43691.herokuapp.com/
 ### V 0.25 (TODO)
 - <del>prepare application for deployment (config, rate-limiter, ...)</del>
 - <del>deploy application</del>
+- <del>add rate limiter</del>
 - add script that creates and saves random data (users, projects, tickets, ...) upon execution
 
 ### V 0.3 (TODO)
