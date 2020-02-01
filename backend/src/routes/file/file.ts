@@ -12,7 +12,12 @@ const upload = uploadService.initUploadMiddleware();
 @Controller('api/file')
 export class FileController {
 
-    uploadService = ServiceInjector.getService('uploadService');
+    uploadService: UploadService;
+
+    constructor(uploadService?: UploadService) {
+        this.uploadService = uploadService ||  ServiceInjector.getService('uploadService');
+    }
+
 
     @Post()
     @Middleware([

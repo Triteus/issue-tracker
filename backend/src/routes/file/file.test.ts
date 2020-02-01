@@ -17,10 +17,7 @@ describe('UploadController', () => {
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
-        testServer.setServices({
-            'uploadService': new UploadService()
-        })
-        uploadController = new FileController();
+        uploadController = new FileController(new UploadService());
         testServer.setControllers(uploadController);
         request = supertest(testServer.getExpressInstance());
         done();

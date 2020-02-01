@@ -17,7 +17,7 @@ export class TestServer extends Server {
         initPassport();
     }
 
-    public setServices(serviceMapping: {[key: string]: IService}) {
+    public setServicesForChildControllers(serviceMapping: {[key: string]: IService}) {
         ServiceInjector.setServices(serviceMapping);
     }
 

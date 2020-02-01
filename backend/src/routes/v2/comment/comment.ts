@@ -30,7 +30,11 @@ const validate = validation(CommentValidators);
 @ClassOptions({ mergeParams: true })
 export class CommentController {
 
-    commentService = ServiceInjector.getService<CommentService>('commentService');
+    commentService: CommentService;
+
+    constructor(commentService?: CommentService) {
+        this.commentService = commentService || ServiceInjector.getService<CommentService>('commentService');
+    }
 
     @Get()
     private async getComments(req: Request, res: ResponseWithTicket) {

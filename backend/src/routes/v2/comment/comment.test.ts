@@ -29,12 +29,12 @@ describe('CommentController (child-controller)', () => {
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
-        testServer.setServices({
+        // set services for child-controllers
+        testServer.setServicesForChildControllers({
             'commentService': new CommentService(),
-            'projectService': new ProjectService(),
             'ticketService': new TicketService()
         })
-        projectController = new ProjectController();
+        projectController = new ProjectController(new ProjectService());
         testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();

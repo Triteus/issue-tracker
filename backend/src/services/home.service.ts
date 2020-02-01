@@ -7,6 +7,8 @@ import { IService } from "../ServiceInjector";
 
 type TicketWithProjectId = ITicketDocument & { projectId: string };
 
+// TODO write tests
+
 export class HomeService implements IService {
 
     async findLastTickets(numTickets: number, userId: string | Types.ObjectId): Promise<TicketWithProjectId[]> {

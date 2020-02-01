@@ -26,7 +26,11 @@ const validate = validation(TicketValidators);
 @ClassOptions({ mergeParams: true })
 export class TicketController {
 
-    ticketService = ServiceInjector.getService<TicketService>('ticketService');
+    ticketService: TicketService;
+
+    constructor(ticketService?: TicketService) {
+        this.ticketService = ticketService || ServiceInjector.getService<TicketService>('ticketService');
+    }
 
     @Post('')
     @Middleware([

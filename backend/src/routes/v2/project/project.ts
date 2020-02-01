@@ -20,7 +20,11 @@ const validate = validation(projectValidators);
 ])
 export class ProjectController {
 
-    projectService = ServiceInjector.getService<ProjectService>('projectService');
+    projectService: ProjectService;
+
+    constructor(projectService?: ProjectService) {
+        this.projectService = projectService || ServiceInjector.getService<ProjectService>('projectService');
+    }
 
     @Get()
     @Middleware([

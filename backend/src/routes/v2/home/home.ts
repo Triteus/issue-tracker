@@ -10,13 +10,21 @@ import { TicketService } from "../../../services/ticket.service";
 import { ProjectService } from "../../../services/project.service";
 import { HomeService } from "../../../services/home.service";
 
+
+// TODO write tests
+
 @Controller('api/v2/home')
 export class HomeController {
 
-    
-    ticketService = ServiceInjector.getService<TicketService>('ticketService');
-    projectService =  ServiceInjector.getService<ProjectService>('projectService');
-    homeService = ServiceInjector.getService<HomeService>('homeService');
+    ticketService: TicketService;
+    projectService: ProjectService;
+    homeService: HomeService;
+
+    constructor(projectService?: ProjectService, ticketService?: TicketService, homeService?: HomeService) {
+        this.projectService = projectService || ServiceInjector.getService<ProjectService>('projectService');
+        this.ticketService = ticketService || ServiceInjector.getService<TicketService>('ticketService');
+        this.homeService = homeService || ServiceInjector.getService<HomeService>('homeService');
+    }
 
     /**
      * Get some statistics about tickets and projects

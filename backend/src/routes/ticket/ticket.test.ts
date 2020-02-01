@@ -26,11 +26,10 @@ describe('TicketController', () => {
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
-        testServer.setServices({
-            'projectService': new ProjectService(),
+        testServer.setServicesForChildControllers({
             'ticketService': new TicketService()
         })
-        projectController = new ProjectController();
+        projectController = new ProjectController(new ProjectService());
         testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();
