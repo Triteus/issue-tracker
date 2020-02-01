@@ -14,15 +14,23 @@ const user_1 = require("./routes/user/user");
 const error_1 = __importDefault(require("./middlewares/error"));
 const file_1 = require("./routes/file/file");
 const project_1 = require("./routes/v2/project/project");
-const home_1 = require("./routes/home/home");
+const home_1 = require("./routes/v2/home/home");
 const global_1 = require("./routes/global/global");
 const visitor_1 = require("./startup/visitor");
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
+const project_service_1 = require("./services/project.service");
+const ticket_service_1 = require("./services/ticket.service");
+const home_service_1 = require("./services/home.service");
+const upload_service_1 = require("./services/upload.service");
+const comment_service_1 = require("./services/comment.service");
+const ServiceInjector_1 = require("./ServiceInjector");
+const rate_limiter_1 = __importDefault(require("./startup/rate-limiter"));
 require('express-async-errors');
 class AppServer extends core_1.Server {
     constructor() {
         super(process.env.NODE_ENV === 'development');
+        rate_limiter_1.default(this.app);
         // Body Parser Middleware
         this.app.use(body_parser_1.default.json({ limit: '50mb' }));
         this.app.use(body_parser_1.default.urlencoded({ limit: '50mb', extended: true }));
@@ -43,6 +51,7 @@ class AppServer extends core_1.Server {
         visitor_1.createVisitorIfNotExists();
         logging_1.default();
         passport_1.default();
+        this.setupDependencies();
         this.setupControllers();
         // needed to avoid returning index.html
         this.app.get('/api/*', (req, res, next) => {
@@ -54,6 +63,17 @@ class AppServer extends core_1.Server {
         });
         //setup error middleware
         this.app.use(error_1.default);
+    }
+    /** Add new dependencies here */
+    setupDependencies() {
+        const services = {
+            projectService: new project_service_1.ProjectService(),
+            ticketService: new ticket_service_1.TicketService(),
+            homeService: new home_service_1.HomeService(),
+            uploadService: new upload_service_1.UploadService(),
+            commentService: new comment_service_1.CommentService()
+        };
+        ServiceInjector_1.ServiceInjector.setServices(services);
     }
     /** Add new controllers here */
     setupControllers() {

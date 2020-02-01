@@ -7,14 +7,18 @@ const core_1 = require("@overnightjs/core");
 const bodyParser = require("body-parser");
 const passport_1 = __importDefault(require("./startup/passport"));
 const error_1 = __importDefault(require("./middlewares/error"));
+const ServiceInjector_1 = require("./ServiceInjector");
 require('express-async-errors');
 class TestServer extends core_1.Server {
     constructor() {
-        super(process.env.NODE_ENV === 'development');
+        super(process.env.NODE_ENV === 'test');
         // Body Parser Middleware
         this.app.use(bodyParser.json());
         //initLogging();
         passport_1.default();
+    }
+    setServicesForChildControllers(serviceMapping) {
+        ServiceInjector_1.ServiceInjector.setServices(serviceMapping);
     }
     setControllers(controllers) {
         super.addControllers(controllers);

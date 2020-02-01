@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ticket_validate_1 = require("./ticket.validate");
 const test_util_1 = require("../../validators/test-util");
-const Ticket_1 = require("../../models/Ticket");
+const ticket_model_1 = require("../../models/ticket.model");
 const bson_1 = require("bson");
 const ticket_1 = require("../../test-data/ticket");
 describe('Ticket validators', () => {
@@ -67,7 +67,7 @@ describe('Ticket validators', () => {
     describe('PUT /api/ticket/:id', () => {
         const validTicketData = {
             ...ticket_1.ticketData(),
-            status: Ticket_1.TicketStatus.ACTIVE
+            status: ticket_model_1.TicketStatus.ACTIVE
         };
         const validators = ticket_validate_1.TicketValidators.putTicket;
         it('throws (invalid status)', async () => {

@@ -10,28 +10,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@overnightjs/core");
-const Project_1 = require("../../../models/Project");
+const project_model_1 = require("../../../models/project.model");
 const error_1 = require("../../../middlewares/error");
 const ticket_1 = require("../../ticket/ticket");
 const passport_1 = __importDefault(require("passport"));
 const project_validate_1 = require("./project.validate");
 const validation_1 = require("../../../middlewares/validation");
 const mongoose_1 = require("mongoose");
+const ServiceInjector_1 = require("../../../ServiceInjector");
 const validate = validation_1.validation(project_validate_1.projectValidators);
 let ProjectController = class ProjectController {
+    constructor(projectService) {
+        this.projectService = projectService || ServiceInjector_1.ServiceInjector.getService('projectService');
+    }
     async getProjects(req, res) {
-        const projects = await Project_1.ProjectModel.find({});
-        return res.status(200).send({ projects });
+        let projects = await project_model_1.ProjectModel.find({});
+        return res.status(200).send({ projects: project_model_1.ProjectModel.toMinimizedJSON(projects) });
     }
     async getProject(req, res) {
-        const project = await Project_1.ProjectModel.findById(req.params.projectId).populate('assignedUsers projectLeader');
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId).populate('assignedUsers projectLeader');
         if (!project) {
             throw new error_1.ResponseError('Project was not found!', error_1.ErrorTypes.NOT_FOUND);
         }
         return res.status(200).send({ project });
     }
     async getProjectName(req, res) {
-        const project = await Project_1.ProjectModel.findById(req.params.projectId);
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId);
         if (!project) {
             throw new error_1.ResponseError('Project was not found!', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -39,7 +43,7 @@ let ProjectController = class ProjectController {
     }
     // NOTE: Only returns id of users
     async getAssignedUsers(req, res) {
-        const project = await Project_1.ProjectModel.findById(req.params.projectId);
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId);
         if (!project) {
             throw new error_1.ResponseError('Project was not found!', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -49,14 +53,14 @@ let ProjectController = class ProjectController {
         // no initial tickets
         const { id, tickets, ...payload } = req.body;
         payload.projectLeader = mongoose_1.Types.ObjectId();
-        let project = new Project_1.ProjectModel(payload);
+        let project = new project_model_1.ProjectModel(payload);
         await project.addProjectLeaderAndSave(req.user._id);
         return res.status(201).send({ message: 'Project created successfully!', project });
     }
     async putProject(req, res) {
         // make sure to exclude tickets since they are handled separately
         const { id, tickets, ...payload } = req.body;
-        const project = await Project_1.ProjectModel.findById(req.params.projectId);
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId);
         if (!project) {
             throw new error_1.ResponseError('Project was not found!', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -73,7 +77,7 @@ let ProjectController = class ProjectController {
         return res.status(200).send({ message: 'Project successfully updated', updatedProject });
     }
     async patchAssignedUsers(req, res) {
-        const project = await Project_1.ProjectModel.findById(req.params.projectId);
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId);
         if (!project) {
             throw new error_1.ResponseError('Project not found!', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -85,7 +89,7 @@ let ProjectController = class ProjectController {
         return res.status(200).send({ message: 'Assigned users successfully changed!', updatedProject });
     }
     async deleteProject(req, res) {
-        const project = await Project_1.ProjectModel.findById(req.params.projectId);
+        const project = await project_model_1.ProjectModel.findById(req.params.projectId);
         if (!project) {
             throw new error_1.ResponseError('Project not found!', error_1.ErrorTypes.NOT_FOUND);
         }

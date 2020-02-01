@@ -13,9 +13,13 @@ const core_1 = require("@overnightjs/core");
 const upload_service_1 = require("../../services/upload.service");
 const passport_1 = __importDefault(require("passport"));
 const path_1 = __importDefault(require("path"));
+const ServiceInjector_1 = require("../../ServiceInjector");
 const uploadService = new upload_service_1.UploadService();
 const upload = uploadService.initUploadMiddleware();
 let FileController = class FileController {
+    constructor(uploadService) {
+        this.uploadService = uploadService || ServiceInjector_1.ServiceInjector.getService('uploadService');
+    }
     async uploadFiles(req, res) {
         if (!req.files) {
             return res.status(400).send({ message: 'No files sent!' });

@@ -7,7 +7,7 @@ const TestServer_1 = require("../../TestServer");
 const auth_1 = require("./auth");
 const supertest_1 = __importDefault(require("supertest"));
 const testSetup_1 = require("../../startup/testSetup");
-const User_1 = __importDefault(require("../../models/User"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
 const user_1 = require("../../test-data/user");
 function checkResponse(res, expectedParam, expectedMsg) {
     expect(res.status).toBe(422);
@@ -29,7 +29,7 @@ describe('AuthController', () => {
     describe('POST /api/auth/register', () => {
         const url = '/api/auth/register';
         it('throws (email aready exists)', async () => {
-            const user = new User_1.default(user_1.ownerData());
+            const user = new user_model_1.default(user_1.ownerData());
             await user.save();
             const res = await request.post(url).send(user_1.ownerData());
             checkResponse(res, 'email', 'E-mail already in use');
@@ -40,7 +40,7 @@ describe('AuthController', () => {
         });
         it('creatse new user in db (valid payload)', async () => {
             const res = await request.post(url).send(user_1.ownerData());
-            const user = await User_1.default.findOne({ email: user_1.ownerData().email });
+            const user = await user_model_1.default.findOne({ email: user_1.ownerData().email });
             expect(user).toBeTruthy();
         });
     });
@@ -48,7 +48,7 @@ describe('AuthController', () => {
         const url = '/api/auth/login';
         const { email, password } = user_1.ownerData();
         beforeEach(async () => {
-            await User_1.default.create(user_1.ownerData());
+            await user_model_1.default.create(user_1.ownerData());
         });
         it('throws (user does not exist, wrong email or pw)', async () => {
             const res = await request.post(url)
@@ -85,7 +85,7 @@ describe('AuthController', () => {
                 newPWConfirm: 'newPassword'
             };
             beforeEach(async () => {
-                user = await User_1.default.create(user_1.ownerData());
+                user = await user_model_1.default.create(user_1.ownerData());
                 token = user.generateToken();
             });
             it('returns status 400 (invalid old password', async () => {
@@ -105,7 +105,7 @@ describe('AuthController', () => {
                 const res = await request.put(url)
                     .set({ Authorization: 'Bearer ' + token })
                     .send(payload);
-                const updatedUser = await User_1.default.findById(user._id).select('+password');
+                const updatedUser = await user_model_1.default.findById(user._id).select('+password');
                 expect(updatedUser).toBeTruthy();
                 const isSamePW = await updatedUser.comparePassword(payload.newPW);
                 expect(isSamePW).toBe(true);
@@ -114,7 +114,7 @@ describe('AuthController', () => {
     describe('GET /api/auth/token', () => {
         const url = '/api/auth/token';
         beforeEach(async () => {
-            user = await User_1.default.create(user_1.ownerData());
+            user = await user_model_1.default.create(user_1.ownerData());
             token = user.generateToken();
         });
         it('throws 401 (user not authenticated)', async () => {

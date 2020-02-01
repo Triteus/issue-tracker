@@ -12,4 +12,4 @@ exports.subTaskSchema = new mongoose_1.Schema({
     },
 });
 exports.SubTaskModel = mongoose_1.model('SubTask', exports.subTaskSchema);
-//# sourceMappingURL=SubTask.js.map
+//# sourceMappingURL=subtask.model.js.map

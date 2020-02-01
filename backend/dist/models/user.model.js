@@ -79,4 +79,4 @@ exports.userSchema.virtual("username").get(function () {
     return this.firstName + " " + this.lastName;
 });
 exports.default = mongoose_1.default.model('User', exports.userSchema);
-//# sourceMappingURL=User.js.map
+//# sourceMappingURL=user.model.js.map

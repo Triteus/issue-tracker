@@ -9,10 +9,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../../models/User"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
 const passport_1 = __importDefault(require("passport"));
 const core_1 = require("@overnightjs/core");
-const User_2 = __importDefault(require("../../models/User"));
+const user_model_2 = __importDefault(require("../../models/user.model"));
 const auth_validate_1 = require("./auth.validate");
 const error_1 = require("../../middlewares/error");
 const validation_1 = require("../../middlewares/validation");
@@ -22,7 +22,7 @@ let AuthController = class AuthController {
         const { email, password, firstName, lastName } = req.body;
         // create new user
         let user;
-        user = await User_2.default.create({ email, password, firstName, lastName });
+        user = await user_model_2.default.create({ email, password, firstName, lastName });
         const { password: pw, ...payload } = user.toJSON();
         res.status(201).send({
             user: payload,
@@ -52,7 +52,7 @@ let AuthController = class AuthController {
     }
     async changePassword(req, res) {
         const { oldPW, newPW } = req.body;
-        const user = await User_1.default.findById(req.user._id).select('+password');
+        const user = await user_model_1.default.findById(req.user._id).select('+password');
         if (!user) {
             throw new error_1.ResponseError('User not found!', error_1.ErrorTypes.NOT_FOUND);
         }

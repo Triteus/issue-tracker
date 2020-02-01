@@ -18,7 +18,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@overnightjs/core");
 const passport = require("passport");
-const User_1 = __importStar(require("../../models/User"));
+const user_model_1 = __importStar(require("../../models/user.model"));
 const authorization_1 = __importDefault(require("../../middlewares/authorization"));
 const express_validator_1 = require("express-validator");
 const user_validate_1 = require("./user.validate");
@@ -27,18 +27,18 @@ const validation_1 = require("../../middlewares/validation");
 const validate = validation_1.validation(user_validate_1.UserValidators);
 let UserController = class UserController {
     async getUsers(req, res) {
-        const users = await User_1.default.find();
+        const users = await user_model_1.default.find();
         res.status(200).send(users);
     }
     async getUser(req, res) {
-        const user = await User_1.default.findOne({ _id: req.params.id });
+        const user = await user_model_1.default.findOne({ _id: req.params.id });
         if (!user) {
             throw new error_1.ResponseError('User not found', error_1.ErrorTypes.NOT_FOUND);
         }
         res.status(200).send(user);
     }
     async deleteUser(req, res) {
-        const user = await User_1.default.findOneAndDelete({ _id: req.params.id });
+        const user = await user_model_1.default.findOneAndDelete({ _id: req.params.id });
         if (!user) {
             throw new error_1.ResponseError('User not found', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -57,7 +57,7 @@ let UserController = class UserController {
         }
         const userId = req.params.id;
         const userPayload = req.body;
-        const user = await User_1.default.findById(userId);
+        const user = await user_model_1.default.findById(userId);
         if (!user) {
             throw new error_1.ResponseError('Cannot alter user: User not found', error_1.ErrorTypes.NOT_FOUND);
         }
@@ -79,7 +79,7 @@ __decorate([
     core_1.Delete(':id'),
     core_1.Middleware([
         passport.authenticate('jwt', { session: false }),
-        authorization_1.default.hasRoles(User_1.ERole.Admin)
+        authorization_1.default.hasRoles(user_model_1.ERole.Admin)
     ])
 ], UserController.prototype, "deleteUser", null);
 __decorate([

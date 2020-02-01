@@ -8,18 +8,20 @@ const bson_1 = require("bson");
 const project_1 = require("./project");
 const testSetup_1 = require("../../../startup/testSetup");
 const TestServer_1 = require("../../../TestServer");
-const Project_1 = require("../../../models/Project");
-const User_1 = __importDefault(require("../../../models/User"));
+const project_model_1 = require("../../../models/project.model");
+const user_model_1 = __importDefault(require("../../../models/user.model"));
 const user_1 = require("../../../test-data/user");
 const project_2 = require("../../../test-data/project");
 const test_util_1 = require("../../../util/test-util");
 const mongoose_1 = require("mongoose");
+const project_service_1 = require("../../../services/project.service");
 describe(('ProjectController'), () => {
-    const projectController = new project_1.ProjectController();
+    let projectController;
     let request;
     testSetup_1.setupDB('test-project-controller');
     beforeAll(async (done) => {
         const testServer = new TestServer_1.TestServer();
+        projectController = new project_1.ProjectController(new project_service_1.ProjectService());
         testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();
@@ -28,13 +30,13 @@ describe(('ProjectController'), () => {
     let user;
     let token;
     beforeEach(async () => {
-        user = await User_1.default.create(user_1.randomUserData());
+        user = await user_model_1.default.create(user_1.randomUserData());
         token = user.generateToken();
     });
     describe('GET /api/v2/project', () => {
         const url = '/api/v2/project/';
         beforeEach(async () => {
-            project = new Project_1.ProjectModel(project_2.projectData());
+            project = new project_model_1.ProjectModel(project_2.projectData());
             await project.addUserToProjectAndSave(user._id);
         });
         it('returns status 401 (not authenticated)', async () => {
@@ -51,7 +53,7 @@ describe(('ProjectController'), () => {
     describe('GET /api/v2/project/:id', () => {
         const url = '/api/v2/project/';
         beforeEach(async () => {
-            project = new Project_1.ProjectModel(project_2.projectData());
+            project = new project_model_1.ProjectModel(project_2.projectData());
             await project.addUserToProjectAndSave(user._id);
         });
         it('returns status 401 (not authenticated)', async () => {
@@ -104,8 +106,8 @@ describe(('ProjectController'), () => {
         const url = '/api/v2/project/';
         let leader;
         beforeEach(async () => {
-            leader = await User_1.default.create(user_1.ownerData());
-            project = new Project_1.ProjectModel(project_2.projectData());
+            leader = await user_model_1.default.create(user_1.ownerData());
+            project = new project_model_1.ProjectModel(project_2.projectData());
             await project.addUserToProjectAndSave(user._id);
         });
         it('returns status 401 (not authenticated)', async () => {
@@ -153,8 +155,8 @@ describe(('ProjectController'), () => {
         const url = '/api/v2/project/';
         let leader;
         beforeEach(async () => {
-            leader = await User_1.default.create(user_1.ownerData());
-            project = await Project_1.ProjectModel.create(project_2.projectData());
+            leader = await user_model_1.default.create(user_1.ownerData());
+            project = await project_model_1.ProjectModel.create(project_2.projectData());
         });
         it('returns status 401 (not authenticated)', async () => {
             const res = await request.delete(url + project._id);
@@ -182,8 +184,8 @@ describe(('ProjectController'), () => {
         const url = '/api/v2/project/';
         let leader;
         beforeEach(async () => {
-            leader = await User_1.default.create(user_1.ownerData());
-            project = await Project_1.ProjectModel.create(project_2.projectData());
+            leader = await user_model_1.default.create(user_1.ownerData());
+            project = await project_model_1.ProjectModel.create(project_2.projectData());
         });
         it('returns status 401 (not authenticated)', async () => {
             const res = await request.patch(url + project._id + '/assignedUsers');

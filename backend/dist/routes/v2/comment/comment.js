@@ -13,28 +13,28 @@ const core_1 = require("@overnightjs/core");
 const project_1 = require("../../../middlewares/project");
 const ticket_1 = require("../../../middlewares/ticket");
 const error_1 = require("../../../middlewares/error");
-const Comment_1 = require("../../../models/Comment");
-const User_1 = require("../../../models/User");
+const comment_model_1 = require("../../../models/comment.model");
+const user_model_1 = require("../../../models/user.model");
 const mongoose_1 = require("mongoose");
 const authorization_1 = __importDefault(require("../../../middlewares/authorization"));
 const passport_1 = __importDefault(require("passport"));
 const validation_1 = require("../../../middlewares/validation");
 const comment_validate_1 = require("./comment.validate");
-const comment_service_1 = require("../../../services/comment.service");
+const ServiceInjector_1 = require("../../../ServiceInjector");
 const validate = validation_1.validation(comment_validate_1.CommentValidators);
 /** This controller is used as a child-controller for ticket-controller
  *
  */
 let CommentController = class CommentController {
-    constructor() {
-        this.commentService = new comment_service_1.CommentService();
+    constructor(commentService) {
+        this.commentService = commentService || ServiceInjector_1.ServiceInjector.getService('commentService');
     }
     async getComments(req, res) {
         const projectId = mongoose_1.Types.ObjectId(req.params.projectId);
         const ticketId = mongoose_1.Types.ObjectId(req.params.ticketId);
         const result = await this.commentService.getCommentsUpdatedAsc(projectId, ticketId, req.query);
-        const comments = await Comment_1.CommentModel.populateComments(result);
-        return res.status(200).send({ comments: Comment_1.CommentModel.toJSON(comments), numComments: res.locals.ticket.comments.length });
+        const comments = await comment_model_1.CommentModel.populateComments(result);
+        return res.status(200).send({ comments: comment_model_1.CommentModel.toJSON(comments), numComments: res.locals.ticket.comments.length });
     }
     async getComment(req, res) {
         const ticket = res.locals.ticket;
@@ -43,13 +43,13 @@ let CommentController = class CommentController {
         if (!comment) {
             throw new error_1.ResponseError('Comment not found!', error_1.ErrorTypes.NOT_FOUND);
         }
-        return res.status(200).send({ comment: await Comment_1.CommentModel.populateComment(comment) });
+        return res.status(200).send({ comment: await comment_model_1.CommentModel.populateComment(comment) });
     }
     async postComment(req, res) {
         const project = res.locals.project;
         const ticket = res.locals.ticket;
         const user = req.user;
-        const comment = new Comment_1.CommentModel({ userId: user._id, message: req.body.message });
+        const comment = new comment_model_1.CommentModel({ userId: user._id, message: req.body.message });
         ticket.comments.push(comment);
         await project.save();
         return res.status(200).send({ comment, message: 'Comment successfully created!' });
@@ -59,7 +59,7 @@ let CommentController = class CommentController {
         const ticket = res.locals.ticket;
         const user = req.user;
         const commentId = mongoose_1.Types.ObjectId(req.params.commentId);
-        if (!commentId.equals(user._id) && !authorization_1.default.hasRoles(User_1.ERole.Admin)) {
+        if (!commentId.equals(user._id) && !authorization_1.default.hasRoles(user_model_1.ERole.Admin)) {
             throw new error_1.ResponseError('No permission to change comment.', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         const comment = ticket.comments.id(commentId);
@@ -75,7 +75,7 @@ let CommentController = class CommentController {
         const ticket = res.locals.ticket;
         const user = req.user;
         const commentId = mongoose_1.Types.ObjectId(req.params.commentId);
-        if (!commentId.equals(user._id) && !authorization_1.default.hasRoles(User_1.ERole.Admin)) {
+        if (!commentId.equals(user._id) && !authorization_1.default.hasRoles(user_model_1.ERole.Admin)) {
             throw new error_1.ResponseError('No permission to change comment.', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         const comment = ticket.comments.id(commentId);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../models/User");
+const user_model_1 = require("../models/user.model");
 const error_1 = require("./error");
 /**
  * Middelware that checks if user was added to the project
@@ -13,7 +13,7 @@ const error_1 = require("./error");
 function userBelongsToProject(req, res, next) {
     const project = res.locals.project;
     const user = req.user;
-    if (user.roles.includes(User_1.ERole.Admin)) {
+    if (user.roles.includes(user_model_1.ERole.Admin)) {
         return next();
     }
     if (project.assignedUsers.includes(user._id)) {

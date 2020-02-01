@@ -13,21 +13,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const testSetup_1 = require("../../startup/testSetup");
 const TestServer_1 = require("../../TestServer");
 const supertest_1 = __importDefault(require("supertest"));
-const User_1 = __importDefault(require("../../models/User"));
-const Ticket_1 = __importStar(require("../../models/Ticket"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
+const ticket_model_1 = __importStar(require("../../models/ticket.model"));
 const bson_1 = require("bson");
 const ticket_1 = require("../../test-data/ticket");
 const user_1 = require("../../test-data/user");
 const project_1 = require("../v2/project/project");
-const Project_1 = require("../../models/Project");
+const project_model_1 = require("../../models/project.model");
 const project_2 = require("../../test-data/project");
 const test_util_1 = require("../../util/test-util");
+const ticket_service_1 = require("../../services/ticket.service");
+const project_service_1 = require("../../services/project.service");
 describe('TicketController', () => {
-    const projectController = new project_1.ProjectController();
+    let projectController;
     let request;
     testSetup_1.setupDB('test-ticket-controller');
     beforeAll(async (done) => {
         const testServer = new TestServer_1.TestServer();
+        testServer.setServicesForChildControllers({
+            'ticketService': new ticket_service_1.TicketService()
+        });
+        projectController = new project_1.ProjectController(new project_service_1.ProjectService());
         testServer.setControllers(projectController);
         request = supertest_1.default(testServer.getExpressInstance());
         done();
@@ -40,13 +46,13 @@ describe('TicketController', () => {
     const baseUrl = "/api/v2";
     let url = '';
     beforeEach(async () => {
-        project = await Project_1.ProjectModel.create(project_2.projectData());
+        project = await project_model_1.ProjectModel.create(project_2.projectData());
         url = `${baseUrl}/project/${project._id}/ticket/`;
     });
     describe('POST /api/v2/:projectId/ticket', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             await project.save();
@@ -84,20 +90,20 @@ describe('TicketController', () => {
         });
         it('created new ticket in db', async () => {
             const res = await request.post(url).send(ticket_1.ticketData());
-            const ticket = await Ticket_1.default.find({ title: ticket_1.ticketData().title });
+            const ticket = await ticket_model_1.default.find({ title: ticket_1.ticketData().title });
             expect(ticket).toBeTruthy();
         });
     });
     describe('PUT /api/v2/:projectId/ticket/:id', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
-            randomUser = await User_1.default.create(user_1.randomUserData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
+            randomUser = await user_model_1.default.create(user_1.randomUserData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             project.addUserToProject(randomUser._id);
             await project.save();
-            ticket = new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id });
+            ticket = new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id });
             project.tickets.push(ticket);
             await project.save();
         });
@@ -147,14 +153,14 @@ describe('TicketController', () => {
     });
     describe('DELETE /api/v2/:projectId/ticket/:id', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
-            randomUser = await User_1.default.create(user_1.randomUserData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
+            randomUser = await user_model_1.default.create(user_1.randomUserData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             project.addUserToProject(randomUser._id);
             await project.save();
-            ticket = new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id });
+            ticket = new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id });
             project.tickets.push(ticket);
             // assign project with added ticket so that we can access ticket's id field
             project = await project.save();
@@ -185,7 +191,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(403);
         });
         it('returns status 403 (owner wants to delete ticket with status other than open', async () => {
-            ticket.status = Ticket_1.TicketStatus.ACTIVE;
+            ticket.status = ticket_model_1.TicketStatus.ACTIVE;
             await project.save();
             const res = await request.delete(url + ticket._id)
                 .set(test_util_1.authHeaderObject(owner.generateToken()));
@@ -202,7 +208,7 @@ describe('TicketController', () => {
             expect(res.status).toBe(200);
         });
         it('returns status 200 (support deletes ticket with status other than "open"', async () => {
-            const activeTicket = new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id, status: 'active' });
+            const activeTicket = new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id, status: 'active' });
             project.tickets.push(activeTicket);
             await project.save();
             await activeTicket.save();
@@ -219,14 +225,14 @@ describe('TicketController', () => {
         it('deletes ticket from db', async () => {
             const res = await request.delete(url + ticket._id)
                 .set(test_util_1.authHeaderObject(owner.generateToken()));
-            const deletedTicket = await Ticket_1.default.findById(ticket._id);
+            const deletedTicket = await ticket_model_1.default.findById(ticket._id);
             expect(deletedTicket).toBeFalsy();
         });
     });
     describe('GET /api/v2/:projectId/ticket/', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            project.tickets.push(new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
+            owner = await user_model_1.default.create(user_1.ownerData());
+            project.tickets.push(new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
             await project.save();
             ticket = project.tickets[0];
         });
@@ -257,8 +263,8 @@ describe('TicketController', () => {
     });
     describe('GET /api/v2/:projectId/ticket/:id', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            ticket = new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id, lastEditor: owner._id });
+            owner = await user_model_1.default.create(user_1.ownerData());
+            ticket = new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id, lastEditor: owner._id });
             project.tickets.push(ticket);
             project = await project.save();
             ticket = project.tickets[0];
@@ -284,26 +290,26 @@ describe('TicketController', () => {
     });
     describe('PATCH /api/v2/:projectId/ticket/:id/status', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
-            randomUser = await User_1.default.create(user_1.randomUserData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
+            randomUser = await user_model_1.default.create(user_1.randomUserData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             project.addUserToProject(randomUser._id);
             await project.save();
-            project.tickets.push(new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
+            project.tickets.push(new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
             project = await project.save();
             ticket = project.tickets[0];
         });
         it('returns status 401 (no token)', async () => {
-            const res = await request.patch(url + ticket._id + '/status').send({ status: Ticket_1.TicketStatus.ACTIVE });
+            const res = await request.patch(url + ticket._id + '/status').send({ status: ticket_model_1.TicketStatus.ACTIVE });
             expect(res.status).toBe(401);
         });
         it('returns status 403 (user not assigned to project)', async () => {
             await project.removeUserFromProjectAndSave(randomUser._id);
             const res = await request.patch(url + ticket._id + '/status')
                 .set(test_util_1.authHeaderObject(randomUser.generateToken()))
-                .send({ status: Ticket_1.TicketStatus.ACTIVE });
+                .send({ status: ticket_model_1.TicketStatus.ACTIVE });
             expect(res.status).toBe(403);
             expect(res.body.error).toMatch(/not assigned to project/i);
         });
@@ -316,32 +322,32 @@ describe('TicketController', () => {
         it('adds new history entry', async () => {
             const res = await request.patch(url + ticket._id + '/status')
                 .set(test_util_1.authHeaderObject(editor.generateToken()))
-                .send({ ...ticket_1.ticketData(), status: Ticket_1.TicketStatus.CLOSED });
+                .send({ ...ticket_1.ticketData(), status: ticket_model_1.TicketStatus.CLOSED });
             expect(res.status).toBe(200);
             expect(res.body.ticket.editorHistory.length).toBe(ticket.editorHistory.length + 1);
         });
         it('returns status 200 (status changed)', async () => {
             const res = await request.patch(url + ticket._id + '/status')
                 .set(test_util_1.authHeaderObject(editor.generateToken()))
-                .send({ status: Ticket_1.TicketStatus.ACTIVE });
+                .send({ status: ticket_model_1.TicketStatus.ACTIVE });
             expect(res.status).toBe(200);
         });
     });
     describe('PATCH /api/v2/:projectId/ticket/:id/sub-task', () => {
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
-            randomUser = await User_1.default.create(user_1.randomUserData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
+            randomUser = await user_model_1.default.create(user_1.randomUserData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             project.addUserToProject(randomUser._id);
             await project.save();
-            project.tickets.push(new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
+            project.tickets.push(new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
             project = await project.save();
             ticket = project.tickets[0];
         });
         it('return status 401 (no token)', async () => {
-            const res = await request.patch(url + ticket._id + '/sub-task').send({ status: Ticket_1.TicketStatus.ACTIVE });
+            const res = await request.patch(url + ticket._id + '/sub-task').send({ status: ticket_model_1.TicketStatus.ACTIVE });
             expect(res.status).toBe(401);
         });
         it('returns status 403 (user not assigned to project)', async () => {
@@ -368,18 +374,18 @@ describe('TicketController', () => {
     describe('PATCH /api/v2/:projectId/ticket/:id/title', () => {
         const subUrl = '/title';
         beforeEach(async () => {
-            owner = await User_1.default.create(user_1.ownerData());
-            editor = await User_1.default.create(user_1.editorData());
-            randomUser = await User_1.default.create(user_1.randomUserData());
+            owner = await user_model_1.default.create(user_1.ownerData());
+            editor = await user_model_1.default.create(user_1.editorData());
+            randomUser = await user_model_1.default.create(user_1.randomUserData());
             project.addUserToProject(owner._id);
             project.addUserToProject(editor._id);
             await project.save();
-            project.tickets.push(new Ticket_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
+            project.tickets.push(new ticket_model_1.default({ ...ticket_1.ticketData(), owner: owner._id }));
             project = await project.save();
             ticket = project.tickets[0];
         });
         it('return status 401 (no token)', async () => {
-            const res = await request.patch(url + ticket._id + subUrl).send({ status: Ticket_1.TicketStatus.ACTIVE });
+            const res = await request.patch(url + ticket._id + subUrl).send({ status: ticket_model_1.TicketStatus.ACTIVE });
             expect(res.status).toBe(401);
         });
         it('returns status 403 (user not assigned to project)', async () => {
@@ -413,7 +419,7 @@ describe('TicketController', () => {
             const res = await request.patch(url + ticket._id + subUrl)
                 .set(test_util_1.authHeaderObject(editor.generateToken()))
                 .send({ title: 'validTitle' });
-            const updatedProject = await Project_1.ProjectModel.findOne({ 'tickets._id': ticket._id });
+            const updatedProject = await project_model_1.ProjectModel.findOne({ 'tickets._id': ticket._id });
             expect(updatedProject).toBeTruthy();
             expect(updatedProject.tickets[0].title).toBe('validTitle');
         });

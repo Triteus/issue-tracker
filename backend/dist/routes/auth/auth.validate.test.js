@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../../models/User"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
 const auth_validate_1 = require("./auth.validate");
 const testSetup_1 = require("../../startup/testSetup");
 const test_util_1 = require("../../validators/test-util");
@@ -23,7 +23,7 @@ describe('AuthController validation', () => {
             test_util_1.checkResponse(errors, 'email', 'Invalid e-mail');
         });
         it('throws (email aready exists)', async () => {
-            const user = new User_1.default(user_1.ownerData());
+            const user = new user_model_1.default(user_1.ownerData());
             await user.save();
             const errors = await test_util_1.validateBody(user_1.ownerData(), validators);
             test_util_1.checkResponse(errors, 'email', 'E-mail already in use');

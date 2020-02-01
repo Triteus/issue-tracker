@@ -7,19 +7,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importStar(require("../models/User"));
+const user_model_1 = __importStar(require("../models/user.model"));
 const visitorData = {
     email: 'randomvisitor@mail.com',
     firstName: 'random',
     lastName: 'visitor',
     password: 'visitor',
-    roles: [User_1.ERole.Visitor]
+    roles: [user_model_1.ERole.Visitor]
 };
 async function createVisitorIfNotExists() {
-    const user = await User_1.default.findOne({ email: 'randomvisitor@mail.com' });
+    const user = await user_model_1.default.findOne({ email: 'randomvisitor@mail.com' });
     if (!user) {
         console.log('creating visitor...');
-        const visitor = new User_1.default(visitorData);
+        const visitor = new user_model_1.default(visitorData);
         await visitor.save();
     }
 }

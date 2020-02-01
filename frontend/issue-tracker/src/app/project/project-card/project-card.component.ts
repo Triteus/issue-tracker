@@ -19,7 +19,7 @@ export class ProjectCardComponent implements OnInit {
   ngOnInit() {
   }
 
-  onClick() {
+  onClick(event: Event) {
     this.cardClick.emit();
   }
 

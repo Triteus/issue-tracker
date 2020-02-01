@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ticket_service_util_1 = require("./ticket.service.util");
-const Ticket_1 = require("../models/Ticket");
+const ticket_model_1 = require("../models/ticket.model");
 const mongoose_1 = require("mongoose");
 describe('ticket-service-utils', () => {
     describe('filtering', () => {
@@ -30,8 +30,8 @@ describe('ticket-service-utils', () => {
         });
         it('returns object with remaining filters', () => {
             const remainingFilters = {
-                priority: Ticket_1.Priority.HIGH,
-                category: Ticket_1.TicketCategory.BUG
+                priority: ticket_model_1.Priority.HIGH,
+                category: ticket_model_1.TicketCategory.BUG
             };
             const res = ticket_service_util_1.filter(remainingFilters);
             for (let key of Object.keys(remainingFilters)) {

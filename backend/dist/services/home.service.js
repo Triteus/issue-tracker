@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Project_1 = require("../models/Project");
-const Ticket_1 = require("../models/Ticket");
+const project_model_1 = require("../models/project.model");
+const ticket_model_1 = require("../models/ticket.model");
 const moment_1 = __importDefault(require("moment"));
+// TODO write tests
 class HomeService {
     async findLastTickets(numTickets, userId) {
         const match = {
@@ -15,10 +16,10 @@ class HomeService {
             ]
         };
         const projection = {};
-        Ticket_1.ticketSchema.eachPath((path) => {
+        ticket_model_1.ticketSchema.eachPath((path) => {
             projection[path] = `$tickets.${path}`;
         });
-        return await Project_1.ProjectModel.aggregate([
+        return await project_model_1.ProjectModel.aggregate([
             { $match: match },
             { $unwind: '$tickets' },
             { $match: match },
@@ -29,7 +30,7 @@ class HomeService {
     }
     async countTicketsCreatedLastMonth() {
         const timeLastMonth = moment_1.default().subtract(1, 'months').toDate();
-        const result = await Project_1.ProjectModel.aggregate([
+        const result = await project_model_1.ProjectModel.aggregate([
             { $unwind: '$tickets' },
             { $match: { 'tickets.createdAt': { $gte: timeLastMonth } } },
             { $count: 'numTickets' }
@@ -38,7 +39,7 @@ class HomeService {
     }
     async countTicketsCreatedLastWeek() {
         const timeLastWeek = moment_1.default().subtract(1, 'weeks').toDate();
-        const result = await Project_1.ProjectModel.aggregate([
+        const result = await project_model_1.ProjectModel.aggregate([
             { $unwind: '$tickets' },
             { $match: { 'tickets.createdAt': { $gte: timeLastWeek } } },
             { $count: 'numTickets' }

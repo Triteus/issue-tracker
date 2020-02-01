@@ -8,8 +8,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const SubTask_1 = require("./SubTask");
-const Comment_1 = require("./Comment");
+const subtask_model_1 = require("./subtask.model");
+const comment_model_1 = require("./comment.model");
 var TicketStatus;
 (function (TicketStatus) {
     TicketStatus["OPEN"] = "open";
@@ -88,7 +88,7 @@ exports.ticketSchema = new mongoose_1.default.Schema({
         default: TicketCategory.OTHER
     },
     subTasks: {
-        type: [SubTask_1.subTaskSchema],
+        type: [subtask_model_1.subTaskSchema],
         default: []
     },
     affectedSystems: {
@@ -100,7 +100,7 @@ exports.ticketSchema = new mongoose_1.default.Schema({
         default: []
     },
     comments: {
-        type: [Comment_1.commentSchema],
+        type: [comment_model_1.commentSchema],
         default: []
     }
 }, {
@@ -166,4 +166,4 @@ exports.ticketSchema.virtual("id").get(function () {
     return this._id;
 });
 exports.default = mongoose_1.default.model('Ticket', exports.ticketSchema);
-//# sourceMappingURL=Ticket.js.map
+//# sourceMappingURL=ticket.model.js.map

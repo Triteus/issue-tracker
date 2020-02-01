@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("./User"));
+const user_model_1 = __importDefault(require("./user.model"));
 describe('UserModel', () => {
-    const user = new User_1.default({ email: 'test@mail.com', password: 'password', firstName: 'Max', lastName: 'Mustermann' });
+    const user = new user_model_1.default({ email: 'test@mail.com', password: 'password', firstName: 'Max', lastName: 'Mustermann' });
     it('hashes password before saving it to db', async () => {
         await user.validate();
         console.log('password', user.password);

@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Project_1 = require("../models/Project");
+const project_model_1 = require("../models/project.model");
 class ProjectService {
     findProjectsByAssignedUser(userId) {
-        return Project_1.ProjectModel.find({ assignedUsers: { $in: [userId] } });
+        return project_model_1.ProjectModel.find({ assignedUsers: { $in: [userId] } });
     }
     async countAllTickets() {
-        const result = await Project_1.ProjectModel.aggregate([
+        const result = await project_model_1.ProjectModel.aggregate([
             { $unwind: '$tickets' },
             { $count: 'numTickets' }
         ]);

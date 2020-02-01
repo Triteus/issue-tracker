@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
-const User_1 = __importDefault(require("../models/User"));
+const user_model_1 = __importDefault(require("../models/user.model"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const config_1 = __importDefault(require("config"));
 function initPassport() {
@@ -15,7 +15,7 @@ function initPassport() {
         passwordField: 'password'
     }, async function (email, password, cb) {
         try {
-            const user = await User_1.default.findOne({ email }).select('+password');
+            const user = await user_model_1.default.findOne({ email }).select('+password');
             if (!user || !await user.comparePassword(password)) {
                 return cb(null, false, { message: 'Incorrect email or password' });
             }
@@ -30,7 +30,7 @@ function initPassport() {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: config_1.default.get('secretKey')
     }, function (jwtPayload, cb) {
-        return User_1.default.findOne({ _id: jwtPayload.id })
+        return user_model_1.default.findOne({ _id: jwtPayload.id })
             .then(user => {
             return cb(null, user);
         })

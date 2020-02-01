@@ -44,4 +44,4 @@ exports.commentSchema.statics.populateComment = async function (comment) {
     return result[0];
 };
 exports.CommentModel = mongoose_1.default.model('Comment', exports.commentSchema);
-//# sourceMappingURL=Comment.js.map
+//# sourceMappingURL=comment.model.js.map

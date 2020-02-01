@@ -7,7 +7,7 @@ const testSetup_1 = require("../../startup/testSetup");
 const supertest = require("supertest");
 const TestServer_1 = require("../../TestServer");
 const user_1 = require("./user");
-const User_1 = __importDefault(require("../../models/User"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
 const bson_1 = require("bson");
 const user_2 = require("../../test-data/user");
 describe(('UserController'), () => {
@@ -23,7 +23,7 @@ describe(('UserController'), () => {
     let user;
     let token;
     beforeEach(async () => {
-        user = await User_1.default.create(user_2.ownerData());
+        user = await user_model_1.default.create(user_2.ownerData());
         token = user.generateToken();
     });
     describe('GET /api/user', () => {
@@ -66,7 +66,7 @@ describe(('UserController'), () => {
             });
             it('returns status 403 (user is not owner of account)', async () => {
                 // create second user 
-                const secondUser = await User_1.default.create({
+                const secondUser = await user_model_1.default.create({
                     ...user_2.randomUserData(),
                     email: 'secondUser@mail.com'
                 });
@@ -86,7 +86,7 @@ describe(('UserController'), () => {
                 const res = await request.patch(url + user._id)
                     .set({ Authorization: 'Bearer ' + token })
                     .send({ email: 'changed@mail.com' });
-                const updatedUser = await User_1.default.findById(user._id);
+                const updatedUser = await user_model_1.default.findById(user._id);
                 expect(updatedUser.email).toBe('changed@mail.com');
             });
         });

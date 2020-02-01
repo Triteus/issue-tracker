@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
-const User_1 = __importDefault(require("../../models/User"));
+const user_model_1 = __importDefault(require("../../models/user.model"));
 exports.validatePW = express_validator_1.body('password')
     .trim()
     .isLength({ min: 6 })
@@ -15,7 +15,7 @@ exports.validateEmail = express_validator_1.body('email')
     .bail()
     .normalizeEmail()
     .custom(val => {
-    return User_1.default.findOne({ email: val })
+    return user_model_1.default.findOne({ email: val })
         .then(user => {
         if (user) {
             return Promise.reject('E-mail already in use');

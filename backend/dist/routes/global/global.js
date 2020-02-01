@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@overnightjs/core");
-const User_1 = require("../../models/User");
+const user_model_1 = require("../../models/user.model");
 const error_1 = require("../../middlewares/error");
 const passport_1 = __importDefault(require("passport"));
 function excludeRoutes(routes) {
@@ -32,28 +32,28 @@ let GlobalController = class GlobalController {
             return next();
         }
         const roles = req.user.roles;
-        if (roles.includes(User_1.ERole.Visitor)) {
+        if (roles.includes(user_model_1.ERole.Visitor)) {
             throw new error_1.ResponseError('Visitors cannot create any resources', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         next();
     }
     async putAction(req, res, next) {
         const roles = req.user.roles;
-        if (roles.includes(User_1.ERole.Visitor)) {
+        if (roles.includes(user_model_1.ERole.Visitor)) {
             throw new error_1.ResponseError('Visitors cannot update any resources', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         next();
     }
     async patchAction(req, res, next) {
         const roles = req.user.roles;
-        if (roles.includes(User_1.ERole.Visitor)) {
+        if (roles.includes(user_model_1.ERole.Visitor)) {
             throw new error_1.ResponseError('Visitors cannot update any resources', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         next();
     }
     async deleteAction(req, res, next) {
         const roles = req.user.roles;
-        if (roles.includes(User_1.ERole.Visitor)) {
+        if (roles.includes(user_model_1.ERole.Visitor)) {
             throw new error_1.ResponseError('Visitors cannot delete any resources', error_1.ErrorTypes.NOT_AUTHORIZED);
         }
         next();

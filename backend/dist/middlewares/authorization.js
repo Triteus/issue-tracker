@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../models/User");
+const user_model_1 = require("../models/user.model");
 const util_1 = require("util");
 const error_1 = require("./error");
 const message = 'Missing permissions!';
@@ -9,7 +9,7 @@ exports.default = {
     hasRoles: function (roles) {
         return function (req, res, next) {
             const user = req.user;
-            if (user.roles.includes(User_1.ERole.Admin)) {
+            if (user.roles.includes(user_model_1.ERole.Admin)) {
                 return next();
             }
             if (!util_1.isArray(roles)) {
@@ -29,7 +29,7 @@ exports.default = {
     hasOneRole: function (roles) {
         return function (req, res, next) {
             const user = req.user;
-            if (user.roles.includes(User_1.ERole.Admin)) {
+            if (user.roles.includes(user_model_1.ERole.Admin)) {
                 return next();
             }
             if (!util_1.isArray(roles)) {
@@ -49,7 +49,7 @@ exports.default = {
     isAccOwner: function () {
         return function (req, res, next) {
             const user = req.user;
-            if (user.roles.includes(User_1.ERole.Admin)) {
+            if (user.roles.includes(user_model_1.ERole.Admin)) {
                 return next();
             }
             if (user._id.toString() === req.params.id) {

@@ -1,19 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Ticket_1 = require("../models/Ticket");
+const ticket_model_1 = require("../models/ticket.model");
 const mongoose_1 = require("mongoose");
 function filter(query) {
     const { openSelected, progressSelected, closedSelected } = query;
     const statusArr = [];
     // handle status
     if (openSelected === 'true' || typeof openSelected === 'undefined') {
-        statusArr.push(Ticket_1.TicketStatus.OPEN);
+        statusArr.push(ticket_model_1.TicketStatus.OPEN);
     }
     if (progressSelected === 'true' || typeof openSelected === 'undefined') {
-        statusArr.push(Ticket_1.TicketStatus.ACTIVE);
+        statusArr.push(ticket_model_1.TicketStatus.ACTIVE);
     }
     if (closedSelected === 'true' || typeof openSelected === 'undefined') {
-        statusArr.push(Ticket_1.TicketStatus.CLOSED);
+        statusArr.push(ticket_model_1.TicketStatus.CLOSED);
     }
     const match = {
         status: { $in: statusArr },
@@ -88,7 +88,7 @@ function prepareAggregateStages(match, sort, pagination) {
         aggregates.push({ $limit: limit });
     }
     const projection = {};
-    Ticket_1.ticketSchema.eachPath((path) => {
+    ticket_model_1.ticketSchema.eachPath((path) => {
         projection[path] = `$tickets.${path}`;
     });
     aggregates.push({ $project: projection });

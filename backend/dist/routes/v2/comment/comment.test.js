@@ -6,25 +6,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const testSetup_1 = require("../../../startup/testSetup");
 const TestServer_1 = require("../../../TestServer");
-const Ticket_1 = __importDefault(require("../../../models/Ticket"));
-const Project_1 = require("../../../models/Project");
+const ticket_model_1 = __importDefault(require("../../../models/ticket.model"));
+const project_model_1 = require("../../../models/project.model");
 const project_1 = require("../../../test-data/project");
 const user_1 = require("../../../test-data/user");
 const ticket_1 = require("../../../test-data/ticket");
 const test_util_1 = require("../../../util/test-util");
-const User_1 = __importDefault(require("../../../models/User"));
-const Comment_1 = require("../../../models/Comment");
+const user_model_1 = __importDefault(require("../../../models/user.model"));
+const comment_model_1 = require("../../../models/comment.model");
 const mongoose_1 = require("mongoose");
 const project_2 = require("../project/project");
+const project_service_1 = require("../../../services/project.service");
+const comment_service_1 = require("../../../services/comment.service");
+const ticket_service_1 = require("../../../services/ticket.service");
 /**
  * all given routes are assumed to be accessed like this: /project/:projectId/ticket/:ticketId/comment/
  */
 describe('CommentController (child-controller)', () => {
-    const projectController = new project_2.ProjectController();
+    let projectController;
     let request;
     testSetup_1.setupDB('test-comment-controller');
     beforeAll(async (done) => {
         const testServer = new TestServer_1.TestServer();
+        // set services for child-controllers
+        testServer.setServicesForChildControllers({
+            'commentService': new comment_service_1.CommentService(),
+            'ticketService': new ticket_service_1.TicketService()
+        });
+        projectController = new project_2.ProjectController(new project_service_1.ProjectService());
         testServer.setControllers(projectController);
         request = supertest_1.default(testServer.getExpressInstance());
         done();
@@ -38,10 +47,10 @@ describe('CommentController (child-controller)', () => {
         return url = `${baseUrl}/project/${projectId}/ticket/${ticketId}/comment/`;
     }
     beforeEach(async () => {
-        user = new User_1.default(user_1.ownerData());
+        user = new user_model_1.default(user_1.ownerData());
         user = await user.save();
-        project = new Project_1.ProjectModel(project_1.projectData());
-        ticket = new Ticket_1.default({ ...ticket_1.ticketData(), owner: user._id });
+        project = new project_model_1.ProjectModel(project_1.projectData());
+        ticket = new ticket_model_1.default({ ...ticket_1.ticketData(), owner: user._id });
         project.tickets.push(ticket);
         project = await project.save();
         ticket = project.tickets[0];
@@ -66,7 +75,7 @@ describe('CommentController (child-controller)', () => {
     describe('GET /:ticketId/comment/:commentId', () => {
         let comment;
         beforeEach(async () => {
-            comment = new Comment_1.CommentModel({ message: 'newly created comment', userId: user._id });
+            comment = new comment_model_1.CommentModel({ message: 'newly created comment', userId: user._id });
             comment = await comment.save();
         });
         it('throws 404 error (comment not found)', async () => {
@@ -101,7 +110,7 @@ describe('CommentController (child-controller)', () => {
     describe('PUT /:ticketId/comment/:commentId', () => {
         let comment;
         beforeEach(async () => {
-            comment = new Comment_1.CommentModel({ message: 'newly created comment', userId: user._id });
+            comment = new comment_model_1.CommentModel({ message: 'newly created comment', userId: user._id });
             ticket.comments.push(comment);
             project = await project.save();
         });
@@ -135,7 +144,7 @@ describe('CommentController (child-controller)', () => {
     describe('DELETE /:ticketId/comment/:commentId', () => {
         let comment;
         beforeEach(async () => {
-            comment = new Comment_1.CommentModel({ message: 'newly created comment', userId: user._id });
+            comment = new comment_model_1.CommentModel({ message: 'newly created comment', userId: user._id });
             ticket.comments.push(comment);
             project = await project.save();
         });

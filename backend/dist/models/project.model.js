@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const Ticket_1 = require("./Ticket");
+const ticket_model_1 = require("./ticket.model");
 var ProjectType;
 (function (ProjectType) {
     ProjectType["DESIGN"] = "design";
@@ -52,7 +52,7 @@ exports.projectSchema = new mongoose_1.Schema({
         default: ProjectStatus.OPEN
     },
     tickets: {
-        type: [Ticket_1.ticketSchema],
+        type: [ticket_model_1.ticketSchema],
         default: []
     },
     assignedUsers: {
@@ -99,5 +99,14 @@ exports.projectSchema.methods.addProjectLeaderAndSave = async function (leaderId
     this.addProjectLeader(leaderId);
     await this.save();
 };
+/** exclude unused subdocs to decrease response size */
+exports.projectSchema.statics.toMinimizedJSON = function (projects) {
+    return projects.map((p) => {
+        const numTickets = p.tickets.length;
+        // exclude tickets
+        p.set('tickets', []);
+        return { ...p.toJSON(), numTickets };
+    });
+};
 exports.ProjectModel = mongoose_1.default.model('Project', exports.projectSchema);
-//# sourceMappingURL=Project.js.map
+//# sourceMappingURL=project.model.js.map

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
-const Ticket_1 = require("../../models/Ticket");
+const ticket_model_1 = require("../../models/ticket.model");
 exports.basicValidators = [
     express_validator_1.body('title').isLength({ min: 4, max: 100 }),
-    express_validator_1.body('category').optional().isIn(Ticket_1.ticketCategoryArr),
-    express_validator_1.body('priority').optional().isIn(Ticket_1.priorityArr),
+    express_validator_1.body('category').optional().isIn(ticket_model_1.ticketCategoryArr),
+    express_validator_1.body('priority').optional().isIn(ticket_model_1.priorityArr),
     express_validator_1.body('description').optional().isString(),
     express_validator_1.body('affectedSystems').optional().isArray(),
     express_validator_1.body('neededAt').optional().isISO8601(),
@@ -23,11 +23,11 @@ exports.TicketValidators = {
     getTicket: [],
     putTicket: [
         ...exports.basicValidators,
-        express_validator_1.body('status').isIn(Ticket_1.ticketStatusArr)
+        express_validator_1.body('status').isIn(ticket_model_1.ticketStatusArr)
     ],
     deleteTicket: [],
     changeStatus: [
-        express_validator_1.body('status').isIn(Ticket_1.ticketStatusArr)
+        express_validator_1.body('status').isIn(ticket_model_1.ticketStatusArr)
     ],
     changeTitle: [
         express_validator_1.body('title').isLength({ min: 4 })

@@ -11,10 +11,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const Ticket_1 = __importStar(require("../models/Ticket"));
+const ticket_model_1 = __importStar(require("../models/ticket.model"));
 const error_1 = require("../middlewares/error");
 const mongoose_2 = __importDefault(require("mongoose"));
-const Project_1 = require("../models/Project");
+const project_model_1 = require("../models/project.model");
 const ticket_service_util_1 = require("./ticket.service.util");
 const array_1 = require("../util/array");
 const pagination_service_1 = require("./pagination.service");
@@ -85,7 +85,7 @@ class TicketService {
         return ticket;
     }
     createTicket(ownerId, payload) {
-        return new Ticket_1.default({ ...payload, owner: ownerId });
+        return new ticket_model_1.default({ ...payload, owner: ownerId });
     }
     async findAndDeleteTicket(project, ticketId) {
         const ticket = project.tickets.id(ticketId);
@@ -129,27 +129,27 @@ class TicketService {
         // make sure to only aggregate on specific project
         match = ticket_service_util_1.withProjectId(match, project._id);
         const stages = ticket_service_util_1.prepareAggregateStages(match, sort, pagination);
-        const result = await Project_1.ProjectModel
+        const result = await project_model_1.ProjectModel
             .aggregate(stages);
-        const tickets = await Ticket_1.default.populateTickets(result);
+        const tickets = await ticket_model_1.default.populateTickets(result);
         return tickets;
     }
     async groupTicketsByStatus(project, pagination = { skip: 0, limit: Number.MAX_SAFE_INTEGER }, match = {}, sort = {}) {
         // make sure to only aggregate on specific project
         match = ticket_service_util_1.withProjectId(match, project._id);
         const stages = ticket_service_util_1.prepareAggregateStages(match, sort, pagination);
-        const result = await Project_1.ProjectModel.aggregate(stages);
-        const tickets = await Ticket_1.default.populateTickets(result);
+        const result = await project_model_1.ProjectModel.aggregate(stages);
+        const tickets = await ticket_model_1.default.populateTickets(result);
         //TODO do this while aggregating (group)
         const openTickets = [], activeTickets = [], closedTickets = [];
         for (let ticket of tickets) {
-            if (ticket.status === Ticket_1.TicketStatus.OPEN) {
+            if (ticket.status === ticket_model_1.TicketStatus.OPEN) {
                 openTickets.push(ticket);
             }
-            else if (ticket.status === Ticket_1.TicketStatus.ACTIVE) {
+            else if (ticket.status === ticket_model_1.TicketStatus.ACTIVE) {
                 activeTickets.push(ticket);
             }
-            else if (ticket.status === Ticket_1.TicketStatus.CLOSED) {
+            else if (ticket.status === ticket_model_1.TicketStatus.CLOSED) {
                 closedTickets.push(ticket);
             }
         }
@@ -165,7 +165,7 @@ class TicketService {
     async countTickets(project, match = {}) {
         // make sure to only aggregate on specific project
         match = ticket_service_util_1.withProjectId(match, project._id);
-        const result = await Project_1.ProjectModel.aggregate([
+        const result = await project_model_1.ProjectModel.aggregate([
             { $unwind: '$tickets' },
             { $match: match },
             { $count: 'numTickets' }

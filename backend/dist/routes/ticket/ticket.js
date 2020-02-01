@@ -14,20 +14,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@overnightjs/core");
-const Ticket_1 = __importStar(require("../../models/Ticket"));
-const User_1 = require("../../models/User");
+const ticket_model_1 = __importStar(require("../../models/ticket.model"));
+const user_model_1 = require("../../models/user.model");
 const passport = require("passport");
 const error_1 = require("../../middlewares/error");
-const ticket_service_1 = require("../../services/ticket.service");
 const validation_1 = require("../../middlewares/validation");
 const ticket_validate_1 = require("./ticket.validate");
 const project_1 = require("../../middlewares/project");
 const ticket_1 = require("../../middlewares/ticket");
 const comment_1 = require("../v2/comment/comment");
+const ServiceInjector_1 = require("../../ServiceInjector");
 const validate = validation_1.validation(ticket_validate_1.TicketValidators);
 let TicketController = class TicketController {
-    constructor() {
-        this.ticketService = new ticket_service_1.TicketService();
+    constructor(ticketService) {
+        this.ticketService = ticketService || ServiceInjector_1.ServiceInjector.getService('ticketService');
     }
     async createIssue(req, res) {
         const userId = req.user._id;
@@ -67,12 +67,12 @@ let TicketController = class TicketController {
             throw new error_1.ResponseError('Ticket not found!', error_1.ErrorTypes.NOT_FOUND);
         }
         if (req.user._id.equals(ticket.owner)) {
-            if (ticket.status !== Ticket_1.TicketStatus.OPEN) {
+            if (ticket.status !== ticket_model_1.TicketStatus.OPEN) {
                 throw new error_1.ResponseError('Missing permissions', error_1.ErrorTypes.NOT_AUTHORIZED);
             }
             await this.ticketService.findAndDeleteTicket(project, ticketId);
         }
-        else if (req.user.roles.includes(User_1.ERole.Support)) {
+        else if (req.user.roles.includes(user_model_1.ERole.Support)) {
             await this.ticketService.findAndDeleteTicket(project, ticketId);
         }
         else {
@@ -123,16 +123,16 @@ let TicketController = class TicketController {
         if (req.query.groupByStatus) {
             const ticketsByStatus = await this.ticketService.groupTicketsByStatus(project, pagination, match, sort);
             const ticketsJSON = {
-                openTickets: Ticket_1.default.toJSON(ticketsByStatus.openTickets),
-                activeTickets: Ticket_1.default.toJSON(ticketsByStatus.activeTickets),
-                closedTickets: Ticket_1.default.toJSON(ticketsByStatus.closedTickets)
+                openTickets: ticket_model_1.default.toJSON(ticketsByStatus.openTickets),
+                activeTickets: ticket_model_1.default.toJSON(ticketsByStatus.activeTickets),
+                closedTickets: ticket_model_1.default.toJSON(ticketsByStatus.closedTickets)
             };
             return res.status(200).send(ticketsJSON);
         }
         else {
             const tickets = await this.ticketService.getTickets(project, match, sort, pagination);
             const numTickets = await this.ticketService.countTickets(project, match);
-            res.status(200).send({ tickets: Ticket_1.default.toJSON(tickets), numAllTickets: numTickets });
+            res.status(200).send({ tickets: ticket_model_1.default.toJSON(tickets), numAllTickets: numTickets });
         }
     }
     async getTicket(req, res) {

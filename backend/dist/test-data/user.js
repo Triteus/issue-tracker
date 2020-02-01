@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../models/User");
+const user_model_1 = require("../models/user.model");
 function ownerData() {
     return {
         firstName: 'Joe',
@@ -16,7 +16,7 @@ function editorData() {
         lastName: 'Rian',
         email: 'editor@mail.com',
         password: 'password',
-        roles: [User_1.ERole.Support]
+        roles: [user_model_1.ERole.Support]
     };
 }
 exports.editorData = editorData;

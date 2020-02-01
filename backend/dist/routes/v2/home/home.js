@@ -10,27 +10,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@overnightjs/core");
-const Ticket_1 = __importDefault(require("../../models/Ticket"));
-const Project_1 = require("../../models/Project");
-const User_1 = __importDefault(require("../../models/User"));
-const ticket_service_1 = require("../../services/ticket.service");
+const ticket_model_1 = __importDefault(require("../../../models/ticket.model"));
+const project_model_1 = require("../../../models/project.model");
+const user_model_1 = __importDefault(require("../../../models/user.model"));
 const passport_1 = __importDefault(require("passport"));
 const mongoose_1 = require("mongoose");
-const project_service_1 = require("../../services/project.service");
-const home_service_1 = require("../../services/home.service");
+const ServiceInjector_1 = require("../../../ServiceInjector");
+// TODO write tests
 let HomeController = class HomeController {
-    constructor() {
-        this.ticketService = new ticket_service_1.TicketService();
-        this.projectService = new project_service_1.ProjectService();
-        this.homeService = new home_service_1.HomeService();
+    constructor(projectService, ticketService, homeService) {
+        this.projectService = projectService || ServiceInjector_1.ServiceInjector.getService('projectService');
+        this.ticketService = ticketService || ServiceInjector_1.ServiceInjector.getService('ticketService');
+        this.homeService = homeService || ServiceInjector_1.ServiceInjector.getService('homeService');
     }
     /**
      * Get some statistics about tickets and projects
      */
     async getHome(req, res) {
-        const numProjects = await Project_1.ProjectModel.countDocuments();
+        const numProjects = await project_model_1.ProjectModel.countDocuments();
         const numTickets = await this.projectService.countAllTickets();
-        const numUsers = await User_1.default.countDocuments();
+        const numUsers = await user_model_1.default.countDocuments();
         const numTicketsCreatedLastMonth = await this.homeService.countTicketsCreatedLastMonth();
         const numTicketsCreatedLastWeek = await this.homeService.countTicketsCreatedLastWeek();
         return res.status(200).send({
@@ -57,7 +56,7 @@ let HomeController = class HomeController {
         const tickets = await this.homeService.findLastTickets(10, userId);
         // make sure to add projectId again (toJSON removes all paths not belonging to ticketSchema)
         const ticketsJSON = tickets.map(ticket => {
-            const ticketJSON = new Ticket_1.default(ticket).toJSON();
+            const ticketJSON = new ticket_model_1.default(ticket).toJSON();
             return {
                 ...ticketJSON,
                 projectId: ticket.projectId
