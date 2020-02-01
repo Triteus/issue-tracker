@@ -1,3 +1,5 @@
+import { IService } from "../ServiceInjector";
+
 export interface SortParams {
     sortDir?: string;
     sortBy?: string;
@@ -7,7 +9,7 @@ export interface PreparedSortParams {
     [key: string]: 1 | -1
 }
 
-export class SortService {
+export class SortService implements IService {
 
     static prepareSort(query: SortParams): PreparedSortParams {
         const { sortBy, sortDir } = query;

@@ -13,17 +13,24 @@ import { ProjectController } from "../v2/project/project";
 import { IProject, ProjectModel } from "../../models/project.model";
 import { projectData } from "../../test-data/project";
 import { authHeaderObject } from "../../util/test-util";
+import { TicketService } from "../../services/ticket.service";
+import { ProjectService } from "../../services/project.service";
 
 
 describe('TicketController', () => {
 
-    const projectController = new ProjectController();
+    let projectController: ProjectController;
     let request: SuperTest<Test>;
 
     setupDB('test-ticket-controller');
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
+        testServer.setServices({
+            'projectService': new ProjectService(),
+            'ticketService': new TicketService()
+        })
+        projectController = new ProjectController();
         testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();

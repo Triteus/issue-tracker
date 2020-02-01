@@ -3,18 +3,20 @@ import { Request, Response } from "express";
 import TicketModel from '../../../models/ticket.model';
 import { ProjectModel } from "../../../models/project.model";
 import UserModel, { RequestWithUser } from "../../../models/user.model";
-import { TicketService } from "../../../services/ticket.service";
 import passport from "passport";
 import { Types } from "mongoose";
+import { ServiceInjector } from "../../../ServiceInjector";
+import { TicketService } from "../../../services/ticket.service";
 import { ProjectService } from "../../../services/project.service";
 import { HomeService } from "../../../services/home.service";
 
 @Controller('api/v2/home')
 export class HomeController {
 
-    ticketService = new TicketService();
-    projectService = new ProjectService();
-    homeService = new HomeService();
+    
+    ticketService = ServiceInjector.getService<TicketService>('ticketService');
+    projectService =  ServiceInjector.getService<ProjectService>('projectService');
+    homeService = ServiceInjector.getService<HomeService>('homeService');
 
     /**
      * Get some statistics about tickets and projects

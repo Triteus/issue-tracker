@@ -4,9 +4,10 @@ import { ProjectModel } from "../models/project.model";
 import { PaginationService } from "./pagination.service";
 import { SortService } from "./sort.service";
 import { isEmpty } from "./ticket.service.util";
+import { IService } from "../ServiceInjector";
 
 type ID = String | Types.ObjectId;
-export class CommentService {
+export class CommentService implements IService {
 
     async getCommentsUpdatedAsc(projectId: Types.ObjectId, ticketId: Types.ObjectId, query: object): Promise<ICommentDocument[]> {
         const {limit, skip} = PaginationService.preparePagination(query);

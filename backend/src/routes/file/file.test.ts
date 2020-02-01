@@ -3,20 +3,24 @@ import { SuperTest, Test } from "supertest";
 import { setupDB } from "../../startup/testSetup";
 import { TestServer } from "../../TestServer";
 import supertest = require("supertest");
-import { Request, Response, NextFunction} from "express";
 import UserModel, { IUser } from "../../models/user.model";
 import { ownerData } from "../../test-data/user";
 import fs from 'fs';
+import { UploadService } from "../../services/upload.service";
 
 describe('UploadController', () => {
 
-    const uploadController = new FileController();
+    let uploadController: FileController;
     let request: SuperTest<Test>;
 
     setupDB('test-upload-controller');
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
+        testServer.setServices({
+            'uploadService': new UploadService()
+        })
+        uploadController = new FileController();
         testServer.setControllers(uploadController);
         request = supertest(testServer.getExpressInstance());
         done();

@@ -2,11 +2,12 @@ import { Types } from "mongoose";
 import { ProjectModel } from "../models/project.model";
 import { ticketSchema, ITicket, ITicketDocument } from "../models/ticket.model";
 import moment from "moment";
+import { IService } from "../ServiceInjector";
 
 
 type TicketWithProjectId = ITicketDocument & { projectId: string };
 
-export class HomeService {
+export class HomeService implements IService {
 
     async findLastTickets(numTickets: number, userId: string | Types.ObjectId): Promise<TicketWithProjectId[]> {
 

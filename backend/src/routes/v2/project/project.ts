@@ -1,13 +1,15 @@
 import { Controller, Post, Get, Delete, Put, Children, Middleware, Patch } from "@overnightjs/core";
 import { ProjectModel } from "../../../models/project.model";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { ResponseError, ErrorTypes } from "../../../middlewares/error";
 import { TicketController } from "../../ticket/ticket";
 import passport from "passport";
 import { projectValidators } from "./project.validate";
 import { validation } from "../../../middlewares/validation";
-import { IUser, RequestWithUser } from "../../../models/user.model";
+import { RequestWithUser } from "../../../models/user.model";
 import { Types } from "mongoose";
+import { ServiceInjector } from "../../../ServiceInjector";
+import { ProjectService } from "../../../services/project.service";
 
 
 const validate = validation(projectValidators);
@@ -18,13 +20,15 @@ const validate = validation(projectValidators);
 ])
 export class ProjectController {
 
+    projectService = ServiceInjector.getService<ProjectService>('projectService');
+
     @Get()
     @Middleware([
         passport.authenticate('jwt', { session: false }),
     ])
     private async getProjects(req: Request, res: Response) {
         let projects = await ProjectModel.find({});
-        return res.status(200).send({projects: ProjectModel.toMinimizedJSON(projects)});
+        return res.status(200).send({ projects: ProjectModel.toMinimizedJSON(projects) });
     }
 
     @Get(':projectId')
@@ -33,37 +37,37 @@ export class ProjectController {
     ])
     private async getProject(req: Request, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId).populate('assignedUsers projectLeader');
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }
-        return res.status(200).send({project});
+        return res.status(200).send({ project });
     }
 
     @Get(':projectId/name')
     @Middleware([
-        passport.authenticate('jwt', {session: false})
+        passport.authenticate('jwt', { session: false })
     ])
     private async getProjectName(req: Request, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId);
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }
 
-        return res.status(200).send({projectName: project.name});
+        return res.status(200).send({ projectName: project.name });
     }
 
     // NOTE: Only returns id of users
     @Get(':projectId/assignedUsers')
     @Middleware([
-        passport.authenticate('jwt', {session: false})
+        passport.authenticate('jwt', { session: false })
     ])
     private async getAssignedUsers(req: Request, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId);
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }
-        return res.status(200).send({assignedUsers: project.assignedUsers});
-    } 
+        return res.status(200).send({ assignedUsers: project.assignedUsers });
+    }
 
     @Post()
     @Middleware([
@@ -72,12 +76,12 @@ export class ProjectController {
     ])
     private async postProject(req: RequestWithUser, res: Response) {
         // no initial tickets
-        const {id, tickets, ...payload} = req.body;
+        const { id, tickets, ...payload } = req.body;
         payload.projectLeader = Types.ObjectId();
         let project = new ProjectModel(payload);
         await project.addProjectLeaderAndSave(req.user._id);
-        
-        return res.status(201).send({message: 'Project created successfully!', project});
+
+        return res.status(201).send({ message: 'Project created successfully!', project });
     }
 
     @Put(':projectId')
@@ -87,9 +91,9 @@ export class ProjectController {
     ])
     private async putProject(req: RequestWithUser, res: Response) {
         // make sure to exclude tickets since they are handled separately
-        const {id, tickets, ...payload} = req.body;
+        const { id, tickets, ...payload } = req.body;
         const project = await ProjectModel.findById(req.params.projectId);
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project was not found!', ErrorTypes.NOT_FOUND);
         }
 
@@ -104,8 +108,8 @@ export class ProjectController {
             project.assignedUsers = payload.assignedUsers.map(u => u.id);
         }
         const updatedProject = await project.save();
-        
-        return res.status(200).send({message: 'Project successfully updated', updatedProject})
+
+        return res.status(200).send({ message: 'Project successfully updated', updatedProject })
     }
 
     @Patch(':projectId/assignedUsers')
@@ -115,21 +119,21 @@ export class ProjectController {
     ])
     private async patchAssignedUsers(req: RequestWithUser, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId);
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project not found!', ErrorTypes.NOT_FOUND);
         }
-        
+
         if (!project.projectLeader.equals(req.user._id)) {
             throw new ResponseError('Missing persmission to update project.', ErrorTypes.NOT_AUTHORIZED);
         }
 
 
-        project.set({assignedUsers: req.body.assignedUsers});
+        project.set({ assignedUsers: req.body.assignedUsers });
         const updatedProject = await project.save();
 
-        return res.status(200).send({message: 'Assigned users successfully changed!', updatedProject});
+        return res.status(200).send({ message: 'Assigned users successfully changed!', updatedProject });
     }
-    
+
 
     @Delete(':projectId')
     @Middleware([
@@ -137,7 +141,7 @@ export class ProjectController {
     ])
     private async deleteProject(req: RequestWithUser, res: Response) {
         const project = await ProjectModel.findById(req.params.projectId);
-        if(!project) {
+        if (!project) {
             throw new ResponseError('Project not found!', ErrorTypes.NOT_FOUND);
         }
 
@@ -147,7 +151,7 @@ export class ProjectController {
 
         const deletedProject = await project.remove();
 
-        return res.status(200).send({message: 'Project successfully deleted!', deletedProject});
+        return res.status(200).send({ message: 'Project successfully deleted!', deletedProject });
     }
 
 

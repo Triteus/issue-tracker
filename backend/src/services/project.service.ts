@@ -1,7 +1,8 @@
 import { ProjectModel } from "../models/project.model";
 import { Types } from "mongoose";
+import { IService } from "../ServiceInjector";
 
-export class ProjectService {
+export class ProjectService implements IService {
 
     findProjectsByAssignedUser(userId: string | Types.ObjectId) {
         return ProjectModel.find({ assignedUsers: { $in: [userId] } });

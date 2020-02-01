@@ -16,6 +16,13 @@ import { GlobalController } from "./routes/global/global";
 import { createVisitorIfNotExists } from "./startup/visitor";
 import express from 'express';
 import path from 'path';
+import { ProjectService } from "./services/project.service";
+import { TicketService } from "./services/ticket.service";
+import { HomeService } from "./services/home.service";
+import { UploadService } from "./services/upload.service";
+import { CommentService } from "./services/comment.service";
+import { ServiceInjector } from "./ServiceInjector";
+
 
 require('express-async-errors');
 
@@ -49,6 +56,7 @@ export class AppServer extends Server {
         initLogging();
         initPassport();
 
+        this.setupDependencies();
         this.setupControllers();
 
         // needed to avoid returning index.html
@@ -67,8 +75,22 @@ export class AppServer extends Server {
         this.app.use(error);
     }
 
+    /** Add new dependencies here */
+    private setupDependencies() {
+        
+        const services = {
+            projectService: new ProjectService(),
+            ticketService: new TicketService(),
+            homeService: new HomeService(),
+            uploadService: new UploadService(),
+            commentService: new CommentService()
+        };
+        ServiceInjector.setServices(services);
+    }
+
     /** Add new controllers here */
     private setupControllers(): void {
+
         const globalController = new GlobalController();
         const authController = new AuthController();
         const userController = new UserController();

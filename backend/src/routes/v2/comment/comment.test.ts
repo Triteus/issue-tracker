@@ -13,19 +13,28 @@ import UserModel from "../../../models/user.model";
 import { IComment, CommentModel } from "../../../models/comment.model";
 import { Types } from "mongoose";
 import { ProjectController } from "../project/project";
+import { ProjectService } from "../../../services/project.service";
+import { CommentService } from "../../../services/comment.service";
+import { TicketService } from "../../../services/ticket.service";
 /**
  * all given routes are assumed to be accessed like this: /project/:projectId/ticket/:ticketId/comment/
  */
 
 describe('CommentController (child-controller)', () => {
 
-    const projectController = new ProjectController();
+    let projectController: ProjectController;
     let request: SuperTest<Test>;
 
     setupDB('test-comment-controller');
 
     beforeAll(async (done) => {
         const testServer = new TestServer();
+        testServer.setServices({
+            'commentService': new CommentService(),
+            'projectService': new ProjectService(),
+            'ticketService': new TicketService()
+        })
+        projectController = new ProjectController();
         testServer.setControllers(projectController);
         request = supertest(testServer.getExpressInstance());
         done();

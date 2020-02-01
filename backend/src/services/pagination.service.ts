@@ -1,3 +1,4 @@
+import { IService } from "../ServiceInjector";
 
 export interface PaginationParams {
     pageIndex?: string | number;
@@ -10,7 +11,7 @@ export interface PreparedPaginationParams {
     limit?: number;
 }
 
-export class PaginationService {
+export class PaginationService implements IService {
 
     static preparePagination(query: PaginationParams): PreparedPaginationParams {
         const pageIndex = Number.parseInt(query.pageIndex as string);

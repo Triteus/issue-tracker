@@ -7,11 +7,12 @@ import { prepareAggregateStages, remapObject, filter, withProjectId, TicketParam
 import { arrayEquals } from "../util/array";
 import { PreparedPaginationParams, PaginationService } from "./pagination.service";
 import { PreparedSortParams, SortService } from "./sort.service";
+import { IService } from "../ServiceInjector";
 
 
 type ID = Types.ObjectId | string
 
-export class TicketService {
+export class TicketService implements IService {
 
   async findTicketAndAddHistoryEntry(project: IProject, ticketId: ID, editorId: ID, payload: Partial<ITicketDocument>) {
 

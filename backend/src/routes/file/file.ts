@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { UploadService } from "../../services/upload.service";
 import passport from "passport";
 import path from 'path';
+import { ServiceInjector } from "../../ServiceInjector";
 
 const uploadService = new UploadService();
 const upload = uploadService.initUploadMiddleware();
@@ -10,6 +11,8 @@ const upload = uploadService.initUploadMiddleware();
 
 @Controller('api/file')
 export class FileController {
+
+    uploadService = ServiceInjector.getService('uploadService');
 
     @Post()
     @Middleware([

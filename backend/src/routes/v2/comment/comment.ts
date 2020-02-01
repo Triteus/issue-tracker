@@ -11,6 +11,7 @@ import passport from "passport";
 import { validation } from "../../../middlewares/validation";
 import { CommentValidators } from "./comment.validate";
 import { CommentService } from "../../../services/comment.service";
+import { ServiceInjector } from "../../../ServiceInjector";
 
 
 type ResWithProjectAndTicket = ResponseWithProject & ResponseWithTicket;
@@ -29,7 +30,7 @@ const validate = validation(CommentValidators);
 @ClassOptions({ mergeParams: true })
 export class CommentController {
 
-    commentService = new CommentService();
+    commentService = ServiceInjector.getService<CommentService>('commentService');
 
     @Get()
     private async getComments(req: Request, res: ResponseWithTicket) {

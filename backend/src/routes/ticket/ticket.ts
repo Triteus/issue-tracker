@@ -12,6 +12,7 @@ import { ProjectModel, IProject } from "../../models/project.model";
 import { findProject } from "../../middlewares/project";
 import { userBelongsToProject } from "../../middlewares/ticket";
 import { CommentController } from "../v2/comment/comment";
+import { ServiceInjector } from "../../ServiceInjector";
 
 const validate = validation(TicketValidators);
 
@@ -25,7 +26,7 @@ const validate = validation(TicketValidators);
 @ClassOptions({ mergeParams: true })
 export class TicketController {
 
-    ticketService = new TicketService();
+    ticketService = ServiceInjector.getService<TicketService>('ticketService');
 
     @Post('')
     @Middleware([

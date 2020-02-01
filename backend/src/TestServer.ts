@@ -3,6 +3,7 @@ import { Application } from "express";
 import bodyParser = require("body-parser");
 import initPassport from "./startup/passport";
 import error from "./middlewares/error";
+import { IService, ServiceInjector } from "./ServiceInjector";
 
 require('express-async-errors');
 
@@ -14,6 +15,10 @@ export class TestServer extends Server {
 
         //initLogging();
         initPassport();
+    }
+
+    public setServices(serviceMapping: {[key: string]: IService}) {
+        ServiceInjector.setServices(serviceMapping);
     }
 
     public setControllers(controllers: any | any[]): void {

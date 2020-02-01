@@ -2,8 +2,9 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { ResponseError, ErrorTypes } from '../middlewares/error';
+import { IService } from '../ServiceInjector';
 
-export class UploadService {
+export class UploadService implements IService {
 
     initUploadMiddleware() {
         var storage = multer.diskStorage({
