@@ -1,0 +1,77 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    git config --global user.email "schmidtseb@outlook.com"
+    git config --global user.name "Triteus"
+    git checkout master
+    git branch
+  displayName: 'Setup git'
+
+#- script: |
+#    choco install mongodb
+#  displayName: 'Setup mongoDb'
+
+- script: |
+    npm install
+  workingDirectory: ./backend
+  displayName: 'Install packages'
+
+#- script: |
+#    npm run test
+#  workingDirectory: ./backend
+#  displayName: 'Run all backend tests'
+
+- script: |
+    npm install
+    npm run build
+  workingDirectory: ./backend
+  displayName: 'Create backend build'
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
+  workingDirectory: ./frontend/issue-tracker
+  displayName: 'Create angular build'
+
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: frontend/issue-tracker/dist
+    Contents: '**'
+    TargetFolder: backend/dist/frontend
+  displayName: 'Copy build of angular app to backend-folder'
+
+
+- script: |
+    git remote add heroku https://heroku:$(heroku.api_token)@git.heroku.com/vast-peak-43691.git
+    git add .
+    git commit -m "temp commit for deployment"
+    git subtree split --prefix backend -b deploy
+    git checkout deploy
+    git push -f heroku master
+  displayName: 'Deploy to heroku'
+
+- script: |
+    git config --global --unset user.name
+    git config --global --unset user.email
+  displayName: 'Cleanup'
