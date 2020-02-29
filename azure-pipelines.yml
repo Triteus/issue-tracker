@@ -15,11 +15,20 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
-- script: |
-    dir
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  workingDirectory: ./frontend/issue-tracker
-  displayName: 'npm install and build'
+# - script: |
+#    npm install -g @angular/cli
+#    npm install
+#    ng build --prod
+#  workingDirectory: ./frontend/issue-tracker
+#  displayName: 'Create angular build'
 
+# - script: |
+#    npm install
+#  workingDirectory: ./backend
+#  displayName: 'Create backend build'
+
+- script: |
+    npm install
+    npm run test
+  workingDirectory: ./backend
+  displayName: 'Run all backend tests'
