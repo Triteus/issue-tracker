@@ -16,9 +16,10 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    dir
     npm install -g @angular/cli
     npm install
     ng build --prod
-  workingDirectory: /frontend/issue-tracker
+  workingDirectory: ./frontend/issue-tracker
   displayName: 'npm install and build'
 
