@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
 - task: NodeTool@0
@@ -26,6 +26,10 @@ steps:
 #    npm install
 #  workingDirectory: ./backend
 #  displayName: 'Create backend build'
+
+- script: |
+    choco install mongodb
+    mongod
 
 - script: |
     npm install
