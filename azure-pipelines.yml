@@ -10,6 +10,10 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+
 - task: NodeTool@0
   inputs:
     versionSpec: '12.x'
@@ -66,4 +70,10 @@ steps:
     git subtree split --prefix backend -b deploy
     git checkout deploy
     git push -f heroku master
+    git branch -D deploy
   displayName: 'Deploy to heroku'
+
+- script: |
+    git config --global --unset user.name
+    git config --global --unset user.email
+  displayName: 'Cleanup'
