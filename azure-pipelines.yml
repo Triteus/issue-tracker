@@ -29,7 +29,7 @@ steps:
 
 - script: |
     choco install mongodb
-    mongod
+  displayName: 'Setup mongoDb'
 
 - script: |
     npm install
