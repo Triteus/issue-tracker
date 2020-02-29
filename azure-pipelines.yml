@@ -15,18 +15,6 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
-# - script: |
-#    npm install -g @angular/cli
-#    npm install
-#    ng build --prod
-#  workingDirectory: ./frontend/issue-tracker
-#  displayName: 'Create angular build'
-
-# - script: |
-#    npm install
-#  workingDirectory: ./backend
-#  displayName: 'Create backend build'
-
 - script: |
     choco install mongodb
   displayName: 'Setup mongoDb'
@@ -40,3 +28,32 @@ steps:
     npm run test
   workingDirectory: ./backend
   displayName: 'Run all backend tests'
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
+  workingDirectory: ./frontend/issue-tracker
+  displayName: 'Create angular build'
+
+- script: |
+    npm install
+    npm run build
+  workingDirectory: ./backend
+  displayName: 'Create backend build'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: frontend/issue-tracker/dist
+    Contents: '**'
+    TargetFolder: backend/dist/frontend
+  displayName: 'Copy build of angular app to backend-folder'
+
+
+- script: |
+    git checkout master
+    git remote add heroku https://heroku:${heroku.api_token}@git.heroku.com/vast-peak-43691.git
+    git subtree split --prefix backend -b deploy
+    git checkout deploy
+    git push -f heroku master
+  displayName: 'Deploy to heroku'
