@@ -19,4 +19,6 @@ steps:
     npm install -g @angular/cli
     npm install
     ng build --prod
+  workingDirectory: /frontend/issue-tracker
   displayName: 'npm install and build'
+
