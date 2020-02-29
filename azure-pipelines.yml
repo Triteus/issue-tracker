@@ -33,6 +33,10 @@ steps:
 
 - script: |
     npm install
+  workingDirectory: ./backend
+  displayName: 'Install packages'
+
+- script: |
     npm run test
   workingDirectory: ./backend
   displayName: 'Run all backend tests'
