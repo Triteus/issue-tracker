@@ -16,6 +16,13 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    git config --global user.email "schmidtseb@outlook.com"
+    git config --global user.name "Triteus"
+    git status
+    git branch
+  displayName: 'Setup git'
+
+- script: |
     choco install mongodb
   displayName: 'Setup mongoDb'
 
