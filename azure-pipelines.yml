@@ -51,8 +51,11 @@ steps:
 
 
 - script: |
-    git checkout master
+    git status
+    git add .
+    git commit -m "deploy"
     git remote add heroku https://heroku:${heroku.api_token}@git.heroku.com/vast-peak-43691.git
+    git remote
     git subtree split --prefix backend -b deploy
     git checkout deploy
     git push -f heroku master
