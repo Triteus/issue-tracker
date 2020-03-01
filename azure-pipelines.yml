@@ -70,7 +70,7 @@ steps:
     git checkout deploy
     git stash pop
     git add .
-    git commit -m "deploy"
+    git commit -m "temp commit for deployment"
     git status
     git push -f heroku master
     git branch -D deploy
