@@ -22,7 +22,7 @@ steps:
 - script: |
     git config --global user.email "schmidtseb@outlook.com"
     git config --global user.name "Triteus"
-    git status
+    git checkout master
     git branch
   displayName: 'Setup git'
 
@@ -65,12 +65,10 @@ steps:
     git status
     git remote add heroku https://heroku:$(heroku.api_token)@git.heroku.com/vast-peak-43691.git
     git remote
-    git subtree split --prefix backend -b deploy
-    git stash
-    git checkout deploy
-    git stash pop
     git add .
     git commit -m "temp commit for deployment"
+    git subtree split --prefix backend -b deploy
+    git checkout deploy
     git status
     git push -f heroku master
     git branch -D deploy
