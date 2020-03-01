@@ -26,19 +26,25 @@ steps:
     git branch
   displayName: 'Setup git'
 
-- script: |
-    choco install mongodb
-  displayName: 'Setup mongoDb'
+#- script: |
+#    choco install mongodb
+#  displayName: 'Setup mongoDb'
 
 - script: |
     npm install
   workingDirectory: ./backend
   displayName: 'Install packages'
 
+#- script: |
+#    npm run test
+#  workingDirectory: ./backend
+#  displayName: 'Run all backend tests'
+
 - script: |
-    npm run test
+    npm install
+    npm run build
   workingDirectory: ./backend
-  displayName: 'Run all backend tests'
+  displayName: 'Create backend build'
 
 - script: |
     npm install -g @angular/cli
@@ -47,11 +53,6 @@ steps:
   workingDirectory: ./frontend/issue-tracker
   displayName: 'Create angular build'
 
-- script: |
-    npm install
-    npm run build
-  workingDirectory: ./backend
-  displayName: 'Create backend build'
 
 - task: CopyFiles@2
   inputs:
@@ -62,16 +63,12 @@ steps:
 
 
 - script: |
-    git status
     git remote add heroku https://heroku:$(heroku.api_token)@git.heroku.com/vast-peak-43691.git
-    git remote
     git add .
     git commit -m "temp commit for deployment"
     git subtree split --prefix backend -b deploy
     git checkout deploy
-    git status
     git push -f heroku master
-    git branch -D deploy
   displayName: 'Deploy to heroku'
 
 - script: |
