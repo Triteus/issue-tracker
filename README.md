@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/schmidtseb/schmidtseb/_apis/build/status/Triteus.issue-tracker?branchName=master)](https://dev.azure.com/schmidtseb/schmidtseb/_build/latest?definitionId=1&branchName=master)
+
 # IssueTracker
 Application to track and work on issues, features, ... within a project.
 
